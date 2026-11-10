@@ -73,7 +73,7 @@ button { cursor: pointer; }
 .main { flex: 1; min-width: 0; display: flex; flex-direction: column; overflow-y: auto; padding: 26px clamp(20px, 3.2vw, 40px) 40px; gap: 18px; }
 .detail {
   flex: none; width: 344px; border-left: 1px solid var(--line); background: var(--side);
-  overflow-y: auto; padding: 22px 20px 24px; display: flex; flex-direction: column; gap: 16px;
+  overflow-y: auto; overflow-x: hidden; padding: 22px 20px 24px; display: flex; flex-direction: column; gap: 16px;
 }
 /* 자세히 칸: 할 일을 고르면 열리고, X · Esc · 빈 곳 누르기로 닫혀요.
    넓은 창의 '오늘'에서는 오른쪽 칸으로, 이번 주 · 이번 달 · 좁은 창에서는 오른쪽에서 밀려 나오는 서랍으로 */
