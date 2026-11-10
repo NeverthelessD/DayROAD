@@ -122,8 +122,8 @@
         <div class="boxh">할 일 · 알림</div>
         <div class="box">
           <div class="r"><span class="lbl"><b>못 끝낸 일 오늘로 가져오기</b><span>자정이 지나면 어제 남은 일이 오늘 목록으로 와요</span></span>${sw(s.carryOver, 'carryOver', '못 끝낸 일 가져오기')}</div>
-          <div class="r"><span class="lbl"><b>아침 알림</b><span>오늘 할 일을 알려 줘요</span></span><span class="ctl">${s.morning.on ? `<input type="time" class="field" value="${esc(s.morning.time)}" data-sfield="morning.time" aria-label="아침 알림 시각">` : ''}${sw(s.morning.on, 'morning.on', '아침 알림')}</span></div>
-          <div class="r"><span class="lbl"><b>마감 미리 알려 주기</b><span>'언제까지'가 정해진 일</span></span><span class="ctl">${s.dueRemind.on ? `<select class="field" data-sfield="dueRemind.days" aria-label="며칠 전">${days.map(([v, l]) => `<option value="${v}"${s.dueRemind.days === v ? ' selected' : ''}>${l}</option>`).join('')}</select><input type="time" class="field" value="${esc(s.dueRemind.time)}" data-sfield="dueRemind.time" aria-label="알림 시각">` : ''}${sw(s.dueRemind.on, 'dueRemind.on', '마감 알림')}</span></div>
+          <div class="r"><span class="lbl"><b>아침 알림</b><span>오늘 할 일을 알려 줘요</span></span><span class="ctl">${s.morning.on ? `<button type="button" class="vbtn" data-stime="morning.time" aria-label="아침 알림 시각">${DR.fmtTime(s.morning.time)}</button>` : ''}${sw(s.morning.on, 'morning.on', '아침 알림')}</span></div>
+          <div class="r"><span class="lbl"><b>마감 미리 알려 주기</b><span>'언제까지'가 정해진 일</span></span><span class="ctl">${s.dueRemind.on ? `<select class="field" data-sfield="dueRemind.days" aria-label="며칠 전">${days.map(([v, l]) => `<option value="${v}"${s.dueRemind.days === v ? ' selected' : ''}>${l}</option>`).join('')}</select><button type="button" class="vbtn" data-stime="dueRemind.time" aria-label="마감 알림 시각">${DR.fmtTime(s.dueRemind.time)}</button>` : ''}${sw(s.dueRemind.on, 'dueRemind.on', '마감 알림')}</span></div>
         </div>
         ${notifyWarn}
         <div class="boxh">캘린더 · 미리 알림 연동</div>
@@ -158,6 +158,11 @@
 
   async function onClick(e) {
     if (e.target.closest('[data-close]')) return sm.close();
+    const st = e.target.closest('[data-stime]');
+    if (st) {
+      const f = st.dataset.stime, [k1, k2] = f.split('.');
+      return DR.pickTime(st, S.settings[k1][k2], (v) => saveSetting(setPath(f, v)), { title: f === 'morning.time' ? '아침 알림' : '마감 알림' });
+    }
     const b = e.target.closest('[data-sact]');
     if (!b) return;
     const a = b.dataset.sact;

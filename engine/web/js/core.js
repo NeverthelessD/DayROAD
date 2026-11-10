@@ -313,6 +313,75 @@ function pickDate(anchor, value, onPick, quick = []) {
   });
 }
 
+// '오후 2:30' · '14:30' · '2시 반' · '오전 9시' 같은 글을 HH:MM 으로
+function parseTimeText(text) {
+  let s = String(text || '').trim().replace(/\s+/g, ' ');
+  let ap = '';
+  const m0 = s.match(/^(오전|오후|아침|낮|저녁|밤|새벽|am|pm)\s*/i);
+  if (m0) { ap = m0[1].toLowerCase(); s = s.slice(m0[0].length); }
+  const m = s.match(/^(\d{1,2})(?:\s*(?::|시)\s*(\d{1,2}|반)?\s*분?)?$/) || s.match(/^(\d{1,2})(\d{2})$/);
+  if (!m) return '';
+  let h = +m[1];
+  const mi = m[2] === '반' ? 30 : +(m[2] || 0);
+  if (h > 24 || mi > 59) return '';
+  if (['오후', '저녁', '밤', 'pm'].includes(ap) && h < 12) h += 12;
+  if (ap === '낮' && h < 7) h += 12;
+  if (['오전', '아침', '새벽', 'am'].includes(ap) && h === 12) h = 0;
+  if (h === 24) h = 0;
+  return `${String(h).padStart(2, '0')}:${String(mi).padStart(2, '0')}`;
+}
+DR.parseTimeText = parseTimeText;
+
+// pickTime: 시간 고르기 창. 자주 쓰는 시간 · 오전/오후 · 시 · 분 · 직접 적기 · (opts.clearLabel 이 있으면) 지우기
+function pickTime(anchor, value, onPick, opts = {}) {
+  let h24 = value ? +value.slice(0, 2) : (opts.defHour ?? 9);
+  let mi = value ? +value.slice(3, 5) : 0;
+  const quick = opts.quick || ['09:00', '12:00', '15:00', '18:00', '20:00'];
+  const cur = () => `${String(h24).padStart(2, '0')}:${String(mi).padStart(2, '0')}`;
+  const draw = () => {
+    const pm = h24 >= 12;
+    const h12 = h24 % 12 === 0 ? 12 : h24 % 12;
+    return `
+      <div class="tp-head"><span>${esc(opts.title || '시간')}</span><b>${fmtTime(cur())}</b></div>
+      <div class="tp-quick">${quick.map((q) => `<button type="button" data-q="${q}"${q === value ? ' aria-pressed="true"' : ''}>${fmtTime(q)}</button>`).join('')}</div>
+      <div class="seg tp-ap" role="radiogroup" aria-label="오전 · 오후"><button type="button" role="radio" data-ap="am" aria-checked="${!pm}">오전</button><button type="button" role="radio" data-ap="pm" aria-checked="${pm}">오후</button></div>
+      <div class="tp-lbl">시</div>
+      <div class="tp-grid">${Array.from({ length: 12 }, (_, i) => i + 1).map((h) => `<button type="button" data-h="${h}" aria-pressed="${h === h12}">${h}</button>`).join('')}</div>
+      <div class="tp-lbl">분</div>
+      <div class="tp-grid">${[0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].map((x) => `<button type="button" data-m="${x}" aria-pressed="${x === mi}">${String(x).padStart(2, '0')}</button>`).join('')}</div>
+      <label class="tp-lbl" for="tpText">직접 적기</label>
+      <input id="tpText" class="field tp-in" placeholder="예: 14:30 · 오후 2시 반" autocomplete="off">
+      <div class="tp-foot">
+        ${opts.clearLabel ? `<button type="button" class="btn sm ghost tp-clear" data-clear>${ICON.x}${esc(opts.clearLabel)}</button>` : ''}
+        <span style="flex: 1"></span>
+        <button type="button" class="btn sm primary" data-ok>정하기</button>
+      </div>`;
+  };
+  const el = pop(draw(), anchor, { cls: 'tp', role: 'dialog', focus: false });
+  const redraw = () => { const t = el.querySelector('#tpText').value; el.innerHTML = draw(); el.querySelector('#tpText').value = t; };
+  const done = (v) => { closePop(); onPick(v); };
+  el.addEventListener('click', (e) => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    if (b.dataset.q) return done(b.dataset.q);
+    if (b.dataset.ap) { const pm = b.dataset.ap === 'pm'; if (pm && h24 < 12) h24 += 12; if (!pm && h24 >= 12) h24 -= 12; return redraw(); }
+    if (b.dataset.h) { const pm = h24 >= 12; h24 = (+b.dataset.h % 12) + (pm ? 12 : 0); return redraw(); }
+    if (b.dataset.m !== undefined) { mi = +b.dataset.m; return redraw(); }
+    if (b.hasAttribute('data-clear')) { closePop(); if (opts.onClear) opts.onClear(); return; }
+    if (b.hasAttribute('data-ok')) {
+      const t = el.querySelector('#tpText').value.trim();
+      if (t) { const v = parseTimeText(t); if (!v) { toast('시간을 알아듣지 못했어요. 예: 14:30', { err: true }); return; } return done(v); }
+      return done(cur());
+    }
+  });
+  el.addEventListener('keydown', (e) => {
+    if (e.target.id !== 'tpText' || e.key !== 'Enter' || e.isComposing) return;
+    e.preventDefault();
+    const v = parseTimeText(e.target.value);
+    if (v) done(v); else toast('시간을 알아듣지 못했어요. 예: 14:30', { err: true });
+  });
+}
+
 function modal(html, opts = {}) {
   const wrap = document.createElement('div');
   wrap.className = 'modal';
@@ -324,7 +393,7 @@ function modal(html, opts = {}) {
   wrap.addEventListener('mousedown', (e) => { if (e.target === wrap) close(); });
   return { el: wrap, close };
 }
-Object.assign(DR, { pop, closePop, menu, pickDate, modal, isPopOpen: () => !!openPop });
+Object.assign(DR, { pop, closePop, menu, pickDate, pickTime, modal, isPopOpen: () => !!openPop });
 
 // ---------------------------------------------------------------- 맥 앱(Swift)에게 부탁하기
 

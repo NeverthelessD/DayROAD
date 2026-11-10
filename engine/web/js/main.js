@@ -85,6 +85,15 @@
 
   const qi = $('#qInput');
 
+  DR.qSkip = new Set();
+  $('#qChips').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-skip]');
+    if (!b) return;
+    DR.qSkip.add(b.dataset.skip);
+    DR.updateQuickChips();
+    qi.focus();
+  });
+
   function taskFromText(text, ctx) {
     const p = DR.parseQuick(text, ctx);
     const t = { title: p.title };
@@ -153,9 +162,11 @@
       : S.view === 'someday' ? '언젠가 하고 싶은 일 — 예: 제주도 여행 계획'
         : S.view === 'today' && S.viewDate !== S.today ? `${DR.relDay(S.viewDate)}에 할 일 — 예: 오후 3시 치과`
           : '할 일을 적고 Enter — 예: 금요일까지 보고서, 매주 월 9시 회의';
-    if (!v.trim()) { box.innerHTML = ''; return; }
-    const p = DR.parseQuick(v, ctx);
-    box.innerHTML = p.chips.map((c) => `<span class="chip">${esc(c)}</span>`).join('');
+    if (!v.trim()) { box.innerHTML = ''; DR.qSkip.clear(); return; }
+    const p = DR.parseQuick(v, { ...ctx, skip: DR.qSkip });
+    box.innerHTML = p.chips.length
+      ? p.chips.map((c) => `<button type="button" class="chip qchip" data-skip="${c.k}" title="눌러서 빼면 이 글은 할 일 이름에 그대로 남아요" aria-label="${esc(c.label)} 빼기">${esc(c.label)}<span aria-hidden="true">×</span></button>`).join('') + '<span class="qhint">알아들은 것 · 잘못 알아들었으면 눌러서 빼세요</span>'
+      : (DR.qSkip.size ? '<span class="qhint">뺀 것은 할 일 이름에 그대로 들어가요</span>' : '');
   };
 
   qi.addEventListener('input', DR.updateQuickChips);
@@ -164,20 +175,22 @@
       e.preventDefault();
       const v = qi.value;
       if (!v.trim()) return;
+      const skip = new Set(DR.qSkip);
       qi.value = '';
       DR.updateQuickChips();
-      const t = await addFromText(v, DR.quickCtx());
-      if (!t) { qi.value = v; DR.updateQuickChips(); }
+      const t = await addFromText(v, { ...DR.quickCtx(), skip });
+      if (!t) { qi.value = v; skip.forEach((k) => DR.qSkip.add(k)); DR.updateQuickChips(); }
     }
     if (e.key === 'Escape') { qi.value = ''; DR.updateQuickChips(); qi.blur(); }
   });
   $('#qAdd').addEventListener('click', async () => {
     const v = qi.value;
     if (!v.trim()) { qi.focus(); return; }
+    const skip = new Set(DR.qSkip);
     qi.value = '';
     DR.updateQuickChips();
-    const t = await addFromText(v, DR.quickCtx());
-    if (!t) qi.value = v;
+    const t = await addFromText(v, { ...DR.quickCtx(), skip });
+    if (!t) { qi.value = v; skip.forEach((k) => DR.qSkip.add(k)); DR.updateQuickChips(); }
     qi.focus();
   });
 
@@ -230,7 +243,7 @@
     const holder = e.target.closest('[data-id]');
     if (!b) {
       if (holder && !e.target.closest('input, textarea') && (holder.classList.contains('row') || holder.classList.contains('card'))) select(holder.dataset.id);
-      else if (!holder && S.sel && (S.view === 'week' || S.view === 'month') && e.currentTarget.id === 'main' && !e.target.closest('input, textarea, button, a')) { S.sel = null; DR.render(); }
+      else if (!holder && S.sel && e.currentTarget.id === 'main' && !e.target.closest('input, textarea, button, a, .quick, .events')) { S.sel = null; DR.render(); }
       return;
     }
     const a = b.dataset.act;

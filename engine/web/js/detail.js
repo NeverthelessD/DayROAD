@@ -54,13 +54,13 @@
       <div class="dbox">
         <div class="drow">${DAY}<span class="lab">날짜</span><button type="button" class="vbtn" data-dact="date">${esc(whenText(t))}</button></div>
         ${isDay ? `<div class="drow">${TIME}<span class="lab">시간</span>
-          ${t.time || DR.editTime === t.id ? `<label class="sr" for="dTime">시간</label><input id="dTime" type="time" class="field" value="${t.time}" data-field="time">` : '<button type="button" class="vbtn off" data-dact="settime">정하지 않음</button>'}
-          ${t.time ? `<button type="button" class="xbtn" data-dact="clear" data-f="time" aria-label="시간 지우기">${ICON.x}</button>` : ''}</div>` : ''}
+          <button type="button" class="vbtn${t.time ? '' : ' off'}" data-dact="time">${t.time ? DR.fmtTime(t.time) : '정하지 않음'}</button>
+          ${t.time ? `<button type="button" class="xbtn" data-dact="clear" data-f="time" aria-label="시간 없애기" title="시간 없애기">${ICON.x}</button>` : ''}</div>` : ''}
         <div class="drow">${FLAG}<span class="lab">언제까지${d ? ` <span class="chip${d.warn ? ' warn' : ''}" style="margin-left: 4px">${d.d}</span>` : ''}</span>
           <button type="button" class="vbtn${t.due ? '' : ' off'}" data-dact="due">${t.due ? esc(DR.md(t.due) + ` (${DR.dow(t.due)})까지`) : '정하지 않음'}</button>
           ${t.due ? `<button type="button" class="xbtn" data-dact="clear" data-f="due" aria-label="마감 지우기">${ICON.x}</button>` : ''}</div>
         ${isDay ? `<div class="drow">${BELL}<span class="lab">알림</span>
-          ${t.alarm ? `<label class="sr" for="dAlarm">알림 시각</label><input id="dAlarm" type="time" class="field" value="${t.alarm}" data-field="alarm">` : ''}
+          ${t.alarm ? `<button type="button" class="vbtn" data-dact="alarmtime" aria-label="알림 시각 바꾸기">${DR.fmtTime(t.alarm)}</button>` : ''}
           <button type="button" class="switch" role="switch" aria-checked="${!!t.alarm}" aria-label="알림" data-dact="alarm"><span></span></button></div>` : ''}
         ${t.bucket !== 'someday' ? `<div class="drow col2"><span class="lab">${REP}반복</span>
           <div class="repseg" role="radiogroup" aria-label="반복" style="grid-template-columns: repeat(${reps.length}, minmax(0, 1fr))">${reps.map(([v, l]) => `<button type="button" role="radio" aria-checked="${(t.repeat || '') === v}" data-dact="repeat" data-v="${v}">${l}</button>`).join('')}</div></div>` : ''}
@@ -190,8 +190,9 @@
         { label: '이번 주 금요일', value: fri(S.today) }, { label: '다음 주 금요일', value: fri(DR.addDays(S.today, 7)) },
       ]);
     }
-    else if (a === 'clear') { DR.editTime = null; save({ [b.dataset.f]: '' }); }
-    else if (a === 'settime') { DR.editTime = t.id; DR.renderDetail(true); const i = $('#dTime'); if (i) { i.focus(); try { i.showPicker && i.showPicker(); } catch (err) { /* 없음 */ } } }
+    else if (a === 'clear') save({ [b.dataset.f]: '' }).then(() => { if (b.dataset.f === 'time') DR.toast('시간을 없앴어요'); });
+    else if (a === 'time') DR.pickTime(b, t.time, (v) => save({ time: v }), { title: '시간', clearLabel: t.time ? '시간 없애기' : '', onClear: () => save({ time: '' }).then(() => DR.toast('시간을 없앴어요')) });
+    else if (a === 'alarmtime') DR.pickTime(b, t.alarm, (v) => save({ alarm: v }), { title: '알림 시각', clearLabel: '알림 끄기', onClear: () => save({ alarm: '' }) });
     else if (a === 'alarm') save({ alarm: t.alarm ? '' : (t.time ? minus15(t.time) : '09:00') });
     else if (a === 'repeat') save({ repeat: b.dataset.v });
     else if (a === 'calendar') save({ calendar: !t.calendar });
@@ -219,7 +220,6 @@
   box.addEventListener('focusout', (e) => {
     const t = DR.task(S.sel);
     if (!t) return;
-    if (e.target.type === 'time') setTimeout(() => { if (!box.contains(document.activeElement) || document.activeElement.tagName === 'BUTTON') DR.renderDetail(); }, 60);
     if (e.target.id === 'dTitle') {
       const v = e.target.value.replace(/\s+/g, ' ').trim();
       if (!v) { e.target.value = t.title; return; }

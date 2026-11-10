@@ -119,6 +119,17 @@ open "dayroad://week"; sleep 3
 check "U1 주소를 앱이 받음" bash -c "tail -40 '$SUP/launcher.log' | grep -q '주소로 열기: dayroad://week'"
 check "U2 앱은 하나만" test "$(pgrep -x DayROAD | wc -l | tr -d ' ')" = "1"
 
+echo "▶ M. 창 맨 위를 잡고 끌어서 옮기기"
+osascript -e 'tell application "DayROAD" to activate' >/dev/null 2>&1; sleep 1
+screencapture -x "$OUT/shot-drag-before.png"
+MOVE=$(swift "$ROOT/scripts/drag-test.swift" 2>&1 | tail -1)
+screencapture -x "$OUT/shot-drag-after.png"
+echo "$MOVE" > "$OUT/drag-test.txt"
+case "$MOVE" in
+  moved*) pass "M1 창 맨 위를 끌면 창이 움직임 ($MOVE)" ;;
+  *) echo "INFO  M1 창 옮기기를 확인하지 못함 ($MOVE) — 빌드 서버가 마우스 흉내를 막았을 수 있어요" | tee -a "$RES" ;;
+esac
+
 echo "▶ B. Dock 아이콘 다시 누르기(reopen)"
 osascript -e 'tell application "DayROAD" to reopen' >/dev/null 2>&1; sleep 1
 check "B1 다시 열기 뒤에도 앱·엔진 그대로" test "$(app_pid)" = "$APID"

@@ -232,6 +232,31 @@ final class Bridge: NSObject, WKScriptMessageHandlerWithReply {
     }
 }
 
+// MARK: - 창 맨 위 '잡는 줄'
+// 화면(WKWebView)이 창 전체를 덮어서 맨 위를 잡아도 창이 움직이지 않았어요.
+// 그래서 맨 위 38pt 에 투명한 줄을 깔아 두고, 여기를 잡으면 창이 움직여요 (두 번 누르면 맥 설정대로 확대 · 최소화).
+// 신호등 단추는 제목 막대 위에 있어서 이 줄에 가려지지 않아요. 화면 쪽은 이 높이만큼 비워 둬요 (app.css .native).
+
+final class DragStrip: NSView {
+    static let height: CGFloat = 38
+
+    override var mouseDownCanMoveWindow: Bool { true }
+    override func acceptsFirstMouse(for event: NSEvent?) -> Bool { true }
+
+    override func mouseDown(with event: NSEvent) {
+        guard let w = window else { return }
+        if event.clickCount == 2 {
+            switch UserDefaults.standard.string(forKey: "AppleActionOnDoubleClick") ?? "Maximize" {
+            case "Minimize": w.performMiniaturize(nil)
+            case "None": break
+            default: w.performZoom(nil)
+            }
+            return
+        }
+        w.performDrag(with: event)
+    }
+}
+
 // MARK: - 앱
 
 final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, WKUIDelegate, NSWindowDelegate {
@@ -422,7 +447,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         window.tabbingMode = .disallowed
         window.collectionBehavior.insert(.fullScreenPrimary)
         window.delegate = self
-        window.contentView = web
+        // 화면 + 맨 위 잡는 줄
+        let box = NSView(frame: NSRect(x: 0, y: 0, width: 1280, height: 820))
+        web.frame = box.bounds
+        web.autoresizingMask = [.width, .height]
+        box.addSubview(web)
+        let strip = DragStrip(frame: NSRect(x: 0, y: box.bounds.height - DragStrip.height, width: box.bounds.width, height: DragStrip.height))
+        strip.autoresizingMask = [.width, .minYMargin]
+        box.addSubview(strip)
+        window.contentView = box
         if !window.setFrameUsingName("DayROADMain") { window.center() }
         window.setFrameAutosaveName("DayROADMain")
         window.makeKeyAndOrderFront(nil)

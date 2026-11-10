@@ -75,19 +75,29 @@ button { cursor: pointer; }
   flex: none; width: 344px; border-left: 1px solid var(--line); background: var(--side);
   overflow-y: auto; padding: 22px 20px 24px; display: flex; flex-direction: column; gap: 16px;
 }
-/* 좁은 창 · 이번 주 화면: 자세히 칸은 오른쪽에서 밀려 나와요 */
+/* 자세히 칸: 할 일을 고르면 열리고, X · Esc · 빈 곳 누르기로 닫혀요.
+   넓은 창의 '오늘'에서는 오른쪽 칸으로, 이번 주 · 이번 달 · 좁은 창에서는 오른쪽에서 밀려 나오는 서랍으로 */
+.app:not(.has-sel):not(.drawer) .detail { display: none; }
 .app.drawer .detail { position: fixed; top: 0; right: 0; bottom: 0; z-index: 40; box-shadow: var(--shadow); transform: translateX(105%); transition: transform .18s ease; }
 .app.drawer.has-sel .detail { transform: none; }
 @media (max-width: 1120px) {
-  .detail { position: fixed; top: 0; right: 0; bottom: 0; z-index: 40; box-shadow: var(--shadow); transform: translateX(105%); transition: transform .18s ease; }
+  .app .detail { display: flex !important; position: fixed; top: 0; right: 0; bottom: 0; z-index: 40; box-shadow: var(--shadow); transform: translateX(105%); transition: transform .18s ease; }
   .app.has-sel .detail { transform: none; }
 }
-@media (min-width: 1121px) { .app:not(.drawer) .detail .dclose { display: none; } }
 
-/* 맥 앱: 제목 막대가 투명해서 신호등 단추 자리만큼 띄워요 */
-.native .side { padding-top: 46px; }
-.native .main { padding-top: 40px; }
-.native .detail { padding-top: 40px; }
+/* 맥 앱: 맨 위 38px 은 창을 잡고 옮기는 제목 막대예요 (main.swift DragStrip 이 그 자리의 마우스를 받아요).
+   신호등 단추가 왼쪽 위에 떠 있고, 가운데에 이름이 보여요. 내용은 그 아래부터 시작해요. */
+.dragbar { display: none; }
+.native .dragbar {
+  display: flex; position: fixed; top: 0; left: 0; right: 0; height: 38px; z-index: 45; pointer-events: none;
+  align-items: center; justify-content: center; gap: 7px; background: var(--side); border-bottom: 1px solid var(--line);
+  font-size: 12.5px; font-weight: 600; color: var(--muted); user-select: none;
+}
+.native .dragbar svg { opacity: .55; }
+.native .app { height: calc(100vh - 38px); margin-top: 38px; }
+.native .app.drawer .detail { top: 38px; }
+@media (max-width: 1120px) { .native .app .detail { top: 38px; } }
+.native .modal { padding-top: 58px; }
 
 /* 사이드 */
 .logo { display: flex; align-items: center; gap: 10px; padding: 0 8px 16px; }
@@ -192,7 +202,12 @@ input[type="time"].field { width: 128px; }
 .qbox input { flex: 1; min-width: 0; height: 40px; border: 0; outline: none; background: transparent; color: var(--ink); font-size: 15px; }
 .qbox .btn { height: 40px; padding: 0 18px; border-radius: 10px; }
 .qchips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 4px; min-height: 0; }
-.qchips .chip { background: var(--accent-soft); color: var(--accent-t); }
+.qchips { align-items: center; }
+.qchips .qchip { gap: 6px; height: 26px; padding: 0 6px 0 9px; border: 0; background: var(--accent-soft); color: var(--accent-t); font-size: 12.5px; }
+.qchips .qchip span { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; font-size: 13px; line-height: 1; opacity: .7; }
+.qchips .qchip:hover { filter: brightness(.96); }
+.qchips .qchip:hover span { opacity: 1; background: color-mix(in srgb, var(--accent) 20%, transparent); }
+.qhint { font-size: 12px; color: var(--muted); margin-left: 4px; }
 
 .banner { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: var(--carry-bg); color: var(--carry-fg); font-size: 13px; }
 .banner.upd { background: var(--accent-soft); color: var(--accent-t); }
@@ -327,6 +342,23 @@ input[type="time"].field { width: 128px; }
 .drow:first-child { border-top: 0; }
 .drow > svg { flex: none; color: var(--muted); }
 .drow .lab { flex: 1; }
+/* 시간 고르기 창 */
+.tp { width: 296px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.tp-head { display: flex; align-items: baseline; justify-content: space-between; padding: 0 2px 2px; }
+.tp-head span { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.tp-head b { font-family: var(--serif); font-size: 20px; }
+.tp-quick { display: flex; flex-wrap: wrap; gap: 5px; }
+.tp-quick button { height: 28px; padding: 0 9px; border-radius: 8px; border: 1px solid var(--line); background: var(--field); color: var(--ink); font-size: 12.5px; }
+.tp-quick button:hover, .tp-grid button:hover { border-color: var(--accent); }
+.tp-quick button[aria-pressed="true"] { border-color: var(--accent); color: var(--accent-t); font-weight: 600; }
+.tp-ap { align-self: flex-start; }
+.tp-lbl { font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 2px; }
+.tp-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; }
+.tp-grid button { height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--field); color: var(--ink); font-size: 13px; font-variant-numeric: tabular-nums; }
+.tp-grid button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+.tp-in { width: 100%; height: 34px; }
+.tp-foot { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.tp-clear { color: var(--accent-t); padding: 0 8px; }
 .drow.col2 { flex-direction: column; align-items: stretch; gap: 8px; padding: 12px 14px; }
 .drow.col2 .lab { display: flex; align-items: center; gap: 10px; }
 .vbtn { height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--field); color: var(--ink); font-size: 13px; font-weight: 600; }
@@ -362,7 +394,7 @@ input[type="time"].field { width: 128px; }
 
 /* ---------------------------------------------------------------- 떠 있는 것: 메뉴 · 달력 · 알림 · 창 */
 .pop {
-  position: fixed; z-index: 60; min-width: 200px; padding: 6px; border-radius: 12px; background: var(--paper);
+  position: fixed; z-index: 75; min-width: 200px; padding: 6px; border-radius: 12px; background: var(--paper);
   border: 1px solid var(--line); box-shadow: var(--shadow); font-size: 14px;
 }
 .pop .mi { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 34px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: var(--ink); text-align: left; }

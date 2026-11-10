@@ -64,7 +64,10 @@
     const base = ctx.date || DR.S.today;
     const out = { chips: [] };
     let s = ' ' + text.trim() + ' ';
-    const take = (re, fn) => {
+    const skip = ctx.skip || new Set(); // 입력 칸 아래 표시에서 × 로 뺀 종류 (그 글은 할 일 이름에 그대로 남아요)
+    const chip = (k, label) => out.chips.push({ k, label });
+    const take = (re, fn, kind) => {
+      if (kind && skip.has(kind)) return;
       s = s.replace(re, (...a) => { const r = fn(...a); return r === false ? a[0] : ' '; });
     };
 
@@ -73,70 +76,71 @@
 
     // 분류: "분류는 사역," · "분류: 사역" · "분류 사역," — 없는 분류면 새로 만들어요
     // ("분류 작업 하기"처럼 그냥 낱말로 쓴 것은 건드리지 않게: '는 · 은 · :' 가 붙거나 이름 뒤에 쉼표가 있을 때만)
-    take(/(?:^|\s)분류\s*(?:(?:는|은|:|：|=)\s*([^\s,，.。#]+)\s*[,，]?|\s+([^\s,，.。#]+)\s*[,，])(?=\s|$)/, (all, n1, n2) => {
+    take(/(?:^|\s)분류\s*(?:(?:는|은|:|：|=)\s*([^\s,，.。#]+)\s*[,，]?|\s+([^\s,，.。#]+)\s*[,，])(?=\s|$)/, (all, n1, n2) => { if (skip.has('cat')) return false;
       let name = (n1 || n2 || '').replace(/(으로|로|에)$/, '');
       if (!name) return false;
       const c = findCat(name);
-      if (c) { out.cat = c.id; out.chips.push('#' + c.name); } else { out.newCat = name.slice(0, 20); out.chips.push(`새 분류 ‘${out.newCat}’`); }
+      if (c) { out.cat = c.id; chip('cat', '#' + c.name); } else { out.newCat = name.slice(0, 20); chip('cat', `새 분류 ‘${out.newCat}’`); }
     });
 
     // 분류: #이름
-    if (!out.cat && !out.newCat) {
+    if (!out.cat && !out.newCat && !skip.has('cat')) {
       take(new RegExp(sp + '#(\\S+)' + end, 'g'), (all, name) => {
         const c = findCat(name);
         if (!c) return false;
-        out.cat = c.id; out.chips.push('#' + c.name);
+        out.cat = c.id; chip('cat', '#' + c.name);
       });
     }
 
     // 중요
-    take(new RegExp(sp + '(중요|!)' + end, 'g'), () => { out.star = true; });
-    if (/\S!$/.test(s.trim())) { s = s.trim().slice(0, -1) + ' '; out.star = true; }
-    if (out.star) out.chips.push('중요');
+    take(new RegExp(sp + '(중요|!)' + end, 'g'), () => { out.star = true; }, 'star');
+    if (!skip.has('star') && /\S!$/.test(s.trim())) { s = s.trim().slice(0, -1) + ' '; out.star = true; }
+    if (out.star) chip('star', '중요');
 
     // 반복
-    take(new RegExp(sp + '매주\\s?([월화수목금토일])(?:요일)?(?:마다)?' + end), (all, d) => { out.repeat = 'weekly'; out.date = nextWd(base > DR.S.today ? base : DR.S.today, WD[d]); out.chips.push(`매주 ${d}요일`); });
-    take(new RegExp(sp + '([월화수목금토일])요일마다' + end), (all, d) => { out.repeat = 'weekly'; out.date = nextWd(DR.S.today, WD[d]); out.chips.push(`매주 ${d}요일`); });
-    take(new RegExp(sp + '매(?:달|월)\\s?(\\d{1,2})일' + end), (all, n) => {
+    take(new RegExp(sp + '매주\\s?([월화수목금토일])(?:요일)?(?:마다)?' + end), (all, d) => { if (skip.has('repeat')) return false; out.repeat = 'weekly'; out.date = nextWd(base > DR.S.today ? base : DR.S.today, WD[d]); chip('repeat', `매주 ${d}요일`); });
+    take(new RegExp(sp + '([월화수목금토일])요일마다' + end), (all, d) => { if (skip.has('repeat')) return false; out.repeat = 'weekly'; out.date = nextWd(DR.S.today, WD[d]); chip('repeat', `매주 ${d}요일`); });
+    take(new RegExp(sp + '매(?:달|월)\\s?(\\d{1,2})일' + end), (all, n) => { if (skip.has('repeat')) return false;
       if (+n < 1 || +n > 31) return false;
       out.repeat = 'monthly';
       const t = DR.pd(DR.S.today);
       let d = new Date(t.getFullYear(), t.getMonth(), +n);
       if (DR.fd(d) < DR.S.today) d = new Date(t.getFullYear(), t.getMonth() + 1, +n);
-      out.date = DR.fd(d); out.chips.push(`매달 ${n}일`);
+      out.date = DR.fd(d); chip('repeat', `매달 ${n}일`);
     });
-    take(new RegExp(sp + '(매일|날마다)' + end), () => { out.repeat = 'daily'; out.chips.push('매일'); });
-    take(new RegExp(sp + '평일(?:마다)?' + end), () => { out.repeat = 'weekdays'; out.chips.push('평일마다'); });
-    take(new RegExp(sp + '매주(?:마다)?' + end), () => { out.repeat = 'weekly'; out.chips.push('매주'); });
-    take(new RegExp(sp + '매(?:달|월)(?:마다)?' + end), () => { out.repeat = 'monthly'; out.chips.push('매달'); });
+    take(new RegExp(sp + '(매일|날마다)' + end), () => { if (skip.has('repeat')) return false; out.repeat = 'daily'; chip('repeat', '매일'); });
+    take(new RegExp(sp + '평일(?:마다)?' + end), () => { if (skip.has('repeat')) return false; out.repeat = 'weekdays'; chip('repeat', '평일마다'); });
+    take(new RegExp(sp + '매주(?:마다)?' + end), () => { if (skip.has('repeat')) return false; out.repeat = 'weekly'; chip('repeat', '매주'); });
+    take(new RegExp(sp + '매(?:달|월)(?:마다)?' + end), () => { if (skip.has('repeat')) return false; out.repeat = 'monthly'; chip('repeat', '매달'); });
 
     // 날짜 · 마감 ("…까지" 는 마감)
     take(new RegExp(sp + DATE_WORD + '(까지|에는|에)?' + end, 'g'), (all, word, post) => {
       const d = dateOf(word, base);
       if (!d) return false;
+      if (post === '까지' ? skip.has('due') : skip.has('date')) return false;
       if (post === '까지') {
         if (d.someday) return false;
         out.due = d.date || DR.addDays(d.week, 6);
-        out.chips.push(`${DR.relDay(out.due)}까지`);
+        chip('due', `${DR.relDay(out.due)}까지`);
         return;
       }
-      if (d.someday) { out.bucket = 'someday'; out.chips.push('언젠가'); return; }
-      if (d.week) { out.bucket = 'week'; out.weekOf = d.week; out.chips.push(d.week === DR.weekStart(DR.S.today) ? '이번 주 안에' : '다음 주 안에'); return; }
+      if (d.someday) { out.bucket = 'someday'; chip('date', '언젠가'); return; }
+      if (d.week) { out.bucket = 'week'; out.weekOf = d.week; chip('date', d.week === DR.weekStart(DR.S.today) ? '이번 주 안에' : '다음 주 안에'); return; }
       if (out.date && out.repeat) return false;
-      out.date = d.date; out.bucket = 'day'; out.chips.push(DR.relDay(d.date));
+      out.date = d.date; out.bucket = 'day'; chip('date', DR.relDay(d.date));
     });
 
     // 시간
-    take(new RegExp(sp + '(오전|오후|아침|저녁|밤|낮|새벽)?\\s?(\\d{1,2})시(?:\\s?(\\d{1,2})분|\\s?(반))?(에|까지)?' + end), (all, ap, h, m, half, post) => {
+    take(new RegExp(sp + '(오전|오후|아침|저녁|밤|낮|새벽)?\\s?(\\d{1,2})시(?:\\s?(\\d{1,2})분|\\s?(반))?(에|까지)?' + end), (all, ap, h, m, half, post) => { if (skip.has('time')) return false;
       const t = hourOf(ap, h, half ? 30 : m);
       if (!t) return false;
-      out.time = t; out.chips.push(DR.fmtTime(t) + (post === '까지' ? '까지' : ''));
+      out.time = t; chip('time', DR.fmtTime(t) + (post === '까지' ? '까지' : ''));
     });
     if (!out.time) {
-      take(new RegExp(sp + '(오전|오후)?\\s?(\\d{1,2}):(\\d{2})' + end), (all, ap, h, m) => {
+      take(new RegExp(sp + '(오전|오후)?\\s?(\\d{1,2}):(\\d{2})' + end), (all, ap, h, m) => { if (skip.has('time')) return false;
         const t = ap ? hourOf(ap, h, m) : (+h < 24 && +m < 60 ? `${String(+h).padStart(2, '0')}:${m}` : null);
         if (!t) return false;
-        out.time = t; out.chips.push(DR.fmtTime(t));
+        out.time = t; chip('time', DR.fmtTime(t));
       });
     }
 
