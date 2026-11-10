@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>DayROAD 사용 가이드</title>
+<style>
+@font-face { font-family: 'IBM Plex Sans KR'; font-weight: 400; src: url(../engine/web/fonts/IBMPlexSansKR-Regular.woff2); }
+@font-face { font-family: 'IBM Plex Sans KR'; font-weight: 500; src: url(../engine/web/fonts/IBMPlexSansKR-Medium.woff2); }
+@font-face { font-family: 'IBM Plex Sans KR'; font-weight: 600; src: url(../engine/web/fonts/IBMPlexSansKR-SemiBold.woff2); }
+@font-face { font-family: 'IBM Plex Sans KR'; font-weight: 700; src: url(../engine/web/fonts/IBMPlexSansKR-Bold.woff2); }
+@font-face { font-family: 'Gowun Batang'; font-weight: 700; src: url(../engine/web/fonts/GowunBatang-Bold.woff2); }
+* { box-sizing: border-box; }
+body { margin: 0; background: #E7E2D8; font-family: 'IBM Plex Sans KR', sans-serif; color: #1F2A37; word-break: keep-all; }
+.page { width: 1200px; padding: 44px 48px 36px; background: #FFFDF8; }
+.top { display: flex; align-items: center; gap: 22px; padding-bottom: 26px; border-bottom: 1px solid #E6DFD2; }
+.top img { width: 96px; height: 96px; }
+.top h1 { margin: 0; font-family: 'Gowun Batang', serif; font-size: 44px; letter-spacing: -.5px; }
+.top p { margin: 4px 0 0; font-size: 17px; color: #5E6673; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin-top: 26px; }
+.card { background: #F6F2EA; border: 1px solid #E6DFD2; border-radius: 16px; padding: 20px 22px; }
+.card h2 { margin: 0 0 10px; display: flex; align-items: center; gap: 10px; font-size: 18px; }
+.num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #C9502A; color: #FFFFFF; font-size: 14px; font-weight: 700; flex: none; }
+.card p, .card li { font-size: 14.5px; line-height: 1.65; margin: 0; }
+.card ul { margin: 0; padding-left: 18px; }
+.card li + li { margin-top: 4px; }
+.ex { display: inline-block; margin: 2px 0; padding: 1px 8px; border-radius: 6px; background: #FFFFFF; border: 1px solid #E6DFD2; font-size: 13.5px; }
+.chip { display: inline-block; padding: 0 7px; border-radius: 6px; background: #FBE9E0; color: #B4461C; font-weight: 600; font-size: 13px; }
+b { font-weight: 600; }
+.warn { margin-top: 18px; background: #FBE9E0; border: 1px solid #F0CBB8; border-radius: 16px; padding: 18px 22px; }
+.warn h2 { margin: 0 0 8px; font-size: 17px; color: #8E3613; }
+.warn ul { margin: 0; padding-left: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px 28px; }
+.warn li { font-size: 14px; line-height: 1.6; }
+.foot { display: flex; justify-content: space-between; margin-top: 22px; font-size: 13px; color: #5E6673; }
+.wid { display: flex; gap: 8px; margin-top: 10px; }
+.wid span { display: block; border-radius: 10px; background: #FFFDF8; border: 1px solid #E6DFD2; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top">
+    <img src="../app/AppIcon.png" alt="">
+    <div>
+      <h1>DayROAD 사용 가이드</h1>
+      <p>오늘 할 일과 이번 주 할 일을 한 곳에서 · 바탕화면 위젯 · 맥 캘린더와 아이폰 '미리 알림' 연동</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2><span class="num">1</span>설치하기</h2>
+      <ul>
+        <li>받은 파일을 풀고 <b>DayROAD.app</b>을 <b>응용 프로그램</b> 폴더로 옮겨요.</li>
+        <li>처음 열 때 "확인할 수 없는 개발자" 안내가 나오면 <b>시스템 설정 › 개인정보 보호 및 보안</b> 아래쪽의 <b>그래도 열기</b>를 눌러요. 한 번만 하면 돼요.</li>
+        <li>새 버전이 나오면 앱이 알아서 받아요.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2><span class="num">2</span>빨리 적기</h2>
+      <p>위 칸에 적고 <b>Enter</b>. 날짜 · 시간 · 마감 · 반복을 알아들어요.</p>
+      <p style="margin-top: 8px"><span class="ex">내일 오후 3시 치과</span> <span class="ex">금요일까지 보고서</span><br><span class="ex">매주 월 9시 회의</span> <span class="ex">#공부 단어 외우기 !</span></p>
+      <p style="margin-top: 8px; font-size: 13.5px; color: #5E6673">"!" 는 중요 표시, "#이름" 은 분류예요.</p>
+    </div>
+    <div class="card">
+      <h2><span class="num">3</span>오늘 · 이번 주</h2>
+      <ul>
+        <li><b>오늘</b>: 네모 칸을 누르면 끝낸 일. 위의 요일을 누르면 그날로 가요.</li>
+        <li><b>이번 주</b>: 할 일을 다른 요일이나 <span class="chip">이번 주 안에</span> 칸으로 끌어다 놓아요.</li>
+        <li>오른쪽 클릭으로 오늘로 · 내일로 · 언젠가로 옮겨요.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2><span class="num">4</span>자세히 보기</h2>
+      <ul>
+        <li>할 일 이름을 누르면 오른쪽 칸이 열려요.</li>
+        <li><b>언제까지</b> 마감일 · <b>알림</b> 시각 · <b>반복</b>(매일 · 평일 · 매주 · 매달)</li>
+        <li><b>어디까지 했나요</b>: 0~100% 와 오늘 한 만큼 적어 두기 — 날짜별로 쌓여요.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2><span class="num">5</span>바탕화면 위젯</h2>
+      <ul>
+        <li>바탕화면을 오른쪽 클릭 › <b>위젯 편집</b> › <b>DayROAD</b>를 골라요. (앱을 한 번 연 뒤에 보여요)</li>
+        <li>작게 · 중간 · 크게 세 가지. 위젯의 네모 칸을 누르면 앱을 열지 않아도 끝낸 일이 돼요.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2><span class="num">6</span>캘린더 · 아이폰</h2>
+      <ul>
+        <li>왼쪽 아래 <b>연결하기</b>를 누르면 맥에 연결된 iCloud · Google 캘린더 일정이 함께 보여요.</li>
+        <li><b>설정 › 할 일을 아이폰 '미리 알림'에도 보내기</b>를 켜면 아이폰 미리 알림의 DayROAD 목록에 할 일이 생기고, 아이폰에서 끝내거나 적은 것도 가져와요.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="warn">
+    <h2>알아 두세요</h2>
+    <ul>
+      <li>못 끝낸 일은 자정이 지나면 오늘로 와요. 처음 날짜와 진행 기록은 그대로 남아요.</li>
+      <li>할 일은 이 맥에 저장되고, 하루에 한 번 따로 보관해 둬요 (14일치).</li>
+      <li>창을 닫아도 Dock 에 남아 있어요. 완전히 끝낼 때는 <b>⌘Q</b>.</li>
+      <li>새 버전을 받은 뒤 캘린더 · 미리 알림 허락을 다시 물어볼 수 있어요. '허용'을 눌러 주세요.</li>
+      <li>아이폰과 맞추기는 맥에서 앱이 켜져 있을 때 해요. 꺼져 있던 동안의 것은 다음에 켤 때 가져와요.</li>
+      <li>문제가 생기면 <b>보기 › 진단 정보 보기</b>의 내용을 보내 주세요.</li>
+    </ul>
+  </div>
+
+  <div class="foot"><span>DayROAD · 오늘과 이번 주 할 일</span><span>made by. Nevertheless_D</span></div>
+</div>
+</body>
+</html>

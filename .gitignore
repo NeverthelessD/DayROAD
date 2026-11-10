@@ -1,0 +1,5 @@
+dist/
+build/
+ci-out/
+DayROAD.xcodeproj/
+.DS_Store

@@ -1,0 +1,65 @@
+# DayROAD 맥 앱 + 위젯 (XcodeGen 설명서 — scripts/build-mac.sh 가 맥 빌드 서버에서 DayROAD.xcodeproj 를 만들어요)
+# 앱 본체: app/shell (Swift/AppKit + WKWebView) · 위젯: app/widget (WidgetKit) · 같이 쓰는 것: app/shared
+# build/gen/ 은 빌드할 때 만들어지는 것들 (엔진 · 아이콘 · 버전이 들어간 Info.plist)
+name: DayROAD
+options:
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MACOSX_DEPLOYMENT_TARGET: "14.0"
+    ARCHS: arm64
+    ONLY_ACTIVE_ARCH: NO
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Manual
+    DEVELOPMENT_TEAM: ""
+    PROVISIONING_PROFILE_SPECIFIER: ""
+    ENABLE_HARDENED_RUNTIME: NO
+    CODE_SIGN_INJECT_BASE_ENTITLEMENTS: NO
+    GENERATE_INFOPLIST_FILE: NO
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    DEAD_CODE_STRIPPING: YES
+    COPY_PHASE_STRIP: NO
+targets:
+  DayROAD:
+    type: application
+    platform: macOS
+    sources:
+      - path: app/shell
+      - path: app/shared
+      - path: build/gen/res/dayroad-engine
+        buildPhase: resources
+      - path: build/gen/res/AppIcon.icns
+        buildPhase: resources
+      - path: build/gen/res/version.txt
+        buildPhase: resources
+      - path: app/fonts/GowunBatang-Bold.ttf
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_NAME: DayROAD
+        PRODUCT_BUNDLE_IDENTIFIER: com.nevertheless-d.dayroad
+        INFOPLIST_FILE: build/gen/Info.plist
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+    dependencies:
+      - target: DayROADWidget
+        embed: true
+  DayROADWidget:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: app/widget
+      - path: app/shared
+      - path: app/fonts/GowunBatang-Bold.ttf
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_NAME: DayROADWidget
+        PRODUCT_BUNDLE_IDENTIFIER: com.nevertheless-d.dayroad.widget
+        INFOPLIST_FILE: build/gen/Widget-Info.plist
+        CODE_SIGN_ENTITLEMENTS: app/Widget.entitlements
+        SKIP_INSTALL: YES
+        APPLICATION_EXTENSION_API_ONLY: YES
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks"

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>ko</string>
+	<key>CFBundleName</key>
+	<string>DayROAD</string>
+	<key>CFBundleDisplayName</key>
+	<string>DayROAD</string>
+	<key>CFBundleExecutable</key>
+	<string>DayROAD</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.nevertheless-d.dayroad</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>__VERSION__</string>
+	<key>CFBundleVersion</key>
+	<string>__VERSION__</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0</string>
+	<key>LSArchitecturePriority</key>
+	<array>
+		<string>arm64</string>
+	</array>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.productivity</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+	<!-- 위젯 · 알림을 누르면 dayroad://today 같은 주소로 앱이 열려요 -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.nevertheless-d.dayroad</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>dayroad</string>
+			</array>
+		</dict>
+	</array>
+	<!-- 캘린더 · 미리 알림을 쓸 때 맥이 사용자에게 보여 주는 설명 -->
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>맥에 연결된 iCloud · Google 캘린더 일정을 오늘 · 이번 주 화면에 함께 보여 주고, 원하면 할 일을 캘린더에 넣어요.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>맥에 연결된 iCloud · Google 캘린더 일정을 오늘 · 이번 주 화면에 함께 보여 줘요.</string>
+	<key>NSRemindersFullAccessUsageDescription</key>
+	<string>할 일을 '미리 알림'의 DayROAD 목록에 보내서 아이폰에서도 보이게 하고, 아이폰에서 끝낸 일을 가져와요.</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>할 일을 '미리 알림'의 DayROAD 목록에 보내서 아이폰에서도 보이게 해요.</string>
+	<!-- 앱 화면은 이 맥 안(127.0.0.1)의 엔진에서만 불러와요 -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
+	<!-- 엔진을 깔끔하게 끄고 나서 종료해야 해서, 시스템이 말없이 앱을 끄지 않게 해요 -->
+	<key>NSSupportsAutomaticTermination</key>
+	<false/>
+	<key>NSSupportsSuddenTermination</key>
+	<false/>
+	<key>NSHumanReadableCopyright</key>
+	<string>made by. Nevertheless_D</string>
+</dict>
+</plist>

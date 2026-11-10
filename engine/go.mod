@@ -1,0 +1,3 @@
+module dayroad
+
+go 1.24.0

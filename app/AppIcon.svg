@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- DayROAD 아이콘 — 확정 시안 2번 '할 일 메모지' (made by. Nevertheless_D) -->
+  <defs>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000000" flood-opacity="0.28"/>
+    </filter>
+    <filter id="card" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#5A1E0A" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <g filter="url(#sh)">
+    <rect x="100" y="100" width="824" height="824" rx="185" fill="#D9572B"/>
+  </g>
+  <g transform="translate(41.14 41.14) scale(5.8857)">
+    <g transform="rotate(-6 80 82)" filter="url(#card)">
+      <rect x="40" y="34" width="80" height="96" rx="10" fill="#FFFDF8"/>
+      <rect x="52" y="52" width="14" height="14" rx="4" fill="#3F7D57"/>
+      <path d="M55 59 l3 3 l6 -6" stroke="#FFFFFF" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="72" y="56" width="36" height="6" rx="3" fill="#C9C1B2"/>
+      <rect x="52" y="76" width="14" height="14" rx="4" fill="none" stroke="#1F2A37" stroke-width="3"/>
+      <rect x="72" y="80" width="30" height="6" rx="3" fill="#1F2A37"/>
+      <rect x="52" y="100" width="14" height="14" rx="4" fill="none" stroke="#1F2A37" stroke-width="3"/>
+      <rect x="72" y="104" width="24" height="6" rx="3" fill="#1F2A37"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- 위젯은 맥의 보호 상자(샌드박스) 안에서 돌아야 해요 -->
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	<!-- 앱과 주고받는 폴더 하나만 읽고 쓸 수 있게 해요: ~/Library/Application Support/DayROAD/widget/ -->
+	<key>com.apple.security.temporary-exception.files.home-relative-path.read-write</key>
+	<array>
+		<string>/Library/Application Support/DayROAD/widget/</string>
+	</array>
+</dict>
+</plist>
