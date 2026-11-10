@@ -50,6 +50,7 @@ const S = (DR.S = {
   catId: null,
   viewDate: '',       // 오늘 화면에서 보고 있는 날짜
   weekOf: '',         // 이번 주 화면에서 보고 있는 주의 첫날
+  monthOf: '',        // 한 달 화면에서 보고 있는 달의 1일
   sel: null,          // 고른 할 일
   tasks: [], cats: [], palette: {}, today: '', rev: 0,
   settings: { appearance: 'system', weekStart: 'mon', carryOver: true, morning: {}, dueRemind: {}, hiddenCals: [] },
@@ -75,6 +76,7 @@ function applyState(r) {
   S.today = r.today;
   if (!S.viewDate || dayChanged) S.viewDate = S.today;
   if (!S.weekOf || dayChanged) S.weekOf = weekStart(S.today);
+  if (!S.monthOf || dayChanged) S.monthOf = S.today.slice(0, 8) + '01';
   if (S.sel && !DR.task(S.sel)) S.sel = null;
   if (S.view === 'cat' && !DR.cat(S.catId)) S.view = 'today';
   if (DR.afterState) DR.afterState(prev);
@@ -171,6 +173,7 @@ const I = (d, w = 18, extra = '') => `<svg width="${w}" height="${w}" viewBox="0
 const ICON = (DR.ICON = {
   sun: I('<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>'),
   cal: I('<rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M3 10h18M8 3v4M16 3v4"></path>'),
+  month: I('<rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M3 10h18M8 3v4M16 3v4M7.5 14h.01M12 14h.01M16.5 14h.01M7.5 17.5h.01M12 17.5h.01"></path>'),
   cal15: I('<rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M3 10h18M8 3v4M16 3v4"></path>', 15),
   cal12: I('<rect x="3" y="5" width="18" height="16" rx="3"></rect><path d="M3 10h18"></path>', 12, ' stroke-width="2.4"'),
   clock: I('<circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path>'),

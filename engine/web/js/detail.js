@@ -21,7 +21,7 @@
     return `<div class="dempty">${DR.ICON.logo(52)}<b>할 일을 눌러 보세요</b>여기에서 마감일 · 알림 · 반복을 정하고<br>어디까지 했는지 적어 둘 수 있어요.
       <div class="tips">
         <div><b>빨리 적기</b> — "내일 3시 치과", "금요일까지 보고서", "매주 월 9시 회의", "#공부 단어 외우기 !"</div>
-        <div><b>단축키</b> — ⌘N 새 할 일 · ⌘1 오늘 · ⌘2 이번 주 · 스페이스 끝내기 · ⌫ 지우기 · ⌘Z 되돌리기</div>
+        <div><b>단축키</b> — ⌘N 새 할 일 · ⌘1 오늘 · ⌘2 이번 주 · ⌘3 이번 달 · 두 번 누르기 이름 고치기 · 스페이스 끝내기 · ⌫ 지우기 · ⌘Z 되돌리기</div>
         <div><b>위젯</b> — 바탕화면을 오른쪽 클릭 › 위젯 편집 › DayROAD</div>
       </div></div>`;
   }
@@ -50,7 +50,7 @@
         <button type="button" class="iconbtn dclose" data-dact="close" aria-label="닫기">${ICON.x}</button>
       </div>
       <label for="dTitle" class="sr">할 일 이름</label>
-      <textarea id="dTitle" class="dtitle${t.done ? ' done' : ''}" rows="1" data-field="title" spellcheck="false">${esc(t.title)}</textarea>
+      <textarea id="dTitle" class="dtitle${t.done ? ' done' : ''}" rows="1" data-field="title" spellcheck="false" title="눌러서 이름을 고칠 수 있어요">${esc(t.title)}</textarea>
       <div class="dbox">
         <div class="drow">${DAY}<span class="lab">날짜</span><button type="button" class="vbtn" data-dact="date">${esc(whenText(t))}</button></div>
         ${isDay ? `<div class="drow">${TIME}<span class="lab">시간</span>

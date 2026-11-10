@@ -16,11 +16,13 @@
 
   function counts() {
     const ws = DR.weekStart(S.today);
-    const c = { today: 0, week: 0, due: 0, repeat: 0, someday: 0, cats: {} };
+    const c = { today: 0, week: 0, month: 0, due: 0, repeat: 0, someday: 0, cats: {} };
+    const ym = S.today.slice(0, 7);
     for (const t of S.tasks) {
       if (t.done) continue;
       if (t.bucket === 'day' && t.date === S.today) c.today++;
       if (inWeek(t, ws)) c.week++;
+      if (t.bucket === 'day' && t.date.slice(0, 7) === ym) c.month++;
       if (isDueSoon(t)) c.due++;
       if (t.repeat) c.repeat++;
       if (t.bucket === 'someday') c.someday++;
@@ -53,6 +55,7 @@
       <div class="logo">${ICON.logo(30)}<b>DayROAD</b></div>
       ${navBtn('today', ICON.sun, '오늘', c.today)}
       ${navBtn('week', ICON.cal, '이번 주', c.week)}
+      ${navBtn('month', ICON.month, '이번 달', c.month)}
       ${navBtn('due', ICON.clock, '마감 다가옴', c.due)}
       ${navBtn('repeat', ICON.repeat, '반복하는 일', c.repeat)}
       ${navBtn('someday', ICON.list, '언젠가', c.someday)}
@@ -111,7 +114,9 @@
       return `<div class="row done${sel ? ' sel' : ''}" data-id="${t.id}" draggable="true">
         <button type="button" class="check on" data-act="toggle" aria-label="다시 남은 일로">${ICON.tick}</button>
         <div class="body"><button type="button" class="ttl" data-act="select">${esc(t.title)}</button>
-        ${opts.showDate || t.repeat ? `<div class="meta">${opts.showDate ? `<span class="chip done">${esc(DR.relDay(t.doneAt || t.date))} 끝냄</span>` : ''}${t.repeat ? `<span>${ICON.repeat13}${DR.REPEAT_NAME[t.repeat]} · 다음 차례가 생겼어요</span>` : ''}</div>` : ''}</div>
+        ${opts.showDate || t.repeat ? `<div class="meta">${opts.showDate ? `<span class="chip done">${esc(DR.relDay(t.doneAt || t.date))} 끝냄</span>` : ''}${t.repeat ? (opts.series
+          ? `<span>${ICON.repeat13}${DR.REPEAT_NAME[t.repeat]} 반복</span><span class="chip done">마지막으로 끝낸 날 ${esc(DR.md(t.doneAt || t.date))}</span>${opts.series > 1 ? `<span>지금까지 ${opts.series}번 끝냄</span>` : ''}`
+          : `<span>${ICON.repeat13}${DR.REPEAT_NAME[t.repeat]} · 다음 차례가 생겼어요</span>`) : ''}</div>` : ''}</div>
         <button type="button" class="iconbtn more" data-act="more" aria-label="더 보기">${ICON.dots}</button>
       </div>`;
     }
@@ -119,7 +124,7 @@
     return `<div class="row${sel ? ' sel' : ''}" data-id="${t.id}" draggable="true">
       <button type="button" class="check" data-act="toggle" aria-label="끝낸 일로 표시">${ICON.tick}</button>
       <div class="body">
-        <button type="button" class="ttl" data-act="select">${esc(t.title)}</button>
+        ${DR.editing === t.id ? `<input class="ttlin" data-edit="${t.id}" value="${esc(t.title)}" aria-label="할 일 이름 고치기" spellcheck="false">` : `<button type="button" class="ttl" data-act="select" title="두 번 누르면 이름을 고칠 수 있어요">${esc(t.title)}</button>`}
         ${meta ? `<div class="meta">${meta}</div>` : ''}
       </div>
       ${t.progress > 0 ? `<div class="mini"><span>${t.progress}%</span><div class="bar"><i style="width: ${t.progress}%"></i></div></div>` : ''}
@@ -133,6 +138,14 @@
     if (!list.length) return '';
     return `<section class="sec"><h2>${title} · ${list.length}</h2>${list.map((t) => rowHTML(t, opts)).join('')}</section>`;
   }
+
+  // 하루 · 한 주 · 한 달 — 오늘 · 이번 주 · 이번 달 화면 머리에 늘 있어요
+  function rangeSeg() {
+    const cur = S.view === 'week' ? 'week' : S.view === 'month' ? 'month' : 'today';
+    const b = (v, l) => `<button type="button" role="radio" aria-checked="${cur === v}" data-act="range" data-r="${v}">${l}</button>`;
+    return `<div class="seg range" role="radiogroup" aria-label="보는 범위">${b('today', '하루')}${b('week', '한 주')}${b('month', '한 달')}</div>`;
+  }
+  DR.rangeSeg = rangeSeg;
 
   // ---------------------------------------------------------------- 오늘 (날짜 하나)
 
@@ -173,6 +186,7 @@
             <button type="button" class="iconbtn" data-act="day-step" data-n="-1" aria-label="전날">${ICON.left}</button>
             <button type="button" class="btn sm" data-act="goto-day" data-date="${S.today}" ${isToday ? 'disabled' : ''}>오늘</button>
             <button type="button" class="iconbtn" data-act="day-step" data-n="1" aria-label="다음 날">${ICON.right}</button>
+            ${rangeSeg()}
           </div>
           ${progressHTML(list.length, dn.length)}
         </div>
@@ -217,6 +231,7 @@
             <button type="button" class="iconbtn" data-act="week-step" data-n="-7" aria-label="지난주">${ICON.left}</button>
             <button type="button" class="btn sm" data-act="week-this" ${thisWeek ? 'disabled' : ''}>이번 주</button>
             <button type="button" class="iconbtn" data-act="week-step" data-n="7" aria-label="다음 주">${ICON.right}</button>
+            ${rangeSeg()}
           </div>
           ${progressHTML(all.length, done)}
         </div>
@@ -251,6 +266,54 @@
       <div class="legend"><span>할 일을 다른 요일이나 '이번 주 안에'로 끌어다 놓으면 날짜가 바뀌어요.</span>${S.native.events === 'full' && S.settings.calendarShow ? '<span><i></i>파란 칸은 iCloud · Google 캘린더 일정</span>' : ''}</div>`;
     const ci = $('[data-colin]');
     if (ci) ci.focus();
+  }
+
+  // ---------------------------------------------------------------- 한 달
+
+  function renderMonth() {
+    const m0 = DR.pd(S.monthOf);
+    const y = m0.getFullYear(), mo = m0.getMonth();
+    const ym = S.monthOf.slice(0, 7);
+    const all = S.tasks.filter((t) => t.bucket === 'day' && t.date.slice(0, 7) === ym);
+    const thisMonth = ym === S.today.slice(0, 7);
+    $('#mainHead').innerHTML = `
+      <div class="head">
+        <div><div class="sub">${y}년</div><h1>${mo + 1}월</h1></div>
+        <div class="hright">
+          <div class="headbtns">
+            <button type="button" class="iconbtn" data-act="month-step" data-n="-1" aria-label="지난달">${ICON.left}</button>
+            <button type="button" class="btn sm" data-act="month-this" ${thisMonth ? 'disabled' : ''}>이번 달</button>
+            <button type="button" class="iconbtn" data-act="month-step" data-n="1" aria-label="다음 달">${ICON.right}</button>
+            ${rangeSeg()}
+          </div>
+          ${progressHTML(all.length, all.filter((t) => t.done).length)}
+        </div>
+      </div>`;
+    const first = DR.weekStart(S.monthOf);
+    const last = DR.fd(new Date(y, mo + 1, 0));
+    const weeks = Math.ceil((DR.daysBetween(first, last) + 1) / 7);
+    const ws = S.settings.weekStart === 'sun' ? 0 : 1;
+    const heads = Array.from({ length: 7 }, (_, i) => `<div class="mh">${DR.DOW[(i + ws) % 7]}</div>`).join('');
+    let cells = '';
+    for (let i = 0; i < weeks * 7; i++) {
+      const d = DR.addDays(first, i);
+      const out = d.slice(0, 7) !== ym;
+      const list = dayTasks(d);
+      const items = [...DR.sortTasks(open(list)), ...list.filter((t) => t.done)];
+      const evs = out ? [] : (DR.eventsFor ? DR.eventsFor(d) : []);
+      const lines = [
+        ...evs.map((e) => `<span class="mev" title="${esc(e.calendar)}">${e.allDay ? '' : esc(e.time) + ' '}${esc(e.title)}</span>`),
+        ...items.map((t) => { const c = DR.cat(t.cat); return `<button type="button" class="mtask${t.done ? ' done' : ''}${S.sel === t.id ? ' sel' : ''}${c ? ' c-' + c.color : ''}" data-id="${t.id}" data-act="select" draggable="true"><span class="dot"></span>${t.time ? `<b>${t.time}</b> ` : ''}${esc(t.title)}</button>`; }),
+      ];
+      const more = lines.length > 4 ? `<span class="mmore">+${lines.length - 3}개 더</span>` : '';
+      const wd = DR.pd(d).getDay();
+      cells += `<div class="mcell${out ? ' out' : ''}${d === S.today ? ' today' : ''}${wd === 0 || wd === 6 ? ' wkend' : ''}" data-drop-date="${d}" data-act="goto-day" data-date="${d}">
+        <button type="button" class="mn" data-act="goto-day" data-date="${d}" aria-label="${DR.md(d)} ${DR.dow(d)}요일 보기">${DR.pd(d).getDate()}</button>
+        ${(lines.length > 4 ? lines.slice(0, 3) : lines).join('')}${more}
+      </div>`;
+    }
+    $('#mainBody').innerHTML = `<div class="mgrid">${heads}${cells}</div>
+      <div class="legend"><span>날짜를 누르면 그날 화면으로 가요. 할 일을 다른 날짜로 끌어다 놓으면 날짜가 바뀌어요.</span></div>`;
   }
 
   // ---------------------------------------------------------------- 목록 화면들
@@ -316,9 +379,21 @@
   function renderDone() {
     listHead('끝낸 일', '최근 넉 달 동안 끝낸 일');
     const list = S.tasks.filter((t) => t.done).sort((a, b) => (b.doneAt || '').localeCompare(a.doneAt || '') || b.updated - a.updated);
+    // 반복하는 일은 같은 일을 한 번만, 가장 최근에 끝낸 날짜에 보여 줘요 (몇 번 끝냈는지 함께)
+    const series = new Map();
+    const rows = [];
+    for (const t of list) {
+      if (t.repeat) {
+        const key = t.title + '|' + t.repeat + '|' + (t.cat || '');
+        if (series.has(key)) { series.get(key).n++; continue; }
+        const e = { t, n: 1 };
+        series.set(key, e);
+        rows.push(e);
+      } else rows.push({ t, n: 0 });
+    }
     const g = new Map();
-    for (const t of list) { const k = t.doneAt || t.date || ''; if (!g.has(k)) g.set(k, []); g.get(k).push(t); }
-    const body = [...g.entries()].map(([k, l]) => `<section class="sec"><h2>${k ? esc(DR.relDay(k)) : '날짜 없음'} · ${l.length}</h2>${l.map((t) => rowHTML(t)).join('')}</section>`).join('');
+    for (const e of rows) { const k = e.t.doneAt || e.t.date || ''; if (!g.has(k)) g.set(k, []); g.get(k).push(e); }
+    const body = [...g.entries()].map(([k, l]) => `<section class="sec"><h2>${k ? esc(DR.relDay(k)) : '날짜 없음'} · ${l.length}</h2>${l.map((e) => rowHTML(e.t, e.n ? { series: e.n } : {})).join('')}</section>`).join('');
     $('#mainBody').innerHTML = body || '<div class="empty"><b>아직 끝낸 일이 없어요</b>할 일 앞의 네모 칸을 누르면 여기에 쌓여요.</div>';
   }
 
@@ -346,7 +421,8 @@
   DR.quickCtx = quickCtx;
 
   DR.renderMain = function renderMain() {
-    ({ today: renderToday, week: renderWeek, due: renderDue, repeat: renderRepeat, someday: renderSomeday, done: renderDone, cat: renderCat }[S.view] || renderToday)();
+    ({ today: renderToday, week: renderWeek, month: renderMonth, due: renderDue, repeat: renderRepeat, someday: renderSomeday, done: renderDone, cat: renderCat }[S.view] || renderToday)();
+    if (DR.editing) { const i = $(`[data-edit="${DR.editing}"]`); if (i) { i.focus(); i.select(); } else DR.editing = null; }
     $('#quick').hidden = S.view === 'done';
     if (DR.updateQuickChips) DR.updateQuickChips();
   };
@@ -358,6 +434,6 @@
     DR.renderDetail();
     const appEl = document.getElementById('app');
     appEl.classList.toggle('has-sel', !!S.sel);
-    appEl.classList.toggle('drawer', S.view === 'week');
+    appEl.classList.toggle('drawer', S.view === 'week' || S.view === 'month');
   };
 })();

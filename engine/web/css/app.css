@@ -280,6 +280,36 @@ input[type="time"].field { width: 128px; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { width: 10px; height: 10px; border-radius: 3px; background: var(--event-bg); border: 1px solid var(--carry-fg); opacity: .6; }
 
+/* ---------------------------------------------------------------- 하루 · 한 주 · 한 달 */
+.seg.range { margin-left: 6px; }
+.seg.range button { height: 30px; padding: 0 12px; }
+
+/* ---------------------------------------------------------------- 한 달 */
+.mgrid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--line); gap: 1px; }
+.mgrid .mh { background: var(--side); padding: 8px 10px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.mcell { background: var(--paper); min-height: 112px; padding: 6px 6px 8px; display: flex; flex-direction: column; gap: 3px; min-width: 0; cursor: pointer; }
+.mcell:hover { background: color-mix(in srgb, var(--sel) 55%, var(--paper)); }
+.mcell.wkend { background: color-mix(in srgb, var(--side) 55%, var(--paper)); }
+.mcell.out { background: var(--side); }
+.mcell.out .mn, .mcell.out .mtask { opacity: .55; }
+.mcell.over { box-shadow: inset 0 0 0 2px var(--accent); }
+.mcell .mn {
+  align-self: flex-start; min-width: 26px; height: 26px; padding: 0 6px; border: 0; border-radius: 13px; background: transparent;
+  font-family: var(--serif); font-weight: 700; font-size: 15px; color: var(--ink);
+}
+.mcell .mn:hover { background: var(--chip); }
+.mcell.today .mn { background: var(--accent); color: var(--on-accent); }
+.mtask {
+  display: block; width: 100%; padding: 2px 5px; border: 0; border-radius: 6px; background: var(--chip); color: var(--ink);
+  font-size: 12px; line-height: 1.45; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: grab;
+}
+.mtask .dot { width: 6px; height: 6px; margin-right: 4px; vertical-align: 1px; }
+.mtask b { font-weight: 600; }
+.mtask.done { color: var(--muted); text-decoration: line-through; background: transparent; }
+.mtask.sel { box-shadow: inset 0 0 0 1.5px var(--accent); }
+.mev { display: block; padding: 2px 5px; border-radius: 6px; background: var(--event-bg); color: var(--event-fg); font-size: 12px; line-height: 1.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mmore { font-size: 11.5px; color: var(--muted); padding: 0 5px; }
+
 /* ---------------------------------------------------------------- 자세히 */
 .dtop { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
 .dtop .catpick { display: inline-flex; white-space: nowrap; flex: none; align-items: center; gap: 7px; height: 30px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--paper); font-size: 13px; color: var(--ink); }
@@ -287,7 +317,10 @@ input[type="time"].field { width: 128px; }
   width: 100%; border: 0; outline: none; resize: none; overflow: hidden; background: transparent; color: var(--ink);
   font-family: var(--serif); font-weight: 700; font-size: 24px; line-height: 1.35; padding: 2px 0;
 }
-.dtitle:focus { box-shadow: 0 2px 0 var(--accent); }
+.dtitle:hover { background: var(--chip); }
+.dtitle { border-radius: 8px; padding: 2px 6px; margin: 0 -6px; width: calc(100% + 12px); cursor: text; }
+.dtitle:focus { background: var(--paper); box-shadow: 0 0 0 2px var(--accent); }
+.ttlin { width: 100%; height: 30px; padding: 0 8px; margin-left: -8px; border-radius: 8px; border: 1.5px solid var(--accent); background: var(--field); color: var(--ink); font-size: 16px; font-weight: 500; outline: none; }
 .dtitle.done { color: var(--muted); text-decoration: line-through; }
 .dbox { display: flex; flex-direction: column; border-radius: 12px; border: 1px solid var(--line); background: var(--paper); }
 .drow { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 14px; border-top: 1px solid var(--line); font-size: 14px; }

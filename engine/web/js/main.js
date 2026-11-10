@@ -12,13 +12,71 @@
     Object.assign(S, extra);
     if (view === 'today' && !extra.viewDate) S.viewDate = S.today;
     if (view === 'week' && !extra.weekOf) S.weekOf = DR.weekStart(S.today);
+    if (view === 'month' && !extra.monthOf) S.monthOf = S.today.slice(0, 8) + '01';
     DR.colAdd = null;
     DR.render();
     $('#main').scrollTop = 0;
   }
   DR.setView = setView;
 
+  // 하루 · 한 주 · 한 달 사이를 오갈 때, 보던 날짜 근처를 그대로 보여 줘요
+  function changeRange(r) {
+    const cur = S.view === 'week' ? S.weekOf : S.view === 'month' ? S.monthOf : S.viewDate;
+    const span = S.view === 'week' ? 6 : S.view === 'month' ? new Date(DR.pd(cur).getFullYear(), DR.pd(cur).getMonth() + 1, 0).getDate() - 1 : 0;
+    const anchor = S.today >= cur && S.today <= DR.addDays(cur, span) ? S.today : cur;
+    if (r === 'today') setView('today', { viewDate: anchor });
+    else if (r === 'week') setView('week', { weekOf: DR.weekStart(anchor) });
+    else setView('month', { monthOf: anchor.slice(0, 8) + '01' });
+  }
+
+  function startEdit(id) {
+    S.sel = id;
+    if (S.view === 'week' || S.view === 'month') {
+      DR.render();
+      setTimeout(() => { const t = $('#dTitle'); if (t) { t.focus(); t.select(); } }, 220);
+      return;
+    }
+    DR.editing = id;
+    DR.render();
+  }
+  DR.startEdit = startEdit;
+
+  async function commitEdit(input, keep) {
+    const id = input.dataset.edit;
+    const t = DR.task(id);
+    const v = input.value.replace(/\s+/g, ' ').trim();
+    DR.editing = null;
+    if (keep && t && v && v !== t.title) {
+      await DR.act('/api/task/save', { task: { id, title: v } });
+      DR.toast('이름을 고쳤어요');
+    } else {
+      DR.render();
+    }
+  }
+  document.addEventListener('keydown', (e) => {
+    const inp = e.target.closest && e.target.closest('[data-edit]');
+    if (!inp) return;
+    if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); inp.dataset.done = '1'; commitEdit(inp, true); }
+    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); inp.dataset.done = '1'; commitEdit(inp, false); }
+  }, true);
+  document.addEventListener('focusout', (e) => {
+    const inp = e.target.closest && e.target.closest('[data-edit]');
+    if (inp && !inp.dataset.done) { inp.dataset.done = '1'; commitEdit(inp, true); }
+  });
+  document.addEventListener('dblclick', (e) => {
+    if (e.target.closest('input, textarea')) return;
+    // 첫 번째 누름에서 화면을 다시 그려서, 두 번째 누름의 요소는 이미 화면에서 빠져 있을 수 있어요 → 그 요소의 할 일 번호로 찾아요
+    const h = e.target.closest && e.target.closest('.row[data-id], .card[data-id], .pill[data-id], .mtask[data-id]');
+    if (h && DR.task(h.dataset.id) && !e.target.closest('#detail, #side') && DR.editing !== h.dataset.id) { e.preventDefault(); startEdit(h.dataset.id); }
+  });
+
+  // 같은 할 일을 빠르게 두 번 누르면 이름 고치기 (누를 때 화면을 다시 그려서, 브라우저의 '더블클릭'을 믿지 않고 직접 셈)
+  let lastClick = { id: null, at: 0 };
   function select(id) {
+    const now = Date.now();
+    if (lastClick.id === id && now - lastClick.at < 450) { lastClick = { id: null, at: 0 }; startEdit(id); return; }
+    lastClick = { id, at: now };
+    if (S.sel === id) return;
     S.sel = id;
     DR.render();
   }
@@ -37,6 +95,7 @@
     if (p.repeat && t.bucket === 'someday') { t.bucket = 'day'; t.date = S.today; }
     for (const k of ['time', 'due', 'repeat', 'star']) if (p[k]) t[k] = p[k];
     if (p.cat || ctx.cat) t.cat = p.cat || ctx.cat;
+    if (p.newCat) t._newCat = p.newCat;
     return t;
   }
 
@@ -50,6 +109,7 @@
     switch (S.view) {
       case 'today': return t.bucket === 'day' && t.date === S.viewDate;
       case 'week': return DR.sel.inWeek(t, S.weekOf);
+      case 'month': return t.bucket === 'day' && t.date.slice(0, 7) === S.monthOf.slice(0, 7);
       case 'someday': return t.bucket === 'someday';
       case 'cat': return t.cat === S.catId;
       case 'repeat': return !!t.repeat;
@@ -61,6 +121,14 @@
   async function addFromText(text, ctx) {
     if (!text.trim()) return null;
     const t = taskFromText(text, ctx);
+    if (t._newCat) {
+      // "분류는 ○○," 에 없는 분류를 쓰면 새로 만들어요
+      const used = new Set(S.cats.map((c) => c.color));
+      const color = DR.PALETTE_KEYS.find((k) => !used.has(k)) || DR.PALETTE_KEYS[S.cats.length % DR.PALETTE_KEYS.length];
+      const rc = await DR.act('/api/cat/save', { cat: { name: t._newCat, color } });
+      if (rc && rc.cat) { t.cat = rc.cat.id; DR.toast(`새 분류를 만들었어요 · ${rc.cat.name}`); }
+      delete t._newCat;
+    }
     const r = await DR.act('/api/task/save', { task: t });
     if (!r || !r.task) return null;
     const nt = r.task;
@@ -136,7 +204,7 @@
   // ---------------------------------------------------------------- 누르기
 
   function taskMenu(anchor, t) {
-    const items = [];
+    const items = [{ label: '이름 고치기', key: '더블클릭', run: () => startEdit(t.id) }, '-'];
     const today = S.today, tmr = DR.addDays(S.today, 1);
     if (!(t.bucket === 'day' && t.date === today)) items.push({ label: '오늘로', run: () => move(t.id, { bucket: 'day', date: today }) });
     if (!(t.bucket === 'day' && t.date === tmr)) items.push({ label: '내일로', run: () => move(t.id, { bucket: 'day', date: tmr }) });
@@ -162,7 +230,7 @@
     const holder = e.target.closest('[data-id]');
     if (!b) {
       if (holder && !e.target.closest('input, textarea') && (holder.classList.contains('row') || holder.classList.contains('card'))) select(holder.dataset.id);
-      else if (!holder && S.sel && S.view === 'week' && e.currentTarget.id === 'main' && !e.target.closest('input, textarea, button, a')) { S.sel = null; DR.render(); }
+      else if (!holder && S.sel && (S.view === 'week' || S.view === 'month') && e.currentTarget.id === 'main' && !e.target.closest('input, textarea, button, a')) { S.sel = null; DR.render(); }
       return;
     }
     const a = b.dataset.act;
@@ -181,6 +249,9 @@
       case 'day-step': setView('today', { viewDate: DR.addDays(S.viewDate, +b.dataset.n) }); break;
       case 'week-step': S.weekOf = DR.addDays(S.weekOf, +b.dataset.n); DR.colAdd = null; DR.renderMain(); break;
       case 'week-this': S.weekOf = DR.weekStart(S.today); DR.renderMain(); break;
+      case 'month-step': { const m = DR.pd(S.monthOf); m.setMonth(m.getMonth() + +b.dataset.n); S.monthOf = DR.fd(m); DR.renderMain(); break; }
+      case 'month-this': S.monthOf = S.today.slice(0, 8) + '01'; DR.renderMain(); break;
+      case 'range': changeRange(b.dataset.r); break;
       case 'toggle': if (id) DR.toggle(id); break;
       case 'select': if (id) select(id); break;
       case 'more': if (id) taskMenu(b, DR.task(id)); break;
@@ -263,7 +334,7 @@
     }
     if (mod && e.key.toLowerCase() === 'n') { e.preventDefault(); focusQuick(); return; }
     if (mod && e.key === ',') { e.preventDefault(); DR.openSettings(); return; }
-    if (mod && !e.shiftKey && /^[1-6]$/.test(e.key)) { e.preventDefault(); setView(['today', 'week', 'due', 'repeat', 'someday', 'done'][+e.key - 1]); return; }
+    if (mod && !e.shiftKey && /^[1-7]$/.test(e.key)) { e.preventDefault(); setView(['today', 'week', 'month', 'due', 'repeat', 'someday', 'done'][+e.key - 1]); return; }
     if (typing(e.target) || document.querySelector('.modal')) return;
     if (mod && e.key.toLowerCase() === 'z' && DR.lastDeleted) { e.preventDefault(); DR.undoDelete(); return; }
     if (mod) return;
@@ -294,7 +365,7 @@
   DR.nativeHandlers.menu = ({ action }) => {
     if (action === 'new') focusQuick();
     else if (action === 'settings') DR.openSettings();
-    else if (['today', 'week', 'due', 'repeat', 'someday', 'done'].includes(action)) setView(action);
+    else if (['today', 'week', 'month', 'due', 'repeat', 'someday', 'done'].includes(action)) setView(action);
   };
   DR.nativeHandlers.url = ({ url }) => {
     const u = String(url || '');

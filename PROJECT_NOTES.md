@@ -23,10 +23,16 @@
 - [x] 8. 맥 빌드 서버: build=ok · smoke=ok (26/26, macOS 15 · Apple Silicon), 스크린샷 · 위젯 그림이 시안과 같음 확인
 - [x] 9. v1.0.0 release.sh → releases/ · download/ · 커밋 · 푸시, '앱 받기' 링크 확인
 
+- [x] 10. v1.1.0 (사용자 요청 4가지): 하루 · 한 주 · 한 달 단추 + 한 달 화면 · "분류는 ○○," 로 분류(없으면 새로 만듦) · "오후 5시까지" 시간
+      · 이름 고치기(두 번 누르기 · ••• 메뉴 '이름 고치기') · 끝낸 일에서 반복하는 일은 한 번만(마지막으로 끝낸 날 · 몇 번 끝냈는지)
+
 ### 다음에 할 수 있는 일
 - [ ] 사용자 맥에서 실제로 써 보기: 위젯 갤러리에 보이는지, 캘린더 · 미리 알림 허락, 알림
 
 ### 작업 기록
+- 2026-11-10 v1.1.0 — 사용자가 실제로 써 보고 요청: ① 보는 범위 넓히기 → 머리에 '하루 · 한 주 · 한 달' 단추(왼쪽 메뉴에도 '이번 달', ⌘3)
+  ② 빠른 추가 "분류는 사역," · "분류: 사역" (그냥 '분류'라는 낱말은 건드리지 않게 '는 · 은 · :' 또는 쉼표가 있을 때만) ③ 이름 고치기:
+  누를 때 화면을 다시 그려서 브라우저 더블클릭이 안 와요 → 같은 할 일을 450ms 안에 두 번 누르면 직접 고치기 칸으로 ④ 끝낸 일: 반복은 제목+반복+분류로 묶음.
 - 2026-11-10 v1.0.0 — 첫 버전. 시안 확정(방향 A 종이 플래너, 아이콘 2번 메모지, 분류 추가 기능 포함) 뒤 제작.
   맥 빌드 서버 첫 실행에서 Xcode(XcodeGen) 빌드 · 26/26 통과. pluginkit 이 위젯을 알아봄, 위젯 체크박스 → 앱 반영 확인,
   `--render-widgets` 로 그린 위젯 그림(라이트 · 다크)이 시안과 같음. 실제 맥 스크린샷에서 분류 단추가 두 줄로 나뉘어 nowrap 으로 고침.
@@ -64,7 +70,7 @@ engine/store.go          할 일 · 분류 · 넘기기(rollover) · 반복(next
 engine/widget.go         Support/widget/widget.json 쓰기 (오늘 · 이번 주 · 앞으로 8일 · 넘기기 설정) · actions.jsonl 2초마다 반영
 engine/supervise.go · update.go · diag.go   PaperROAD 와 같음 (이름만 DayROAD)
 engine/web/              index.html · css/app.css · js/core.js(요청 · 상태 · 날짜 · 떠 있는 창) · parse.js(빠른 추가 글 읽기)
-                         · views.js(화면들) · detail.js(자세히 칸) · settings.js(설정 · 업데이트 · 분류 관리) · sync.js(캘린더 · 미리 알림 · 알림) · main.js
+                         · views.js(화면들: 하루 · 한 주 · 한 달 · 목록) · detail.js(자세히 칸) · settings.js(설정 · 업데이트 · 분류 관리) · sync.js(캘린더 · 미리 알림 · 알림) · main.js
 scripts/build-mac.sh     (맥 전용) Go 엔진 → 아이콘 → XcodeGen → xcodebuild → 확인(위젯 · 샌드박스) → zip 2개
 scripts/smoke-mac.sh     (맥 전용) 켜기 · 자식 관계 · 할 일 API · 위젯(파일 · pluginkit · 체크박스 반영 · 그림) · 스크린샷 4장 · dayroad:// · 다시 열기 · 고장 복구 · ⌘Q · 종료 · 강제 종료 · 업데이트 재실행
 scripts/ci-mac.sh · release.sh · publish-download.sh · feed.py · guide.py   PaperROAD 와 같음

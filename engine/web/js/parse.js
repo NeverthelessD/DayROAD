@@ -68,12 +68,26 @@
       s = s.replace(re, (...a) => { const r = fn(...a); return r === false ? a[0] : ' '; });
     };
 
-    // 분류: #이름
-    take(new RegExp(sp + '#(\\S+)' + end, 'g'), (all, name) => {
-      const c = DR.S.cats.find((x) => x.name === name) || DR.S.cats.find((x) => x.name.startsWith(name));
-      if (!c) return false;
-      out.cat = c.id; out.chips.push('#' + c.name);
+    const findCat = (name) => DR.S.cats.find((x) => x.name === name) || DR.S.cats.find((x) => x.name.toLowerCase() === name.toLowerCase())
+      || DR.S.cats.find((x) => x.name.startsWith(name));
+
+    // 분류: "분류는 사역," · "분류: 사역" · "분류 사역," — 없는 분류면 새로 만들어요
+    // ("분류 작업 하기"처럼 그냥 낱말로 쓴 것은 건드리지 않게: '는 · 은 · :' 가 붙거나 이름 뒤에 쉼표가 있을 때만)
+    take(/(?:^|\s)분류\s*(?:(?:는|은|:|：|=)\s*([^\s,，.。#]+)\s*[,，]?|\s+([^\s,，.。#]+)\s*[,，])(?=\s|$)/, (all, n1, n2) => {
+      let name = (n1 || n2 || '').replace(/(으로|로|에)$/, '');
+      if (!name) return false;
+      const c = findCat(name);
+      if (c) { out.cat = c.id; out.chips.push('#' + c.name); } else { out.newCat = name.slice(0, 20); out.chips.push(`새 분류 ‘${out.newCat}’`); }
     });
+
+    // 분류: #이름
+    if (!out.cat && !out.newCat) {
+      take(new RegExp(sp + '#(\\S+)' + end, 'g'), (all, name) => {
+        const c = findCat(name);
+        if (!c) return false;
+        out.cat = c.id; out.chips.push('#' + c.name);
+      });
+    }
 
     // 중요
     take(new RegExp(sp + '(중요|!)' + end, 'g'), () => { out.star = true; });
@@ -113,10 +127,10 @@
     });
 
     // 시간
-    take(new RegExp(sp + '(오전|오후|아침|저녁|밤|낮|새벽)?\\s?(\\d{1,2})시(?:\\s?(\\d{1,2})분|\\s?(반))?(?:에)?' + end), (all, ap, h, m, half) => {
+    take(new RegExp(sp + '(오전|오후|아침|저녁|밤|낮|새벽)?\\s?(\\d{1,2})시(?:\\s?(\\d{1,2})분|\\s?(반))?(에|까지)?' + end), (all, ap, h, m, half, post) => {
       const t = hourOf(ap, h, half ? 30 : m);
       if (!t) return false;
-      out.time = t; out.chips.push(DR.fmtTime(t));
+      out.time = t; out.chips.push(DR.fmtTime(t) + (post === '까지' ? '까지' : ''));
     });
     if (!out.time) {
       take(new RegExp(sp + '(오전|오후)?\\s?(\\d{1,2}):(\\d{2})' + end), (all, ap, h, m) => {
@@ -128,7 +142,8 @@
 
     if (out.repeat && !out.date && out.bucket !== 'week') out.date = base;
     if (out.repeat === 'weekly' && out.bucket === 'week') { /* 매주 '이번 주 안에' */ }
-    out.title = s.replace(/\s+/g, ' ').trim();
+    // 남은 글 다듬기: 빈 쉼표 · 앞뒤 쉼표 지우기
+    out.title = s.replace(/\s+/g, ' ').replace(/(\s*[,，]\s*)+/g, ', ').replace(/^[\s,，·]+|[\s,，·]+$/g, '').trim();
     if (!out.title) return { title: text.trim(), chips: [] };
     return out;
   };
