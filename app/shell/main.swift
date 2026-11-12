@@ -284,7 +284,53 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         }
         // 엔진이 위젯 파일을 새로 쓰면 위젯을 바로 다시 그려요
         Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in self?.checkWidgetFile() }
+        if offerMoveToApplications() {
+            quitting = true
+            return
+        }
         boot()
+    }
+
+    /// 받은 파일 폴더 등에서 바로 실행하면(맥이 임시 위치로 옮겨 실행하기도 해요) 재시동 뒤 위젯이 사라져요.
+    /// 응용 프로그램 폴더로 옮겨서 다시 열자고 제안해요. 옮기면 true (이 앱은 곧 끝나요).
+    func offerMoveToApplications() -> Bool {
+        let here = Bundle.main.bundlePath
+        if here.hasPrefix("/Applications/") || ProcessInfo.processInfo.environment["DAYROAD_NO_MOVE"] == "1" { return false }
+        let translocated = here.contains("/AppTranslocation/")
+        Log.write("응용 프로그램 폴더 밖에서 실행됨: \(here)\(translocated ? " (맥이 임시 위치로 옮겨 실행)" : "")")
+        let a = NSAlert()
+        a.messageText = "DayROAD를 응용 프로그램 폴더로 옮길까요?"
+        a.informativeText = "지금은 응용 프로그램 폴더 밖에서 열려 있어요. 이대로 쓰면 맥을 다시 켰을 때 바탕화면 위젯이 사라질 수 있어요.\n옮기기를 누르면 응용 프로그램 폴더에 넣고 그곳에서 다시 열어요. (할 일은 그대로예요)"
+        a.addButton(withTitle: "옮기기")
+        a.addButton(withTitle: "나중에")
+        NSApp.activate(ignoringOtherApps: true)
+        guard a.runModal() == .alertFirstButtonReturn else { return false }
+        let dst = "/Applications/DayROAD.app"
+        let tmp = "/Applications/.DayROAD.app.new"
+        let fm = FileManager.default
+        try? fm.removeItem(atPath: tmp)
+        var ok = AppDelegate.run("/usr/bin/ditto", [here, tmp]).0 == 0
+        if ok {
+            AppDelegate.run("/usr/bin/xattr", ["-dr", "com.apple.quarantine", tmp])
+            try? fm.removeItem(atPath: dst)
+            ok = (try? fm.moveItem(atPath: tmp, toPath: dst)) != nil
+        }
+        if !ok {
+            try? fm.removeItem(atPath: tmp)
+            let e = NSAlert()
+            e.messageText = "옮기지 못했어요"
+            e.informativeText = "Finder 에서 DayROAD.app 을 응용 프로그램 폴더로 끌어다 놓은 뒤, 그곳에서 열어 주세요."
+            e.runModal()
+            return false
+        }
+        Log.write("응용 프로그램 폴더로 옮김 → 그곳에서 다시 열어요")
+        if !translocated { try? fm.trashItem(at: URL(fileURLWithPath: here), resultingItemURL: nil) }
+        let cfg = NSWorkspace.OpenConfiguration()
+        cfg.createsNewApplicationInstance = true
+        NSWorkspace.shared.openApplication(at: URL(fileURLWithPath: dst), configuration: cfg) { _, _ in
+            DispatchQueue.main.async { NSApp.terminate(nil) }
+        }
+        return true
     }
 
     func boot() {
@@ -414,6 +460,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         }
     }
 
+    static let lsregister = "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister"
+
+    /// 맥(pkd)이 알고 있는 DayROAD 위젯들의 위치 (같은 이름이 여러 개면 모두)
+    static func widgetPaths() -> [String] {
+        let out = run("/usr/bin/pluginkit", ["-m", "-D", "-v", "-i", widgetID]).1
+        return out.split(separator: "\n").compactMap { line in
+            guard let last = line.split(separator: "\t").last else { return nil }
+            let p = last.trimmingCharacters(in: .whitespaces)
+            return p.hasPrefix("/") && p.hasSuffix(".appex") ? p : nil
+        }
+    }
+
     func registerWidget() {
         DispatchQueue.global(qos: .utility).async {
             let appURL = URL(fileURLWithPath: Bundle.main.bundlePath)
@@ -427,8 +485,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
             } else {
                 msg += " · ⚠️ 앱 안에 위젯이 없어요"
             }
-            let list = AppDelegate.run("/usr/bin/pluginkit", ["-m", "-D", "-v", "-i", AppDelegate.widgetID]).1
-            let paths = list.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+            // 같은 이름의 위젯이 다른 곳(받은 파일 폴더에 남은 압축 푼 앱, 예전 보관본 등)에도 있으면 맥이 헷갈려서
+            // 재시동 뒤 바탕화면 위젯을 지울 수 있어요. 지금 실행 중인 이 앱의 위젯만 남기고 나머지는 맥에서 지워요(파일은 그대로).
+            let mine = Bundle.main.bundlePath + "/"
+            var removed: [String] = []
+            for path in AppDelegate.widgetPaths() where !path.hasPrefix(mine) {
+                AppDelegate.run("/usr/bin/pluginkit", ["-r", path])
+                if let r = path.range(of: "/Contents/PlugIns/") {
+                    AppDelegate.run(AppDelegate.lsregister, ["-u", String(path[..<r.lowerBound])])
+                }
+                removed.append(path)
+            }
+            if !removed.isEmpty {
+                AppDelegate.run("/usr/bin/pluginkit", ["-e", "use", "-i", AppDelegate.widgetID])
+                msg += " · 다른 곳의 같은 위젯 \(removed.count)개를 맥에서 지움" + removed.map { "\n    - \($0)" }.joined()
+            }
+            let paths = AppDelegate.widgetPaths()
             msg += " · 맥이 아는 위젯 \(paths.count)개" + paths.map { "\n    \($0)" }.joined()
             Log.write(msg)
             WidgetCenter.shared.reloadAllTimelines()

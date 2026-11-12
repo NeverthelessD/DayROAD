@@ -176,9 +176,13 @@ T0=$(date '+%Y-%m-%d %H:%M:%S')
 [ -n "$(app_pid)" ] && quit_app
 ditto "$SUP" "$OUT/sup-before-x"   # 앞의 시험 기록은 따로 남겨요
 rm -rf "$APPDIR" "$SUP"; mkdir -p "$SUP"; settings light '{}'
-OLDDIR="$OUT/oldapp"; rm -rf "$OLDDIR"; mkdir -p "$OLDDIR"
+OLDDIR="$HOME/Downloads/dayroad-old"; rm -rf "$OLDDIR"; mkdir -p "$OLDDIR"   # 사용자처럼 '받은 파일' 폴더에 압축을 풀어 둬요
 ditto -x -k "$ROOT/download/DayROAD.zip" "$OLDDIR"
 ditto "$OLDDIR/DayROAD/DayROAD.app" "$APPDIR"
+# 받은 파일 폴더의 압축 푼 앱도 맥이 찾아내 위젯 목록에 올린 상태로 만들어요 (사용자 맥에서 생기는 일)
+LSREG=/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister
+"$LSREG" -f "$OLDDIR/DayROAD/DayROAD.app" 2>/dev/null || true
+pluginkit -a "$OLDDIR/DayROAD/DayROAD.app/Contents/PlugIns/DayROADWidget.appex" 2>/dev/null || true
 OLDV=$(cat "$APPDIR/Contents/Resources/version.txt")
 FEED="$OUT/feed"; rm -rf "$FEED"; mkdir -p "$FEED"
 cp "$ROOT/dist/DayROAD-$NEWV.zip" "$FEED/"
@@ -212,19 +216,24 @@ check "X4 다시 열린 앱이 v$NEWV" bash -c "curl -fs -H 'x-token: $(tok)' $(
 sleep 5
 { echo; echo "== 3) v$NEWV 로 다시 연 뒤"; widgets; ls -la "$SUP/backup.noindex/DayROAD.app/Contents" 2>&1; } >> "$OUT/widget-update.txt"
 check "X5 보관한 이전 버전 안의 위젯은 꺼짐" test -d "$SUP/backup.noindex/DayROAD.app/Contents/PlugIns.off" -a ! -d "$SUP/backup.noindex/DayROAD.app/Contents/PlugIns"
-check "X6 맥이 아는 DayROAD 위젯은 응용 프로그램 폴더의 것 하나뿐" bash -c "[ \"\$(pluginkit -m -D -v -i $WID | grep -c dayroad)\" = 1 ] && pluginkit -m -D -v -i $WID | grep -q '/Applications/DayROAD.app'"
+check "X6 맥이 아는 DayROAD 위젯은 응용 프로그램 폴더의 것 하나뿐" bash -c "[ \"\$(pluginkit -m -D -v -i $WID | grep -c '\.appex')\" = 1 ] && pluginkit -m -D -v -i $WID | grep -q '/Applications/DayROAD.app/Contents/PlugIns/'"
 check "X7 앱이 켤 때 위젯을 다시 등록함" grep -q "위젯 등록" "$SUP/launcher.log"
+check "X7b 받은 파일 폴더에 남은 같은 위젯을 맥에서 지움 (파일은 그대로)" bash -c "! pluginkit -m -D -v -i $WID | grep -q dayroad-old && test -d '$OLDDIR/DayROAD/DayROAD.app'"
 quit_app
 echo "▶ X. 재시동 흉내: 위젯 관리자(pkd · chronod)를 껐다 켜고, 앱 없이 위젯이 남아 있는지"
 killall pkd 2>/dev/null; killall chronod 2>/dev/null; sleep 8
 { echo; echo "== 4) 앱 끄고 pkd · chronod 다시 시작한 뒤"; widgets; } >> "$OUT/widget-update.txt"
-check "X8 재시동 흉내 뒤에도 위젯은 응용 프로그램 폴더의 것 하나만" bash -c "[ \"\$(pluginkit -m -D -v -i $WID | grep -c dayroad)\" = 1 ] && pluginkit -m -D -v -i $WID | grep -q '/Applications/DayROAD.app'"
+check "X8 재시동 흉내 뒤에도 위젯은 응용 프로그램 폴더의 것 하나만" bash -c "[ \"\$(pluginkit -m -D -v -i $WID | grep -c '\.appex')\" = 1 ] && pluginkit -m -D -v -i $WID | grep -q '/Applications/DayROAD.app/Contents/PlugIns/'"
 check "X9 새 버전의 정체성이 앱 이름 기준" bash -c "codesign -d -r- '$APPDIR/Contents/PlugIns/DayROADWidget.appex' 2>&1 | grep -q 'designated => identifier \"$WID\"'"
-log show --start "$T0" --predicate 'eventMessage CONTAINS[c] "dayroad"' --style compact --info 2>/dev/null > "$OUT/widget-update-syslog.txt" || true
+# 시스템 기록에는 빌드 서버의 접근 열쇠가 섞일 수 있어서(올리기가 막혀요) 위젯 관련 프로세스만 보고, 열쇠 모양은 가려요
+log show --start "$T0" --style compact --info --predicate '(process == "chronod" OR process == "pkd" OR process == "containermanagerd" OR process == "runningboardd" OR process == "DayROADWidget" OR process == "NotificationCenter" OR process == "WidgetKit Simulator" OR process == "lsd") AND eventMessage CONTAINS[c] "dayroad"' 2>/dev/null \
+  | sed -E 's/gh[pousr]_[A-Za-z0-9]{20,}/[가림]/g; s/x-access-token:[^@ ]*@/x-access-token:[가림]@/g; s/(token|Token|TOKEN)[=: ]+[A-Za-z0-9._-]{16,}/\1=[가림]/g' > "$OUT/widget-update-syslog.txt" || true
 grep -iE "denied|mismatch|invalid|not authori|reject|fail|error" "$OUT/widget-update-syslog.txt" | grep -v "DayROAD\[.*\] \[앱" | tail -25 > "$OUT/widget-update-syslog-errors.txt" || true
+echo "---- widget-update.txt"; cat "$OUT/widget-update.txt"; echo "---- 오류처럼 보이는 시스템 기록"; cat "$OUT/widget-update-syslog-errors.txt"; echo "----"
 echo "INFO  X10 시스템 기록 중 오류처럼 보이는 줄: $(wc -l < "$OUT/widget-update-syslog-errors.txt" | tr -d ' ')줄 (widget-update-syslog-errors.txt)" | tee -a "$RES"
 launchctl unsetenv DAYROAD_UPDATE_URL
 kill "$FEEDPID" 2>/dev/null
+"$LSREG" -u "$OLDDIR/DayROAD/DayROAD.app" 2>/dev/null; rm -rf "$OLDDIR"
 
 echo "▶ 기록 모으기"
 for f in launcher.log requests.log engine.log engine.prev.log engine.out engine.prev.out settings.json data.json widget/widget.json; do

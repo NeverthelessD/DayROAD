@@ -32,9 +32,12 @@ printf '{"version":"%s","commit":"%s","build":"%s","smoke":"%s"}\n' "$VERSION" "
 cat "$OUT/status.json"; tail -40 "$OUT/build.log"; [ -f "$OUT/smoke.log" ] && tail -40 "$OUT/smoke.log"
 
 # 올리기 전에 큰 것(시험용으로 푼 앱 · 업데이트 파일 · 엔진 실행 파일)은 빼요
-rm -rf "$OUT/oldapp" "$OUT/feed" "$OUT/sup-before-x/bin" "$OUT/sup-before-x/backup.noindex" "$OUT/sup-before-x/update" 2>/dev/null
+rm -rf "$OUT/feed" "$OUT/sup-before-x/bin" "$OUT/sup-before-x/backup.noindex" "$OUT/sup-before-x/update" 2>/dev/null
 find "$OUT" -type f -size +40M -print -delete > "$OUT/removed-big-files.txt" 2>/dev/null
 du -sh "$OUT" > "$OUT/size.txt" 2>/dev/null
+grep -rlE 'gh[pousr]_[A-Za-z0-9]{20,}|x-access-token:[^@*]' "$OUT" 2>/dev/null | while read -r f; do
+  sed -i '' -E 's/gh[pousr]_[A-Za-z0-9]{20,}/[가림]/g; s/x-access-token:[^@ ]*@/x-access-token:[가림]@/g' "$f"
+done
 
 push_results() {
   git -c user.name="DayROAD build" -c user.email="NeverthelessD@users.noreply.github.com" commit -qm "$1"
