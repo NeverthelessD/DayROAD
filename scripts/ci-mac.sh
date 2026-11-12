@@ -31,11 +31,30 @@ cp build/xcodebuild.log "$OUT/" 2>/dev/null || true
 printf '{"version":"%s","commit":"%s","build":"%s","smoke":"%s"}\n' "$VERSION" "${GITHUB_SHA:-local}" "$BUILD" "$SMOKE" > "$OUT/status.json"
 cat "$OUT/status.json"; tail -40 "$OUT/build.log"; [ -f "$OUT/smoke.log" ] && tail -40 "$OUT/smoke.log"
 
+# 올리기 전에 큰 것(시험용으로 푼 앱 · 업데이트 파일 · 엔진 실행 파일)은 빼요
+rm -rf "$OUT/oldapp" "$OUT/feed" "$OUT/sup-before-x/bin" "$OUT/sup-before-x/backup.noindex" "$OUT/sup-before-x/update" 2>/dev/null
+find "$OUT" -type f -size +40M -print -delete > "$OUT/removed-big-files.txt" 2>/dev/null
+du -sh "$OUT" > "$OUT/size.txt" 2>/dev/null
+
+push_results() {
+  git -c user.name="DayROAD build" -c user.email="NeverthelessD@users.noreply.github.com" commit -qm "$1"
+  git push -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ci-results > "$ROOT/push.log" 2>&1
+}
 if [ -n "${GITHUB_TOKEN:-}" ]; then
   cd "$OUT"
   git init -q && git checkout -q -b ci-results
   git add -A
-  git -c user.name="DayROAD build" -c user.email="NeverthelessD@users.noreply.github.com" commit -qm "v$VERSION build=$BUILD smoke=$SMOKE (${GITHUB_SHA:-local})"
-  git push -qf "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ci-results
+  if ! push_results "v$VERSION build=$BUILD smoke=$SMOKE (${GITHUB_SHA:-local})"; then
+    echo "결과 올리기 실패:"; cat "$ROOT/push.log"
+    # 작은 것만 다시 올려서, 무엇이 문제였는지라도 볼 수 있게
+    SMALL="$ROOT/ci-small"; rm -rf "$SMALL"; mkdir -p "$SMALL"
+    for f in status.json info.txt results.txt size.txt removed-big-files.txt; do [ -f "$OUT/$f" ] && cp "$OUT/$f" "$SMALL/"; done
+    [ -f "$OUT/smoke.log" ] && tail -200 "$OUT/smoke.log" > "$SMALL/smoke-tail.log"
+    [ -f "$OUT/build.log" ] && tail -200 "$OUT/build.log" > "$SMALL/build-tail.log"
+    sed 's/x-access-token:[^@]*@/x-access-token:***@/g' "$ROOT/push.log" > "$SMALL/push-error.txt"
+    (cd "$OUT" && find . -type f -not -path './.git/*' -exec ls -la {} + | sort -k5 -n -r | head -40) > "$SMALL/biggest-files.txt"
+    cd "$SMALL" && git init -q && git checkout -q -b ci-results && git add -A && \
+      push_results "v$VERSION build=$BUILD smoke=$SMOKE push=small (${GITHUB_SHA:-local})" || cat "$ROOT/push.log"
+  fi
 fi
 [ "$BUILD" = ok ] && [ "$SMOKE" = ok ]
