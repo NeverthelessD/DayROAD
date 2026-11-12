@@ -35,8 +35,10 @@ cat "$OUT/status.json"; tail -40 "$OUT/build.log"; [ -f "$OUT/smoke.log" ] && ta
 rm -rf "$OUT/feed" "$OUT/sup-before-x/bin" "$OUT/sup-before-x/backup.noindex" "$OUT/sup-before-x/update" 2>/dev/null
 find "$OUT" -type f -size +40M -print -delete > "$OUT/removed-big-files.txt" 2>/dev/null
 du -sh "$OUT" > "$OUT/size.txt" 2>/dev/null
-grep -rlE 'gh[pousr]_[A-Za-z0-9]{20,}|x-access-token:[^@*]' "$OUT" 2>/dev/null | while read -r f; do
-  sed -i '' -E 's/gh[pousr]_[A-Za-z0-9]{20,}/[가림]/g; s/x-access-token:[^@ ]*@/x-access-token:[가림]@/g' "$f"
+# 서버 접근 열쇠가 섞인 줄은 통째로 빼요 (올리기가 막히지 않게). 시스템 기록은 원본을 올리지 않아요.
+LC_ALL=C grep -rlIiE --exclude='*.zip' --exclude='*.png' --exclude='*.json' 'gh[pousr]_[A-Za-z0-9]|github_pat_|x-access-token|eC1hY2Nlc3MtdG9rZW4|authorization: (basic|bearer)' "$OUT" 2>/dev/null | while read -r f; do
+  LC_ALL=C grep -aviE 'gh[pousr]_[A-Za-z0-9]|github_pat_|x-access-token|eC1hY2Nlc3MtdG9rZW4|authorization: (basic|bearer)' "$f" > "$f.clean" || true
+  mv "$f.clean" "$f"; echo "열쇠가 섞인 줄을 뺌: ${f#$OUT/}" >> "$OUT/removed-big-files.txt"
 done
 
 push_results() {

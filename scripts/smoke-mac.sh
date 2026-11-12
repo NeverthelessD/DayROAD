@@ -227,7 +227,7 @@ check "X8 재시동 흉내 뒤에도 위젯은 응용 프로그램 폴더의 것
 check "X9 새 버전의 정체성이 앱 이름 기준" bash -c "codesign -d -r- '$APPDIR/Contents/PlugIns/DayROADWidget.appex' 2>&1 | grep -q 'designated => identifier \"$WID\"'"
 # 시스템 기록에는 빌드 서버의 접근 열쇠가 섞일 수 있어서(올리기가 막혀요) 위젯 관련 프로세스만 보고, 열쇠 모양은 가려요
 log show --start "$T0" --style compact --info --predicate '(process == "chronod" OR process == "pkd" OR process == "containermanagerd" OR process == "runningboardd" OR process == "DayROADWidget" OR process == "NotificationCenter" OR process == "WidgetKit Simulator" OR process == "lsd") AND eventMessage CONTAINS[c] "dayroad"' 2>/dev/null \
-  | sed -E 's/gh[pousr]_[A-Za-z0-9]{20,}/[가림]/g; s/x-access-token:[^@ ]*@/x-access-token:[가림]@/g; s/(token|Token|TOKEN)[=: ]+[A-Za-z0-9._-]{16,}/\1=[가림]/g' > "$OUT/widget-update-syslog.txt" || true
+  | LC_ALL=C grep -aviE 'gh[pousr]_|github_pat_|access-token|authori[sz]ation|bearer|eC1hY2Nlc3MtdG9rZW4|token|github\.com' > "$OUT/widget-update-syslog.txt" || true
 grep -iE "denied|mismatch|invalid|not authori|reject|fail|error" "$OUT/widget-update-syslog.txt" | grep -v "DayROAD\[.*\] \[앱" | tail -25 > "$OUT/widget-update-syslog-errors.txt" || true
 echo "---- widget-update.txt"; cat "$OUT/widget-update.txt"; echo "---- 오류처럼 보이는 시스템 기록"; cat "$OUT/widget-update-syslog-errors.txt"; echo "----"
 echo "INFO  X10 시스템 기록 중 오류처럼 보이는 줄: $(wc -l < "$OUT/widget-update-syslog-errors.txt" | tr -d ' ')줄 (widget-update-syslog-errors.txt)" | tee -a "$RES"
