@@ -47,6 +47,7 @@ type Updater struct {
 func NewUpdater(support string) *Updater {
 	u := &Updater{support: support, status: "idle"}
 	u.migrateBackup()
+	u.disarmBackup()
 	return u
 }
 
@@ -76,6 +77,64 @@ func (u *Updater) migrateBackup() {
 	os.Remove(filepath.Join(u.support, "backup"))
 	unregisterApp(dst)
 	log.Printf("이전 버전 보관 폴더를 Spotlight 에서 숨겼어요 (%s)", dst)
+}
+
+// 보관해 둔 이전 버전 안의 위젯 확장(PlugIns)은 꺼 둬요.
+// 같은 이름의 위젯이 두 군데(응용 프로그램 폴더 · 보관 폴더)에 있으면, 맥이 재시동한 뒤 바탕화면 위젯을
+// 보관 폴더 쪽에 이어 붙이거나 '없는 위젯'으로 보고 지워 버릴 수 있어요. 되돌리기 할 때만 다시 켜요.
+const pluginsOff = "PlugIns.off"
+
+func pluginkit(args ...string) {
+	if runtime.GOOS != "darwin" || !fileExists("/usr/bin/pluginkit") {
+		return
+	}
+	if out, err := exec.Command("/usr/bin/pluginkit", args...).CombinedOutput(); err != nil {
+		log.Printf("pluginkit %v: %v %s", args, err, strings.TrimSpace(string(out)))
+	}
+}
+
+func disarmPlugins(appPath string) bool {
+	if runtime.GOOS != "darwin" {
+		return false
+	}
+	on := filepath.Join(appPath, "Contents", "PlugIns")
+	if !fileExists(on) {
+		return false
+	}
+	if m, _ := filepath.Glob(filepath.Join(on, "*.appex")); len(m) > 0 {
+		for _, x := range m {
+			pluginkit("-r", x)
+		}
+	}
+	off := filepath.Join(appPath, "Contents", pluginsOff)
+	os.RemoveAll(off)
+	if err := os.Rename(on, off); err != nil {
+		log.Printf("보관한 앱의 위젯을 끄지 못했어요: %v", err)
+		return false
+	}
+	return true
+}
+
+func rearmPlugins(appPath string) {
+	off := filepath.Join(appPath, "Contents", pluginsOff)
+	on := filepath.Join(appPath, "Contents", "PlugIns")
+	if fileExists(off) && !fileExists(on) {
+		if err := os.Rename(off, on); err != nil {
+			log.Printf("되돌린 앱의 위젯을 켜지 못했어요: %v", err)
+		}
+	}
+}
+
+// disarmBackup: 예전 버전(1.2.0 까지)이 남긴 보관 앱에도 위젯이 들어 있으면 꺼요 (켤 때마다 확인)
+func (u *Updater) disarmBackup() {
+	b := u.backupApp()
+	if isWindows || !fileExists(b) {
+		return
+	}
+	if disarmPlugins(b) {
+		unregisterApp(b)
+		log.Printf("보관한 이전 버전의 위젯을 껐어요 (%s)", b)
+	}
 }
 
 // unregisterApp asks LaunchServices to forget an app bundle (Spotlight · '다음으로 열기' 목록에서 빠져요). 실패해도 괜찮아요.
@@ -379,6 +438,7 @@ func (u *Updater) swap(appPath, newApp string) error {
 			if err := adminSwap(appPath, newApp, backup); err != nil {
 				return err
 			}
+			disarmPlugins(backup)
 			unregisterApp(backup)
 			return nil
 		}
@@ -388,6 +448,7 @@ func (u *Updater) swap(appPath, newApp string) error {
 		moveDir(backup, appPath) // 되돌리기
 		return fmt.Errorf("새 버전을 설치하지 못했어요: %v", err)
 	}
+	disarmPlugins(backup)
 	unregisterApp(backup)
 	if runtime.GOOS == "darwin" {
 		exec.Command("/usr/bin/xattr", "-cr", appPath).Run()
@@ -460,11 +521,13 @@ func (u *Updater) Rollback() error {
 	if err := moveDir(appPath, tmp); err != nil {
 		return fmt.Errorf("현재 앱을 옮기지 못했어요: %v", err)
 	}
+	rearmPlugins(u.backupApp())
 	if err := moveDir(u.backupApp(), appPath); err != nil {
 		moveDir(tmp, appPath)
 		return fmt.Errorf("이전 버전을 되돌리지 못했어요: %v", err)
 	}
 	moveDir(tmp, u.backupApp())
+	disarmPlugins(u.backupApp())
 	unregisterApp(u.backupApp())
 	return u.afterRollback(bv)
 }

@@ -166,6 +166,66 @@ check "G2 앱이 새로 열림 ($OLD → ${NEW:-없음})" test -n "$NEW" -a "$NE
 check "G3 앱 하나만 떠 있음" test "$(pgrep -x DayROAD | wc -l | tr -d ' ')" = "1"
 quit_app
 
+echo "▶ X. 진짜 업데이트(사용자에게 나간 버전 → 이번 빌드) 뒤 위젯 · 재시동 흉내"
+# 사용자 신고(2026-11-12): 재시동하니 다른 위젯은 그대로인데 DayROAD 위젯만 사라짐.
+# 의심: 업데이트 때 이전 버전을 보관 폴더로 옮기는데, 그 안의 위젯도 같은 이름으로 맥에 남아서 위젯이 두 개가 됨.
+WID=com.nevertheless-d.dayroad.widget
+NEWV=$(tr -d ' \n' < "$ROOT/VERSION")
+widgets() { pluginkit -m -D -v -i "$WID" 2>&1; }
+T0=$(date '+%Y-%m-%d %H:%M:%S')
+[ -n "$(app_pid)" ] && quit_app
+ditto "$SUP" "$OUT/sup-before-x"   # 앞의 시험 기록은 따로 남겨요
+rm -rf "$APPDIR" "$SUP"; mkdir -p "$SUP"; settings light '{}'
+OLDDIR="$OUT/oldapp"; rm -rf "$OLDDIR"; mkdir -p "$OLDDIR"
+ditto -x -k "$ROOT/download/DayROAD.zip" "$OLDDIR"
+ditto "$OLDDIR/DayROAD/DayROAD.app" "$APPDIR"
+OLDV=$(cat "$APPDIR/Contents/Resources/version.txt")
+FEED="$OUT/feed"; rm -rf "$FEED"; mkdir -p "$FEED"
+cp "$ROOT/dist/DayROAD-$NEWV.zip" "$FEED/"
+python3 - "$FEED" "$NEWV" <<'PY'
+import hashlib, json, os, sys
+d, v = sys.argv[1], sys.argv[2]
+z = os.path.join(d, f"DayROAD-{v}.zip")
+json.dump({"version": v, "date": "2026-11-12", "zip": os.path.basename(z), "size": os.path.getsize(z),
+           "sha256": hashlib.sha256(open(z, "rb").read()).hexdigest(), "notes": ["시험"]}, open(os.path.join(d, "latest.json"), "w"))
+PY
+python3 -m http.server 8765 --bind 127.0.0.1 --directory "$FEED" > "$OUT/feed-server.log" 2>&1 &
+FEEDPID=$!
+launchctl setenv DAYROAD_UPDATE_URL "http://127.0.0.1:8765/latest.json"
+launch
+check "X1 사용자에게 나간 버전(v$OLDV)이 켜짐" bash -c "curl -fs -H 'x-token: $(tok)' $(API)/api/ping | grep -q '\"build\":\"$OLDV\"'"
+sleep 4
+{ echo "== 1) v$OLDV 설치 · 실행 뒤"; widgets; ls -la "$HOME/Library/Containers" 2>/dev/null | grep -i dayroad; } > "$OUT/widget-update.txt"
+curl -fs -X POST -H "x-token: $(tok)" "$(API)/api/update/check" > /dev/null
+curl -fs -X POST -H "x-token: $(tok)" "$(API)/api/update/install" > /dev/null
+for _ in $(seq 1 120); do
+  ST=$(curl -fs -H "x-token: $(tok)" "$(API)/api/poll" | jget "d['update']['status']")
+  [ "$ST" = "ready" ] || [ "$ST" = "error" ] && break; sleep 1
+done
+check "X2 v$OLDV 앱이 스스로 v$NEWV 를 받아 설치함 ($ST)" test "$ST" = "ready"
+{ echo; echo "== 2) 업데이트 직후 (예전 업데이트 방식 그대로, 다시 시작 전)"; widgets; ls -la "$SUP/backup.noindex/DayROAD.app/Contents" 2>&1; } >> "$OUT/widget-update.txt"
+BEFORE_FIX=$(widgets | grep -c "backup.noindex")
+echo "INFO  X3 업데이트 직후 보관 폴더 위젯이 맥에 남아 있음: ${BEFORE_FIX}개 (1 이상이면 의심했던 문제)" | tee -a "$RES"
+curl -fs -X POST -H "x-token: $(tok)" "$(API)/api/update/restart" >/dev/null
+sleep 3; wait_ready
+check "X4 다시 열린 앱이 v$NEWV" bash -c "curl -fs -H 'x-token: $(tok)' $(API)/api/ping | grep -q '\"build\":\"$NEWV\"'"
+sleep 5
+{ echo; echo "== 3) v$NEWV 로 다시 연 뒤"; widgets; ls -la "$SUP/backup.noindex/DayROAD.app/Contents" 2>&1; } >> "$OUT/widget-update.txt"
+check "X5 보관한 이전 버전 안의 위젯은 꺼짐" test -d "$SUP/backup.noindex/DayROAD.app/Contents/PlugIns.off" -a ! -d "$SUP/backup.noindex/DayROAD.app/Contents/PlugIns"
+check "X6 맥이 아는 DayROAD 위젯은 응용 프로그램 폴더의 것 하나뿐" bash -c "[ \"\$(pluginkit -m -D -v -i $WID | grep -c dayroad)\" = 1 ] && pluginkit -m -D -v -i $WID | grep -q '/Applications/DayROAD.app'"
+check "X7 앱이 켤 때 위젯을 다시 등록함" grep -q "위젯 등록" "$SUP/launcher.log"
+quit_app
+echo "▶ X. 재시동 흉내: 위젯 관리자(pkd · chronod)를 껐다 켜고, 앱 없이 위젯이 남아 있는지"
+killall pkd 2>/dev/null; killall chronod 2>/dev/null; sleep 8
+{ echo; echo "== 4) 앱 끄고 pkd · chronod 다시 시작한 뒤"; widgets; } >> "$OUT/widget-update.txt"
+check "X8 재시동 흉내 뒤에도 위젯은 응용 프로그램 폴더의 것 하나만" bash -c "[ \"\$(pluginkit -m -D -v -i $WID | grep -c dayroad)\" = 1 ] && pluginkit -m -D -v -i $WID | grep -q '/Applications/DayROAD.app'"
+check "X9 새 버전의 정체성이 앱 이름 기준" bash -c "codesign -d -r- '$APPDIR/Contents/PlugIns/DayROADWidget.appex' 2>&1 | grep -q 'designated => identifier \"$WID\"'"
+log show --start "$T0" --predicate 'eventMessage CONTAINS[c] "dayroad"' --style compact --info 2>/dev/null > "$OUT/widget-update-syslog.txt" || true
+grep -iE "denied|mismatch|invalid|not authori|reject|fail|error" "$OUT/widget-update-syslog.txt" | grep -v "DayROAD\[.*\] \[앱" | tail -25 > "$OUT/widget-update-syslog-errors.txt" || true
+echo "INFO  X10 시스템 기록 중 오류처럼 보이는 줄: $(wc -l < "$OUT/widget-update-syslog-errors.txt" | tr -d ' ')줄 (widget-update-syslog-errors.txt)" | tee -a "$RES"
+launchctl unsetenv DAYROAD_UPDATE_URL
+kill "$FEEDPID" 2>/dev/null
+
 echo "▶ 기록 모으기"
 for f in launcher.log requests.log engine.log engine.prev.log engine.out engine.prev.out settings.json data.json widget/widget.json; do
   [ -f "$SUP/$f" ] && cp "$SUP/$f" "$OUT/$(basename "$f")"

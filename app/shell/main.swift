@@ -306,6 +306,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     }
 
     func loadApp(port: Int) {
+        registerWidget()
         guard let url = URL(string: "http://127.0.0.1:\(port)/?t=\(engine.token)") else { return }
         pageURL = url
         pageReady = false
@@ -387,6 +388,51 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
             NSApp.reply(toApplicationShouldTerminate: true)
         }
         return .terminateLater
+    }
+
+    // MARK: 위젯 등록
+    // 켤 때마다 이 앱(응용 프로그램 폴더의 것)과 그 안의 위젯을 맥에 다시 알려요.
+    // 엔진이 먼저 보관해 둔 이전 버전의 위젯을 꺼 두므로(update.go disarmBackup), 같은 이름의 위젯은 하나만 남아요.
+    static let widgetID = "com.nevertheless-d.dayroad.widget"
+
+    @discardableResult
+    static func run(_ path: String, _ args: [String]) -> (Int32, String) {
+        let p = Process()
+        p.executableURL = URL(fileURLWithPath: path)
+        p.arguments = args
+        let pipe = Pipe()
+        p.standardOutput = pipe
+        p.standardError = pipe
+        p.standardInput = FileHandle.nullDevice
+        do {
+            try p.run()
+            let data = pipe.fileHandleForReading.readDataToEndOfFile()
+            p.waitUntilExit()
+            return (p.terminationStatus, String(data: data, encoding: .utf8) ?? "")
+        } catch {
+            return (-1, error.localizedDescription)
+        }
+    }
+
+    func registerWidget() {
+        DispatchQueue.global(qos: .utility).async {
+            let appURL = URL(fileURLWithPath: Bundle.main.bundlePath)
+            let ls = LSRegisterURL(appURL as CFURL, true)
+            var msg = "위젯 등록: LaunchServices \(ls)"
+            if let ex = Bundle.main.builtInPlugInsURL?.appendingPathComponent("DayROADWidget.appex"),
+               FileManager.default.fileExists(atPath: ex.path) {
+                let a = AppDelegate.run("/usr/bin/pluginkit", ["-a", ex.path]).0
+                let e = AppDelegate.run("/usr/bin/pluginkit", ["-e", "use", "-i", AppDelegate.widgetID]).0
+                msg += " · 추가 \(a) · 사용 \(e)"
+            } else {
+                msg += " · ⚠️ 앱 안에 위젯이 없어요"
+            }
+            let list = AppDelegate.run("/usr/bin/pluginkit", ["-m", "-D", "-v", "-i", AppDelegate.widgetID]).1
+            let paths = list.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+            msg += " · 맥이 아는 위젯 \(paths.count)개" + paths.map { "\n    \($0)" }.joined()
+            Log.write(msg)
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 
     // MARK: 화면에 알리기

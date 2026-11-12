@@ -63,6 +63,18 @@ test -d "$APPEX" || { echo "✖ 위젯 확장이 앱 안에 없어요"; exit 1; 
 ls -la "$APP/Contents" "$APP/Contents/PlugIns" "$APPEX/Contents/Resources" | sed 's/^/  /'
 find "$APPEX" -name "*.appintents*" -o -name "extract.actionsdata" | sed 's/^/  App Intents: /' || true
 
+echo "▶ 다시 서명: 버전이 바뀌어도 맥이 '같은 앱'으로 알아보게 (임시 서명 + 앱 이름 기준 정체성)"
+# 임시 서명(ad-hoc)의 기본 정체성은 코드 지문(cdhash)이라, 업데이트할 때마다 맥이 다른 앱으로 봐요
+# (캘린더 허락을 다시 묻거나, 위젯 보호 상자 · 바탕화면 위젯이 이어지지 않을 수 있어요). 그래서 정체성을 앱 이름으로 정해요.
+codesign --force --sign - --preserve-metadata=entitlements,flags \
+  --requirements '=designated => identifier "com.nevertheless-d.dayroad.widget"' "$APPEX"
+codesign --force --sign - --preserve-metadata=entitlements,flags \
+  --requirements '=designated => identifier "com.nevertheless-d.dayroad"' "$APP"
+codesign -d -r- "$APPEX" 2>&1 | sed 's/^/  위젯 /'
+codesign -d -r- "$APP" 2>&1 | sed 's/^/  앱 /'
+codesign -d -r- "$APP" 2>&1 | grep -q 'designated => identifier "com.nevertheless-d.dayroad"' || { echo "✖ 앱 정체성이 바뀌지 않았어요"; exit 1; }
+codesign -d -r- "$APPEX" 2>&1 | grep -q 'designated => identifier "com.nevertheless-d.dayroad.widget"' || { echo "✖ 위젯 정체성이 바뀌지 않았어요"; exit 1; }
+
 echo "▶ 서명 확인 (임시 서명) · 위젯의 보호 상자 권한"
 codesign --verify --deep --strict --verbose=2 "$APP"
 codesign -dv "$APP" 2>&1 | sed 's/^/  /'
