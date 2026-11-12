@@ -12,6 +12,13 @@ export OUT
   sw_vers; uname -m
 } > "$OUT/info.txt"
 
+# Go 가 준비되지 않았으면(설치 단계 실패) Homebrew 로 깔아요
+if ! command -v go >/dev/null 2>&1; then
+  echo "Go 가 없어서 Homebrew 로 깔아요" >> "$OUT/info.txt"
+  brew install go >> "$OUT/info.txt" 2>&1 || true
+fi
+go version >> "$OUT/info.txt" 2>&1 || echo "Go 없음" >> "$OUT/info.txt"
+
 BUILD=fail; SMOKE=skip
 if bash scripts/build-mac.sh > "$OUT/build.log" 2>&1; then
   BUILD=ok

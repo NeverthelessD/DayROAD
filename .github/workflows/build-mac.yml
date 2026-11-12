@@ -25,8 +25,10 @@ jobs:
     runs-on: macos-15
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v5
+      # Go 설치가 실패해도 멈추지 않아요 — scripts/ci-mac.sh 가 Go 가 없으면 Homebrew 로 깔아요
+      - uses: actions/setup-go@v6
+        continue-on-error: true
         with:
           go-version: '1.24'
           cache: false
