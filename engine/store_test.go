@@ -226,3 +226,27 @@ func TestImport(t *testing.T) {
 		t.Fatal("dup import")
 	}
 }
+
+func TestEditLog(t *testing.T) {
+	s := newTestStore(t, "2026-11-09")
+	tk, _ := s.Save(raw(map[string]any{"title": "보고서"}))
+	s.AddLog(tk.ID, "1장까지 씀", intp(25))
+	s.AddLog(tk.ID, "2장까지 씀", intp(50))
+	got, err := s.EditLog(tk.ID, 1, "  1장 · 표까지 씀  ")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Log[1].Text != "1장 · 표까지 씀" || got.Log[1].Progress != 25 || got.Log[0].Text != "2장까지 씀" {
+		t.Fatalf("edit log %+v", got.Log)
+	}
+	if _, err := s.EditLog(tk.ID, 0, "   "); err == nil || s.task(tk.ID).Log[0].Text != "2장까지 씀" {
+		t.Fatal("empty text must not change the log")
+	}
+	if _, err := s.EditLog(tk.ID, 5, "x"); err == nil {
+		t.Fatal("out of range should fail")
+	}
+	s2 := NewStore(s.dir)
+	if s2.task(tk.ID).Log[1].Text != "1장 · 표까지 씀" {
+		t.Fatal("edited log not persisted")
+	}
+}

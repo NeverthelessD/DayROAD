@@ -673,6 +673,30 @@ func (s *Store) AddLog(id, text string, progress *int) (*Task, error) {
 	return t, nil
 }
 
+// EditLog: 남긴 기록의 글을 고쳐요 (날짜 · 진행 정도는 그대로). 빈 글로는 바꾸지 않아요.
+func (s *Store) EditLog(id string, i int, text string) (*Task, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	t := s.task(id)
+	if t == nil {
+		return nil, errNoTask
+	}
+	text = strings.TrimSpace(text)
+	if text == "" {
+		return nil, errors.New("기록 내용이 비어 있어요")
+	}
+	if len([]rune(text)) > 2000 {
+		text = string([]rune(text)[:2000])
+	}
+	if i < 0 || i >= len(t.Log) {
+		return nil, errors.New("고칠 기록을 찾지 못했어요")
+	}
+	t.Log[i].Text = text
+	t.Updated = time.Now().UnixMilli()
+	s.commit()
+	return t, nil
+}
+
 func (s *Store) DelLog(id string, i int) (*Task, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -890,6 +914,20 @@ func (a *App) storeRoutes(api func(string, http.HandlerFunc)) {
 		}
 		readJSON(r, &in)
 		t, err := st.AddLog(in.ID, in.Text, in.Progress)
+		if err != nil {
+			fail(w, err)
+			return
+		}
+		reply(w, map[string]any{"task": t})
+	})
+	api("/api/task/logedit", func(w http.ResponseWriter, r *http.Request) {
+		var in struct {
+			ID   string `json:"id"`
+			I    int    `json:"i"`
+			Text string `json:"text"`
+		}
+		readJSON(r, &in)
+		t, err := st.EditLog(in.ID, in.I, in.Text)
 		if err != nil {
 			fail(w, err)
 			return

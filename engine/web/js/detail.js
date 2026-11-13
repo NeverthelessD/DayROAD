@@ -21,7 +21,7 @@
     return `<div class="dempty">${DR.ICON.logo(52)}<b>할 일을 눌러 보세요</b>여기에서 마감일 · 알림 · 반복을 정하고<br>어디까지 했는지 적어 둘 수 있어요.
       <div class="tips">
         <div><b>빨리 적기</b> — "내일 3시 치과", "금요일까지 보고서", "매주 월 9시 회의", "#공부 단어 외우기 !"</div>
-        <div><b>단축키</b> — ⌘N 새 할 일 · ⌘1 오늘 · ⌘2 이번 주 · ⌘3 이번 달 · 두 번 누르기 이름 고치기 · 스페이스 끝내기 · ⌫ 지우기 · ⌘Z 되돌리기</div>
+        <div><b>단축키</b> — ⌘N 새 할 일 · ⌘1 오늘 · ⌘2 이번 주 · ⌘3 이번 달 · 두 번 누르기 이름 고치기 · 스페이스 끝내기 · ⌫ 지우기(고른 할 일이 없으면 뒤로) · ⌘Z 되돌리기 · 기록 두 번 누르기 고치기</div>
         <div><b>위젯</b> — 바탕화면을 오른쪽 클릭 › 위젯 편집 › DayROAD</div>
       </div></div>`;
   }
@@ -39,7 +39,18 @@
         ${calOk ? `<button type="button" class="switch" role="switch" aria-checked="${!!t.calendar}" aria-label="캘린더에도 표시" data-dact="calendar"><span></span></button>`
           : `<button type="button" class="btn sm" data-act="cal-connect">연결하기</button>`}</div>`;
     }
-    const logs = t.log.map((l, i) => `<div class="log"><span class="d">${esc(DR.relDay(l.date, false))}</span><span class="x">${esc(l.text)}${l.progress ? `<span class="p">${l.progress}%</span>` : ''}</span><button type="button" class="xbtn" data-dact="logdel" data-i="${i}" aria-label="기록 지우기">${ICON.x}</button></div>`).join('');
+    const logs = t.log.map((l, i) => {
+      const d = `<span class="d">${esc(DR.relDay(l.date, false))}</span>`;
+      if (i === editingLog) {
+        return `<div class="log editing">${d}<div class="lgedit">
+          <label for="dLogEdit" class="sr">기록 고치기</label>
+          <textarea id="dLogEdit" class="field" rows="2" data-i="${i}" spellcheck="false">${esc(l.text)}</textarea>
+          <div class="lgbtns"><span class="hint">↩ 저장 · esc 취소</span><button type="button" class="btn sm" data-dact="logcancel">취소</button><button type="button" class="btn sm primary" data-dact="logsave" data-i="${i}">저장</button></div>
+        </div></div>`;
+      }
+      return `<div class="log">${d}<span class="x" data-i="${i}" title="두 번 누르면 고칠 수 있어요">${esc(l.text)}${l.progress ? `<span class="p">${l.progress}%</span>` : ''}</span>
+        <span class="acts"><button type="button" class="xbtn" data-dact="logedit" data-i="${i}" aria-label="기록 고치기" title="고치기">${ICON.pen}</button><button type="button" class="xbtn" data-dact="logdel" data-i="${i}" aria-label="기록 지우기" title="지우기">${ICON.x}</button></span></div>`;
+    }).join('');
     return `
       <div class="dtop">
         <button type="button" class="catpick${c ? ' c-' + c.color : ''}" data-dact="cat"><span class="dot"></span>${c ? esc(c.name) : '분류 없음'} ▾</button>
@@ -88,6 +99,7 @@
   function fit(el) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; }
 
   let shownId = null;
+  let editingLog = null; // 고치고 있는 기록의 번호 (없으면 null)
   DR.renderDetail = function renderDetail(force) {
     const box = $('#detail');
     const t = S.sel ? DR.task(S.sel) : null;
@@ -95,12 +107,41 @@
     // 글을 쓰는 중에는 다시 그리지 않아요 (쓰던 글이 사라지지 않게)
     if (!force && t && shownId === t.id && a && box.contains(a) && (a.tagName === 'TEXTAREA' || (a.tagName === 'INPUT' && a.type !== 'checkbox'))) return;
     const memo = $('#dMemo') ? $('#dMemo').value : '';
+    if (!t || shownId !== t.id || editingLog >= t.log.length) editingLog = null;
     box.innerHTML = t ? detailHTML(t) : emptyHTML();
     if (t && shownId === t.id && memo) $('#dMemo').value = memo;
     shownId = t ? t.id : null;
     const ti = $('#dTitle');
     if (ti) fit(ti);
+    const le = $('#dLogEdit');
+    if (le) { fit(le); le.focus(); le.setSelectionRange(le.value.length, le.value.length); }
   };
+
+  // ---------------------------------------------------------------- 남긴 기록 고치기
+
+  function editLog(i) {
+    editingLog = i;
+    DR.renderDetail(true);
+  }
+
+  async function saveLog() {
+    const le = $('#dLogEdit');
+    const t = DR.task(S.sel);
+    if (!le || !t || editingLog === null) return;
+    const i = editingLog;
+    const v = le.value.trim();
+    editingLog = null;
+    if (!v) { DR.renderDetail(true); DR.toast('비어 있는 기록은 남길 수 없어요. 지우려면 × 를 눌러 주세요'); return; }
+    if (t.log[i] && v === t.log[i].text) { DR.renderDetail(true); return; }
+    await DR.act('/api/task/logedit', { id: t.id, i, text: v });
+    DR.renderDetail(true);
+    DR.toast('기록을 고쳤어요');
+  }
+
+  function cancelLog() {
+    editingLog = null;
+    DR.renderDetail(true);
+  }
 
   // ---------------------------------------------------------------- 고치기
 
@@ -198,7 +239,10 @@
     else if (a === 'calendar') save({ calendar: !t.calendar });
     else if (a === 'progress') DR.act('/api/task/log', { id: t.id, text: '', progress: +b.dataset.v }).then(() => DR.renderDetail(true));
     else if (a === 'addlog') addLog();
-    else if (a === 'logdel') DR.act('/api/task/logdel', { id: t.id, i: +b.dataset.i }).then(() => DR.renderDetail(true));
+    else if (a === 'logedit') editLog(+b.dataset.i);
+    else if (a === 'logsave') saveLog();
+    else if (a === 'logcancel') cancelLog();
+    else if (a === 'logdel') { if (editingLog !== null) editingLog = null; DR.act('/api/task/logdel', { id: t.id, i: +b.dataset.i }).then(() => DR.renderDetail(true)); }
     else if (a === 'toggle') toggle(t.id);
     else if (a === 'tomorrow') save({ bucket: 'day', date: DR.addDays(S.today, 1) }).then(() => DR.toast('내일로 옮겼어요'));
   });
@@ -209,11 +253,21 @@
     if (f === 'time' || f === 'alarm') save({ [f]: e.target.value || '' });
   });
 
-  box.addEventListener('input', (e) => { if (e.target.id === 'dTitle') fit(e.target); });
+  box.addEventListener('input', (e) => { if (e.target.id === 'dTitle' || e.target.id === 'dLogEdit') fit(e.target); });
+  // 저장 · 취소 단추를 눌러도 글 칸에서 눈길(포커스)이 빠지지 않게 해요 (빠지면 바로 저장돼 버려요)
+  box.addEventListener('mousedown', (e) => { if (e.target.closest('.lgbtns button')) e.preventDefault(); });
+  box.addEventListener('dblclick', (e) => {
+    const x = e.target.closest('.log .x[data-i]');
+    if (x) { e.preventDefault(); editLog(+x.dataset.i); }
+  });
 
   box.addEventListener('keydown', (e) => {
     if (e.target.id === 'dTitle' && e.key === 'Enter' && !e.isComposing) { e.preventDefault(); e.target.blur(); }
     if (e.target.id === 'dTitle' && e.key === 'Escape') { const t = DR.task(S.sel); if (t) e.target.value = t.title; e.target.blur(); }
+    if (e.target.id === 'dLogEdit') {
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); saveLog(); return; }
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); cancelLog(); return; }
+    }
     if (e.target.id === 'dMemo' && e.key === 'Enter' && (e.metaKey || e.ctrlKey) && !e.isComposing) { e.preventDefault(); addLog(); }
   });
 
@@ -226,5 +280,7 @@
       if (v !== t.title) save({ title: v }).then(() => DR.renderDetail(true));
     }
     if (e.target.id === 'dNote' && e.target.value !== t.note) save({ note: e.target.value });
+    // 다른 곳을 누르면 고친 기록을 저장해요
+    if (e.target.id === 'dLogEdit' && editingLog !== null) saveLog();
   });
 })();

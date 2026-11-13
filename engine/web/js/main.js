@@ -7,17 +7,36 @@
   const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-  function setView(view, extra = {}) {
+  // 지나온 화면 (⌫ 로 뒤로 가기, ROAD 앱 공통). 같은 화면을 다시 누르면 쌓지 않아요.
+  const history = [];
+  const here = () => ({ view: S.view, viewDate: S.viewDate, weekOf: S.weekOf, monthOf: S.monthOf, catId: S.catId });
+  const same = (a, b) => a.view === b.view && (a.view !== 'cat' || a.catId === b.catId)
+    && (a.view !== 'today' || a.viewDate === b.viewDate) && (a.view !== 'week' || a.weekOf === b.weekOf) && (a.view !== 'month' || a.monthOf === b.monthOf);
+
+  function setView(view, extra = {}, fromBack = false) {
+    const before = here();
     S.view = view;
     Object.assign(S, extra);
     if (view === 'today' && !extra.viewDate) S.viewDate = S.today;
     if (view === 'week' && !extra.weekOf) S.weekOf = DR.weekStart(S.today);
     if (view === 'month' && !extra.monthOf) S.monthOf = S.today.slice(0, 8) + '01';
+    if (!fromBack && before.view && !same(before, here())) { history.push(before); if (history.length > 50) history.shift(); }
     DR.colAdd = null;
     DR.render();
     $('#main').scrollTop = 0;
   }
   DR.setView = setView;
+
+  function goBack() {
+    while (history.length) {
+      const p = history.pop();
+      if (p.view === 'cat' && !DR.cat(p.catId)) continue; // 지운 분류는 건너뛰어요
+      setView(p.view, { viewDate: p.viewDate, weekOf: p.weekOf, monthOf: p.monthOf, catId: p.catId }, true);
+      return true;
+    }
+    return false;
+  }
+  DR.goBack = goBack;
 
   // 하루 · 한 주 · 한 달 사이를 오갈 때, 보던 날짜 근처를 그대로 보여 줘요
   function changeRange(r) {
@@ -350,7 +369,10 @@
     if (mod && !e.shiftKey && /^[1-7]$/.test(e.key)) { e.preventDefault(); setView(['today', 'week', 'month', 'due', 'repeat', 'someday', 'done'][+e.key - 1]); return; }
     if (typing(e.target) || document.querySelector('.modal')) return;
     if (mod && e.key.toLowerCase() === 'z' && DR.lastDeleted) { e.preventDefault(); DR.undoDelete(); return; }
+    if (mod && e.key === '[') { e.preventDefault(); goBack(); return; }
     if (mod) return;
+    // ⌫ = 뒤로 가기. 할 일을 골라 둔 때는 원래대로 '지우기'가 먼저예요.
+    if (e.key === 'Backspace' && !S.sel && !e.altKey && !e.isComposing && !DR.isPopOpen()) { e.preventDefault(); goBack(); return; }
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
       const ids = visibleIds();
       if (!ids.length) return;
