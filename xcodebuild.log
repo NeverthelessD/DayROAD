@@ -1,0 +1,414 @@
+Command line invocation:
+    /Applications/Xcode_16.4.app/Contents/Developer/usr/bin/xcodebuild -project DayROAD.xcodeproj -target DayROAD -configuration Release SYMROOT=/Users/runner/work/DayROAD/DayROAD/build/sym OBJROOT=/Users/runner/work/DayROAD/DayROAD/build/obj CODE_SIGN_IDENTITY=- CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM= build
+
+Build settings from command line:
+    CODE_SIGN_IDENTITY = -
+    CODE_SIGN_STYLE = Manual
+    DEVELOPMENT_TEAM = 
+    OBJROOT = /Users/runner/work/DayROAD/DayROAD/build/obj
+    SYMROOT = /Users/runner/work/DayROAD/DayROAD/build/sym
+
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (2 targets)
+    Target 'DayROAD' in project 'DayROAD'
+        ➜ Explicit dependency on target 'DayROADWidget' in project 'DayROAD'
+    Target 'DayROADWidget' in project 'DayROAD' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: de44e269951a956502514d5092c5e772
+Build description path: /Users/runner/work/DayROAD/DayROAD/build/obj/XCBuildData/de44e269951a956502514d5092c5e772.xcbuilddata
+ClangStatCache /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/com.apple.DeveloperTools/16.4-16F6/Xcode/SDKStatCaches.noindex/macosx15.5-24F74-a403186ba963133a54a0e0cacd566b0b.sdkstatcache
+    cd /Users/runner/work/DayROAD/DayROAD/DayROAD.xcodeproj
+    /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -o /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/com.apple.DeveloperTools/16.4-16F6/Xcode/SDKStatCaches.noindex/macosx15.5-24F74-a403186ba963133a54a0e0cacd566b0b.sdkstatcache
+
+CreateBuildDirectory /Users/runner/work/DayROAD/DayROAD/build/sym
+    cd /Users/runner/work/DayROAD/DayROAD/DayROAD.xcodeproj
+    builtin-create-build-directory /Users/runner/work/DayROAD/DayROAD/build/sym
+
+CreateBuildDirectory /Users/runner/work/DayROAD/DayROAD/build/obj
+    cd /Users/runner/work/DayROAD/DayROAD/DayROAD.xcodeproj
+    builtin-create-build-directory /Users/runner/work/DayROAD/DayROAD/build/obj
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD-70f9f9134e121463234245b3326c8309-VFS/all-product-headers.yaml
+    cd /Users/runner/work/DayROAD/DayROAD/DayROAD.xcodeproj
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD-70f9f9134e121463234245b3326c8309-VFS/all-product-headers.yaml
+
+CreateBuildDirectory /Users/runner/work/DayROAD/DayROAD/build/obj/EagerLinkingTBDs/Release
+    cd /Users/runner/work/DayROAD/DayROAD/DayROAD.xcodeproj
+    builtin-create-build-directory /Users/runner/work/DayROAD/DayROAD/build/obj/EagerLinkingTBDs/Release
+
+CreateBuildDirectory /Users/runner/work/DayROAD/DayROAD/build/sym/Release
+    cd /Users/runner/work/DayROAD/DayROAD/DayROAD.xcodeproj
+    builtin-create-build-directory /Users/runner/work/DayROAD/DayROAD/build/sym/Release
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget_const_extract_protocols.json (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.SwiftFileList (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.SwiftFileList
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.SwiftConstValuesFileList (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.LinkFileList (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.LinkFileList
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget-OutputFileMap.json (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources/Entitlements.plist (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources/Entitlements.plist
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.hmap (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.hmap
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.DependencyStaticMetadataFileList (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.DependencyMetadataFileList (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-project-headers.hmap (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-project-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-own-target-headers.hmap (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-generated-files.hmap (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-generated-files.hmap
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-all-target-headers.hmap (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-all-non-framework-target-headers.hmap (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD_const_extract_protocols.json (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.SwiftFileList (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.SwiftFileList
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.SwiftConstValuesFileList (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.LinkFileList (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.LinkFileList
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD-OutputFileMap.json (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD.hmap (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD.hmap
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD.DependencyStaticMetadataFileList (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD.DependencyMetadataFileList (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-project-headers.hmap (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-project-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-own-target-headers.hmap (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-generated-files.hmap (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-generated-files.hmap
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-all-target-headers.hmap (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-all-non-framework-target-headers.hmap (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    write-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-all-non-framework-target-headers.hmap
+
+MkDir /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/Resources (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /bin/mkdir -p /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/Resources
+
+MkDir /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/MacOS (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /bin/mkdir -p /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/MacOS
+
+MkDir /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /bin/mkdir -p /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents
+
+MkDir /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /bin/mkdir -p /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex
+
+MkDir /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Resources (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /bin/mkdir -p /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Resources
+
+MkDir /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/PlugIns (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /bin/mkdir -p /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/PlugIns
+
+MkDir /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/MacOS (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /bin/mkdir -p /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/MacOS
+
+MkDir /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /bin/mkdir -p /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents
+
+MkDir /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /bin/mkdir -p /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app
+
+ProcessProductPackaging /Users/runner/work/DayROAD/DayROAD/app/Widget.entitlements /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.appex.xcent (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    
+    Entitlements:
+    
+    {
+    "com.apple.security.app-sandbox" = 1;
+    "com.apple.security.temporary-exception.files.home-relative-path.read-write" =     (
+        "/Library/Application Support/DayROAD/widget/"
+    );
+}
+    
+    builtin-productPackagingUtility /Users/runner/work/DayROAD/DayROAD/app/Widget.entitlements -entitlements -format xml -o /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.appex.xcent
+
+ProcessProductPackagingDER /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.appex.xcent /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.appex.xcent.der (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /usr/bin/derq query -f xml -i /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.appex.xcent -o /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.appex.xcent.der --raw
+
+ProcessInfoPlistFile /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/Info.plist /Users/runner/work/DayROAD/DayROAD/build/gen/Widget-Info.plist (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-infoPlistUtility /Users/runner/work/DayROAD/DayROAD/build/gen/Widget-Info.plist -producttype com.apple.product-type.app-extension -expandbuildsettings -platform macosx -o /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/Info.plist
+
+CpResource /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/Resources/GowunBatang-Bold.ttf /Users/runner/work/DayROAD/DayROAD/app/fonts/GowunBatang-Bold.ttf (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/runner/work/DayROAD/DayROAD/app/fonts/GowunBatang-Bold.ttf /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/Resources
+
+SwiftDriver DayROADWidget normal arm64 com.apple.xcode.tools.swift.compiler (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-SwiftDriver -- /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name DayROADWidget -O -whole-module-optimization -enforce-exclusivity\=checked @/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.SwiftFileList -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -target arm64-apple-macos14.0 -g -Xfrontend -serialize-debugging-options -application-extension -swift-version 5 -I /Users/runner/work/DayROAD/DayROAD/build/sym/Release -F /Users/runner/work/DayROAD/DayROAD/build/sym/Release -c -num-threads 3 -Xcc -ivfsstatcache -Xcc /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/com.apple.DeveloperTools/16.4-16F6/Xcode/SDKStatCaches.noindex/macosx15.5-24F74-a403186ba963133a54a0e0cacd566b0b.sdkstatcache -output-file-map /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-generated-files.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-own-target-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-project-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/sym/Release/include -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources -emit-objc-header -emit-objc-header-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget-Swift.h -working-directory /Users/runner/work/DayROAD/DayROAD -no-emit-module-separately-wmo
+
+SwiftCompile normal arm64 Compiling\ DayROADWidget.swift,\ WidgetData.swift,\ WidgetViews.swift /Users/runner/work/DayROAD/DayROAD/app/widget/DayROADWidget.swift /Users/runner/work/DayROAD/DayROAD/app/shared/WidgetData.swift /Users/runner/work/DayROAD/DayROAD/app/shared/WidgetViews.swift (in target 'DayROADWidget' from project 'DayROAD')
+
+CompileSwift normal arm64 (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    
+
+SwiftDriver\ Compilation DayROADWidget normal arm64 com.apple.xcode.tools.swift.compiler (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-Swift-Compilation -- /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name DayROADWidget -O -whole-module-optimization -enforce-exclusivity\=checked @/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.SwiftFileList -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -target arm64-apple-macos14.0 -g -Xfrontend -serialize-debugging-options -application-extension -swift-version 5 -I /Users/runner/work/DayROAD/DayROAD/build/sym/Release -F /Users/runner/work/DayROAD/DayROAD/build/sym/Release -c -num-threads 3 -Xcc -ivfsstatcache -Xcc /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/com.apple.DeveloperTools/16.4-16F6/Xcode/SDKStatCaches.noindex/macosx15.5-24F74-a403186ba963133a54a0e0cacd566b0b.sdkstatcache -output-file-map /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-generated-files.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-own-target-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-project-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/sym/Release/include -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources -emit-objc-header -emit-objc-header-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget-Swift.h -working-directory /Users/runner/work/DayROAD/DayROAD -no-emit-module-separately-wmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling DayROADWidget.swift, WidgetData.swift, WidgetViews.swift (in target 'DayROADWidget' from project 'DayROAD')
+
+SwiftDriver\ Compilation\ Requirements DayROADWidget normal arm64 com.apple.xcode.tools.swift.compiler (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name DayROADWidget -O -whole-module-optimization -enforce-exclusivity\=checked @/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.SwiftFileList -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -target arm64-apple-macos14.0 -g -Xfrontend -serialize-debugging-options -application-extension -swift-version 5 -I /Users/runner/work/DayROAD/DayROAD/build/sym/Release -F /Users/runner/work/DayROAD/DayROAD/build/sym/Release -c -num-threads 3 -Xcc -ivfsstatcache -Xcc /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/com.apple.DeveloperTools/16.4-16F6/Xcode/SDKStatCaches.noindex/macosx15.5-24F74-a403186ba963133a54a0e0cacd566b0b.sdkstatcache -output-file-map /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-generated-files.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-own-target-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget-project-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/sym/Release/include -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources -emit-objc-header -emit-objc-header-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget-Swift.h -working-directory /Users/runner/work/DayROAD/DayROAD -no-emit-module-separately-wmo
+
+SwiftMergeGeneratedHeaders /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources/DayROADWidget-Swift.h /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget-Swift.h (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-swiftHeaderTool -arch arm64 /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget-Swift.h -o /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DerivedSources/DayROADWidget-Swift.h
+
+Copy /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.swiftmodule/arm64-apple-macos.swiftdoc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.swiftdoc (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.swiftdoc /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.swiftmodule/arm64-apple-macos.swiftmodule /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.swiftmodule (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.swiftmodule /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.swiftmodule/arm64-apple-macos.abi.json /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.abi.json (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.abi.json /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.swiftsourceinfo (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.swiftsourceinfo /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Ld /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/MacOS/DayROADWidget normal (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.0 -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -Os -L/Users/runner/work/DayROAD/DayROAD/build/obj/EagerLinkingTBDs/Release -L/Users/runner/work/DayROAD/DayROAD/build/sym/Release -F/Users/runner/work/DayROAD/DayROAD/build/obj/EagerLinkingTBDs/Release -F/Users/runner/work/DayROAD/DayROAD/build/sym/Release -filelist /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.LinkFileList -Xlinker -rpath -Xlinker @executable_path/../Frameworks -Xlinker -rpath -Xlinker @executable_path/../../../../Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget_lto.o -Xlinker -dependency_info -Xlinker /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget_dependency_info.dat -e _NSExtensionMain -fapplication-extension -fobjc-link-runtime -L/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.swiftmodule -Xlinker -no_adhoc_codesign -o /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/MacOS/DayROADWidget
+
+SwiftDriver DayROAD normal arm64 com.apple.xcode.tools.swift.compiler (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-SwiftDriver -- /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name DayROAD -O -whole-module-optimization -enforce-exclusivity\=checked @/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.SwiftFileList -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -target arm64-apple-macos14.0 -g -Xfrontend -serialize-debugging-options -swift-version 5 -I /Users/runner/work/DayROAD/DayROAD/build/sym/Release -F /Users/runner/work/DayROAD/DayROAD/build/sym/Release -c -num-threads 3 -Xcc -ivfsstatcache -Xcc /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/com.apple.DeveloperTools/16.4-16F6/Xcode/SDKStatCaches.noindex/macosx15.5-24F74-a403186ba963133a54a0e0cacd566b0b.sdkstatcache -output-file-map /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-generated-files.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-own-target-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-project-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/sym/Release/include -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DerivedSources -emit-objc-header -emit-objc-header-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD-Swift.h -working-directory /Users/runner/work/DayROAD/DayROAD -no-emit-module-separately-wmo
+
+SwiftCompile normal arm64 Compiling\ Native.swift,\ WidgetData.swift,\ WidgetViews.swift,\ main.swift /Users/runner/work/DayROAD/DayROAD/app/shell/Native.swift /Users/runner/work/DayROAD/DayROAD/app/shared/WidgetData.swift /Users/runner/work/DayROAD/DayROAD/app/shared/WidgetViews.swift /Users/runner/work/DayROAD/DayROAD/app/shell/main.swift (in target 'DayROAD' from project 'DayROAD')
+CompileSwift normal arm64 (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    
+
+SwiftDriver\ Compilation DayROAD normal arm64 com.apple.xcode.tools.swift.compiler (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-Swift-Compilation -- /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name DayROAD -O -whole-module-optimization -enforce-exclusivity\=checked @/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.SwiftFileList -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -target arm64-apple-macos14.0 -g -Xfrontend -serialize-debugging-options -swift-version 5 -I /Users/runner/work/DayROAD/DayROAD/build/sym/Release -F /Users/runner/work/DayROAD/DayROAD/build/sym/Release -c -num-threads 3 -Xcc -ivfsstatcache -Xcc /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/com.apple.DeveloperTools/16.4-16F6/Xcode/SDKStatCaches.noindex/macosx15.5-24F74-a403186ba963133a54a0e0cacd566b0b.sdkstatcache -output-file-map /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-generated-files.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-own-target-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-project-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/sym/Release/include -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DerivedSources -emit-objc-header -emit-objc-header-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD-Swift.h -working-directory /Users/runner/work/DayROAD/DayROAD -no-emit-module-separately-wmo
+
+ExtractAppIntentsMetadata (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name DayROADWidget --sdk-root /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk --xcode-version 16F6 --platform-family macOS --deployment-target 14.0 --bundle-identifier com.nevertheless-d.dayroad.widget --output /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/Resources --target-triple arm64-apple-macos14.0 --binary-file /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/MacOS/DayROADWidget --dependency-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget_dependency_info.dat --stringsdata-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.SwiftFileList --metadata-file-list /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.DependencyMetadataFileList --static-metadata-file-list /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.DependencyStaticMetadataFileList --swift-const-vals-list /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/Objects-normal/arm64/DayROADWidget.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-11-14 14:34:36.965 appintentsmetadataprocessor[2605:13688] Starting appintentsmetadataprocessor export
+2026-11-14 14:34:37.033 appintentsmetadataprocessor[2605:13688] Writing Metadata.appintents
+2026-11-14 14:34:37.033 appintentsmetadataprocessor[2605:13688] Metadata root: /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/Resources/Metadata.appintents
+
+GenerateDSYMFile /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex.dSYM /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/MacOS/DayROADWidget (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dsymutil /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex/Contents/MacOS/DayROADWidget -o /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex.dSYM
+
+CodeSign /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROADWidget.build/DayROADWidget.appex.xcent --timestamp\=none --generate-entitlement-der /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex
+
+RegisterExecutionPolicyException /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-RegisterExecutionPolicyException /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex
+
+Touch /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex (in target 'DayROADWidget' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /usr/bin/touch -c /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex
+
+CpResource /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Resources/version.txt /Users/runner/work/DayROAD/DayROAD/build/gen/res/version.txt (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/runner/work/DayROAD/DayROAD/build/gen/res/version.txt /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Resources
+
+CpResource /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Resources/dayroad-engine /Users/runner/work/DayROAD/DayROAD/build/gen/res/dayroad-engine (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/runner/work/DayROAD/DayROAD/build/gen/res/dayroad-engine /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Resources
+
+CpResource /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Resources/GowunBatang-Bold.ttf /Users/runner/work/DayROAD/DayROAD/app/fonts/GowunBatang-Bold.ttf (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/runner/work/DayROAD/DayROAD/app/fonts/GowunBatang-Bold.ttf /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Resources
+
+CpResource /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Resources/AppIcon.icns /Users/runner/work/DayROAD/DayROAD/build/gen/res/AppIcon.icns (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /Users/runner/work/DayROAD/DayROAD/build/gen/res/AppIcon.icns /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Resources
+
+SwiftDriverJobDiscovery normal arm64 Compiling Native.swift, WidgetData.swift, WidgetViews.swift, main.swift (in target 'DayROAD' from project 'DayROAD')
+
+SwiftDriver\ Compilation\ Requirements DayROAD normal arm64 com.apple.xcode.tools.swift.compiler (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name DayROAD -O -whole-module-optimization -enforce-exclusivity\=checked @/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.SwiftFileList -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -target arm64-apple-macos14.0 -g -Xfrontend -serialize-debugging-options -swift-version 5 -I /Users/runner/work/DayROAD/DayROAD/build/sym/Release -F /Users/runner/work/DayROAD/DayROAD/build/sym/Release -c -num-threads 3 -Xcc -ivfsstatcache -Xcc /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/com.apple.DeveloperTools/16.4-16F6/Xcode/SDKStatCaches.noindex/macosx15.5-24F74-a403186ba963133a54a0e0cacd566b0b.sdkstatcache -output-file-map /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD-OutputFileMap.json -use-frontend-parseable-output -save-temps -no-color-diagnostics -serialize-diagnostics -emit-dependencies -emit-module -emit-module-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.swiftmodule -validate-clang-modules-once -clang-build-session-file /var/folders/2s/vty41l455yv698g4xkgfv7z00000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/swift-overrides.hmap -emit-const-values -Xfrontend -const-gather-protocols-file -Xfrontend /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD_const_extract_protocols.json -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-generated-files.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-own-target-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-all-target-headers.hmap -Xcc -iquote -Xcc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD-project-headers.hmap -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/sym/Release/include -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DerivedSources-normal/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DerivedSources/arm64 -Xcc -I/Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DerivedSources -emit-objc-header -emit-objc-header-path /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD-Swift.h -working-directory /Users/runner/work/DayROAD/DayROAD -no-emit-module-separately-wmo
+
+Copy /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.swiftmodule/arm64-apple-macos.swiftmodule /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.swiftmodule (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.swiftmodule /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.swiftmodule/arm64-apple-macos.swiftdoc /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.swiftdoc (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.swiftdoc /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.swiftmodule/arm64-apple-macos.swiftdoc
+
+SwiftMergeGeneratedHeaders /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DerivedSources/DayROAD-Swift.h /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD-Swift.h (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-swiftHeaderTool -arch arm64 /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD-Swift.h -o /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DerivedSources/DayROAD-Swift.h
+
+Copy /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.swiftmodule/arm64-apple-macos.abi.json /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.abi.json (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.abi.json /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.swiftsourceinfo (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.swiftsourceinfo /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+Ld /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/MacOS/DayROAD normal (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.0 -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk -Os -L/Users/runner/work/DayROAD/DayROAD/build/obj/EagerLinkingTBDs/Release -L/Users/runner/work/DayROAD/DayROAD/build/sym/Release -F/Users/runner/work/DayROAD/DayROAD/build/obj/EagerLinkingTBDs/Release -F/Users/runner/work/DayROAD/DayROAD/build/sym/Release -filelist /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.LinkFileList -Xlinker -rpath -Xlinker @executable_path/../Frameworks -dead_strip -Xlinker -object_path_lto -Xlinker /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD_lto.o -Xlinker -dependency_info -Xlinker /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.swiftmodule -Xlinker -no_adhoc_codesign -o /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/MacOS/DayROAD
+
+Copy /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/PlugIns/DayROADWidget.appex /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -exclude Headers -exclude PrivateHeaders -exclude Modules -exclude \*.tbd -resolve-src-symlinks -remove-static-executable /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROADWidget.appex /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/PlugIns
+
+ProcessInfoPlistFile /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Info.plist /Users/runner/work/DayROAD/DayROAD/build/gen/Info.plist (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-infoPlistUtility /Users/runner/work/DayROAD/DayROAD/build/gen/Info.plist -producttype com.apple.product-type.application -genpkginfo /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/PkgInfo -expandbuildsettings -platform macosx -scanforprivacyfile /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/PlugIns/DayROADWidget.appex -o /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Info.plist
+
+ExtractAppIntentsMetadata (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name DayROAD --sdk-root /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk --xcode-version 16F6 --platform-family macOS --deployment-target 14.0 --bundle-identifier com.nevertheless-d.dayroad --output /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Resources --target-triple arm64-apple-macos14.0 --binary-file /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/MacOS/DayROAD --dependency-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD_dependency_info.dat --stringsdata-file /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.SwiftFileList --metadata-file-list /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD.DependencyMetadataFileList --static-metadata-file-list /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/DayROAD.DependencyStaticMetadataFileList --swift-const-vals-list /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/Objects-normal/arm64/DayROAD.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
+2026-11-14 14:34:59.045 appintentsmetadataprocessor[3196:15464] Starting appintentsmetadataprocessor export
+2026-11-14 14:34:59.118 appintentsmetadataprocessor[3196:15464] Extracted no relevant App Intents symbols, skipping writing output
+
+CopySwiftLibs /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/MacOS/DayROAD --scan-folder /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Frameworks --scan-folder /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/PlugIns --scan-folder /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Library/SystemExtensions --scan-folder /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Extensions --platform macosx --toolchain /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/runner/work/DayROAD/DayROAD/build/obj/DayROAD.build/Release/DayROAD.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+
+GenerateDSYMFile /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app.dSYM /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/MacOS/DayROAD (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/dsymutil /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/MacOS/DayROAD -o /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app.dSYM
+
+CodeSign /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app
+
+ValidateEmbeddedBinary /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/PlugIns/DayROADWidget.appex (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /Applications/Xcode_16.4.app/Contents/Developer/usr/bin/embeddedBinaryValidationUtility /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/PlugIns/DayROADWidget.appex -signing-cert - -info-plist-path /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/Info.plist
+
+RegisterExecutionPolicyException /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-RegisterExecutionPolicyException /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app
+
+Validate /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    builtin-validationUtility /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app -no-validate-extension -infoplist-subpath Contents/Info.plist
+
+Touch /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /usr/bin/touch -c /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app
+
+RegisterWithLaunchServices /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app (in target 'DayROAD' from project 'DayROAD')
+    cd /Users/runner/work/DayROAD/DayROAD
+    /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f -R -trusted /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app
+
+** BUILD SUCCEEDED **
+

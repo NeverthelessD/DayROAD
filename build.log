@@ -1,0 +1,80 @@
+▶ 엔진 테스트 · 빌드 (darwin/arm64, v1.3.1)
+go: downloading golang.org/x/sys v0.30.0
+ok  	dayroad	0.063s
+▶ 아이콘 (AppIcon.png → AppIcon.icns)
+/Users/runner/work/DayROAD/DayROAD/build/gen/Info.plist: OK
+/Users/runner/work/DayROAD/DayROAD/build/gen/Widget-Info.plist: OK
+▶ Xcode 프로젝트 만들기 (XcodeGen)
+[32m==>[0m [1mDownloading bottle manifests[0m
+✔︎ Bottle Manifest xcodegen (2.46.0)
+[32m==>[0m [1mFetching downloads for: [32mxcodegen[39m[0m
+✔︎ Bottle xcodegen (2.46.0)
+[34m==>[0m [1mPouring xcodegen--2.46.0.arm64_sequoia.bottle.1.tar.gz[0m
+🍺  /opt/homebrew/Cellar/xcodegen/2.46.0: 38 files, 7.5MB
+⚙️  Generating plists...
+⚙️  Generating project...
+⚙️  Writing project...
+Created project at /Users/runner/work/DayROAD/DayROAD/DayROAD.xcodeproj
+Xcode 16.4
+Build version 16F6
+▶ 앱 + 위젯 빌드 (xcodebuild)
+** BUILD SUCCEEDED **
+▶ 내용 확인
+  /Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents:
+  total 16
+  drwxr-xr-x  3 runner  staff    96 Nov 14 14:34 _CodeSignature
+  drwxr-xr-x  8 runner  staff   256 Nov 14 14:34 .
+  drwxr-xr-x  3 runner  staff    96 Nov 14 14:34 ..
+  -rw-r--r--  1 runner  staff  2928 Nov 14 14:34 Info.plist
+  drwxr-xr-x  3 runner  staff    96 Nov 14 14:34 MacOS
+  -rw-r--r--  1 runner  staff     8 Nov 14 14:35 PkgInfo
+  drwxr-xr-x  3 runner  staff    96 Nov 14 14:34 PlugIns
+  drwxr-xr-x  6 runner  staff   192 Nov 14 14:34 Resources
+  
+  /Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents/PlugIns:
+  total 0
+  drwxr-xr-x  3 runner  staff   96 Nov 14 14:34 .
+  drwxr-xr-x  8 runner  staff  256 Nov 14 14:34 ..
+  drwxr-xr-x  3 runner  staff   96 Nov 14 14:34 DayROADWidget.appex
+  
+  /Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents/PlugIns/DayROADWidget.appex/Contents/Resources:
+  total 80
+  drwxr-xr-x  4 runner  staff    128 Nov 14 14:34 .
+  drwxr-xr-x  6 runner  staff    192 Nov 14 14:34 ..
+  -rw-r--r--  1 runner  staff  37436 Nov 14 14:34 GowunBatang-Bold.ttf
+  drwxr-xr-x  4 runner  staff    128 Nov 14 14:34 Metadata.appintents
+  App Intents: /Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents/PlugIns/DayROADWidget.appex/Contents/Resources/Metadata.appintents
+  App Intents: /Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents/PlugIns/DayROADWidget.appex/Contents/Resources/Metadata.appintents/extract.actionsdata
+▶ 다시 서명: 버전이 바뀌어도 맥이 '같은 앱'으로 알아보게 (임시 서명 + 앱 이름 기준 정체성)
+/Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents/PlugIns/DayROADWidget.appex: replacing existing signature
+/Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app: replacing existing signature
+  위젯 Executable=/Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents/PlugIns/DayROADWidget.appex/Contents/MacOS/DayROADWidget
+  위젯 designated => identifier "com.nevertheless-d.dayroad.widget"
+  앱 Executable=/Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents/MacOS/DayROAD
+  앱 designated => identifier "com.nevertheless-d.dayroad"
+▶ 서명 확인 (임시 서명) · 위젯의 보호 상자 권한
+--prepared:/Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+--validated:/Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+/Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app: valid on disk
+/Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app: satisfies its Designated Requirement
+  Executable=/Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents/MacOS/DayROAD
+  Identifier=com.nevertheless-d.dayroad
+  Format=app bundle with Mach-O thin (arm64)
+  CodeDirectory v=20400 size=5459 flags=0x2(adhoc) hashes=164+3 location=embedded
+  Signature=adhoc
+  Info.plist entries=34
+  TeamIdentifier=not set
+  Sealed Resources version=2 rules=13 files=5
+  Internal requirements count=1 size=68
+  Executable=/Users/runner/work/DayROAD/DayROAD/dist/DayROAD.app/Contents/PlugIns/DayROADWidget.appex/Contents/MacOS/DayROADWidget
+  [Dict]
+  	[Key] com.apple.security.app-sandbox
+  	[Value]
+  		[Bool] true
+  	[Key] com.apple.security.temporary-exception.files.home-relative-path.read-write
+  	[Value]
+  		[Array]
+  			[String] /Library/Application Support/DayROAD/widget/
+▶ 압축
+▶ 업데이트 파일을 풀어도 서명이 그대로인지 확인 (앱의 업데이트 기능처럼 unzip)
+✔ dist/DayROAD-1.3.1.zip · dist/DayROAD.zip

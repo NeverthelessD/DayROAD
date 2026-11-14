@@ -1,0 +1,122 @@
+{
+ "v": 1,
+ "tasks": [
+  {
+   "id": "e2ef541921c8",
+   "title": "할 일 이름을 눌러 자세히 보기",
+   "note": "",
+   "bucket": "day",
+   "date": "2026-11-14",
+   "weekOf": "",
+   "time": "",
+   "cat": "personal",
+   "star": false,
+   "done": false,
+   "doneAt": "",
+   "due": "",
+   "alarm": "",
+   "repeat": "",
+   "progress": 0,
+   "log": [
+    {
+     "date": "2026-11-14",
+     "text": "오른쪽 칸에서 마감일 · 알림 · 반복을 정하고, 어디까지 했는지 적어 둘 수 있어요.",
+     "progress": 0
+    }
+   ],
+   "carriedFrom": "",
+   "calendar": false,
+   "eventId": "",
+   "reminderId": "",
+   "nextId": "",
+   "order": 1794666994524,
+   "created": 1794666994524,
+   "updated": 1794666994524
+  },
+  {
+   "id": "c4953bd51287",
+   "title": "네모 칸을 눌러 끝내기",
+   "note": "",
+   "bucket": "day",
+   "date": "2026-11-14",
+   "weekOf": "",
+   "time": "",
+   "cat": "personal",
+   "star": false,
+   "done": false,
+   "doneAt": "",
+   "due": "",
+   "alarm": "",
+   "repeat": "",
+   "progress": 0,
+   "log": [],
+   "carriedFrom": "",
+   "calendar": false,
+   "eventId": "",
+   "reminderId": "",
+   "nextId": "",
+   "order": 1794666994525,
+   "created": 1794666994524,
+   "updated": 1794666994524
+  },
+  {
+   "id": "2ae1853c957d",
+   "title": "바탕화면에 위젯 올리기",
+   "note": "",
+   "bucket": "day",
+   "date": "2026-11-14",
+   "weekOf": "",
+   "time": "",
+   "cat": "personal",
+   "star": false,
+   "done": false,
+   "doneAt": "",
+   "due": "",
+   "alarm": "",
+   "repeat": "",
+   "progress": 0,
+   "log": [
+    {
+     "date": "2026-11-14",
+     "text": "바탕화면을 오른쪽 클릭 › '위젯 편집' › DayROAD 를 골라요.",
+     "progress": 0
+    }
+   ],
+   "carriedFrom": "",
+   "calendar": false,
+   "eventId": "",
+   "reminderId": "",
+   "nextId": "",
+   "order": 1794666994526,
+   "created": 1794666994524,
+   "updated": 1794666994524
+  }
+ ],
+ "cats": [
+  {
+   "id": "work",
+   "name": "일",
+   "color": "blue",
+   "order": 0
+  },
+  {
+   "id": "personal",
+   "name": "개인",
+   "color": "orange",
+   "order": 1
+  },
+  {
+   "id": "study",
+   "name": "공부",
+   "color": "purple",
+   "order": 2
+  },
+  {
+   "id": "health",
+   "name": "건강",
+   "color": "green",
+   "order": 3
+  }
+ ],
+ "lastDay": "2026-11-14"
+}

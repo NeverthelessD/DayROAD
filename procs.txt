@@ -1,0 +1,5 @@
+--- A 실행 중
+ 3537     1 S    /Applications/DayROAD.app/Contents/MacOS/DayROAD
+ 3554  3537 S    /Users/runner/Library/Application Support/DayROAD/bin/dayroad-engine
+ 3562  3554 S    /Users/runner/Library/Application Support/DayROAD/bin/dayroad-engine
+--- D 종료 뒤

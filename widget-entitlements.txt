@@ -1,0 +1,9 @@
+Executable=/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex/Contents/MacOS/DayROADWidget
+[Dict]
+	[Key] com.apple.security.app-sandbox
+	[Value]
+		[Bool] true
+	[Key] com.apple.security.temporary-exception.files.home-relative-path.read-write
+	[Value]
+		[Array]
+			[String] /Library/Application Support/DayROAD/widget/
