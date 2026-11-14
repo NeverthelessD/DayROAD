@@ -284,6 +284,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
         }
         // 엔진이 위젯 파일을 새로 쓰면 위젯을 바로 다시 그려요
         Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] _ in self?.checkWidgetFile() }
+        Timer.scheduledTimer(withTimeInterval: 600, repeats: true) { [weak self] _ in self?.watchWidgets("10분마다") }
+        NSWorkspace.shared.notificationCenter.addObserver(forName: NSWorkspace.didWakeNotification, object: nil, queue: .main) { [weak self] _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 20) { self?.watchWidgets("잠자기에서 깸") }
+        }
         if offerMoveToApplications() {
             quitting = true
             return
@@ -353,6 +357,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
 
     func loadApp(port: Int) {
         registerWidget()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6) { [weak self] in self?.watchWidgets("켬") }
         guard let url = URL(string: "http://127.0.0.1:\(port)/?t=\(engine.token)") else { return }
         pageURL = url
         pageReady = false
@@ -504,6 +509,39 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
             msg += " · 맥이 아는 위젯 \(paths.count)개" + paths.map { "\n    \($0)" }.joined()
             Log.write(msg)
             WidgetCenter.shared.reloadAllTimelines()
+        }
+    }
+
+    /// 바탕화면에 놓인 DayROAD 위젯 수와 맥의 위젯 등록을 살펴서 바뀌면 기록해요 (진단 정보에 보여요).
+    /// 이 앱의 위젯이 맥 목록에서 빠져 있으면 곧바로 다시 등록해요.
+    var placedWidgets: Int? = nil
+    func watchWidgets(_ reason: String) {
+        DispatchQueue.global(qos: .utility).async {
+            let mine = Bundle.main.bundlePath + "/"
+            let paths = AppDelegate.widgetPaths()
+            if !paths.contains(where: { $0.hasPrefix(mine) }) {
+                Log.write("위젯 확인(\(reason)): 맥 목록에 이 앱의 위젯이 없어서 다시 등록해요 · 맥이 아는 위젯 \(paths.count)개")
+                DispatchQueue.main.async { self.registerWidget() }
+            }
+        }
+        WidgetCenter.shared.getCurrentConfigurations { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let infos):
+                    let n = infos.count
+                    let kinds = infos.map { String(describing: $0.family) }.joined(separator: ", ")
+                    if self.placedWidgets == nil {
+                        let last = UserDefaults.standard.object(forKey: "placedWidgets") as? Int
+                        Log.write("바탕화면 DayROAD 위젯(\(reason)): \(n)개\(kinds.isEmpty ? "" : " (\(kinds))")" + (last.map { " · 지난번 \($0)개" } ?? ""))
+                    } else if self.placedWidgets != n {
+                        Log.write("바탕화면 DayROAD 위젯이 바뀜(\(reason)): \(self.placedWidgets!)개 → \(n)개\(kinds.isEmpty ? "" : " (\(kinds))")")
+                    }
+                    self.placedWidgets = n
+                    UserDefaults.standard.set(n, forKey: "placedWidgets")
+                case .failure(let e):
+                    Log.write("바탕화면 위젯 확인 실패(\(reason)): \(e.localizedDescription)")
+                }
+            }
         }
     }
 

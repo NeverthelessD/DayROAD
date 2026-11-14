@@ -235,6 +235,58 @@ launchctl unsetenv DAYROAD_UPDATE_URL
 kill "$FEEDPID" 2>/dev/null
 "$LSREG" -u "$OLDDIR/DayROAD/DayROAD.app" 2>/dev/null; rm -rf "$OLDDIR"
 
+echo "▶ Y. 새 버전이 하는 업데이트: 앱 자리를 한 번에 바꾸고, 바꾸는 동안에도 맥이 위젯을 잃지 않는지"
+# 이 버전(v$NEWV)이 '더 새 버전'(9.9.9, 같은 앱에 버전 표시만 바꿔 다시 서명)으로 스스로 업데이트해 봐요
+YV=9.9.9
+YFEED="$OUT/feed-y"; rm -rf "$YFEED"; mkdir -p "$YFEED/b"
+ditto "$ROOT/dist/DayROAD.app" "$YFEED/b/DayROAD.app"
+printf '%s' "$YV" > "$YFEED/b/DayROAD.app/Contents/Resources/version.txt"
+codesign --force --sign - --preserve-metadata=entitlements,flags \
+  --requirements '=designated => identifier "com.nevertheless-d.dayroad"' "$YFEED/b/DayROAD.app" >/dev/null 2>&1
+ditto -c -k --norsrc --keepParent "$YFEED/b/DayROAD.app" "$YFEED/DayROAD-$YV.zip"; rm -rf "$YFEED/b"
+python3 - "$YFEED" "$YV" <<'PY'
+import hashlib, json, os, sys
+d, v = sys.argv[1], sys.argv[2]
+z = os.path.join(d, f"DayROAD-{v}.zip")
+json.dump({"version": v, "date": "2026-11-14", "zip": os.path.basename(z), "size": os.path.getsize(z),
+           "sha256": hashlib.sha256(open(z, "rb").read()).hexdigest(), "notes": ["시험"]}, open(os.path.join(d, "latest.json"), "w"))
+PY
+python3 -m http.server 8766 --bind 127.0.0.1 --directory "$YFEED" > "$OUT/feed-y-server.log" 2>&1 &
+YFEEDPID=$!
+launchctl setenv DAYROAD_UPDATE_URL "http://127.0.0.1:8766/latest.json"
+launch
+sleep 4
+rm -f "$OUT/y-stop"
+( while [ ! -f "$OUT/y-stop" ]; do
+    if pluginkit -m -D -v -i "$WID" 2>/dev/null | grep -q '/Applications/DayROAD.app/Contents/PlugIns/'; then echo "1 $(date +%T)"; else echo "0 $(date +%T)"; fi
+    sleep 0.2
+  done ) > "$OUT/y-samples.txt" 2>&1 &
+YSAMPLER=$!
+sleep 1
+curl -fs -X POST -H "x-token: $(tok)" "$(API)/api/update/check" > /dev/null
+curl -fs -X POST -H "x-token: $(tok)" "$(API)/api/update/install" > /dev/null
+for _ in $(seq 1 120); do
+  ST=$(curl -fs -H "x-token: $(tok)" "$(API)/api/poll" | jget "d['update']['status']")
+  [ "$ST" = "ready" ] || [ "$ST" = "error" ] && break; sleep 1
+done
+sleep 3; touch "$OUT/y-stop"; wait "$YSAMPLER" 2>/dev/null
+check "Y1 v$NEWV 앱이 스스로 $YV 로 업데이트함 ($ST)" test "$ST" = "ready"
+{ echo "== Y) 업데이트 직후, 다시 시작 전"; widgets; } > "$OUT/widget-update-y.txt"
+check "Y2 업데이트 직후(다시 시작 전)에도 응용 프로그램 폴더의 위젯이 맥에 등록돼 있음" bash -c "pluginkit -m -D -v -i $WID | grep -q '/Applications/DayROAD.app/Contents/PlugIns/'"
+check "Y3 업데이트하는 동안 위젯이 맥 목록에서 빠진 순간이 없음 ($(grep -c '^0' "$OUT/y-samples.txt")/$(wc -l < "$OUT/y-samples.txt" | tr -d ' ') 번 빠짐)" bash -c "! grep -q '^0' '$OUT/y-samples.txt' && [ \$(wc -l < '$OUT/y-samples.txt') -gt 3 ]"
+check "Y4 한 번에 자리 바꾸기로 업데이트함" grep -q "한 번에 자리 바꾸기) · 위젯 등록" "$SUP/engine.log"
+check "Y5 보관한 이전 버전 위젯은 꺼짐 · 맥 목록에 없음" bash -c "test -d '$SUP/backup.noindex/DayROAD.app/Contents/PlugIns.off' && ! pluginkit -m -D -v -i $WID | grep -q backup.noindex"
+curl -fs -X POST -H "x-token: $(tok)" "$(API)/api/update/restart" >/dev/null
+sleep 3; wait_ready; sleep 8
+check "Y6 다시 연 앱이 $YV" test "$(cat "$APPDIR/Contents/Resources/version.txt")" = "$YV"
+check "Y7 앱이 바탕화면 위젯 수를 기록함" grep -q "바탕화면 DayROAD 위젯\|바탕화면 위젯 확인" "$SUP/launcher.log"
+grep -E "바탕화면|위젯 확인|위젯 등록" "$SUP/launcher.log" | tail -6 | sed 's/^/  /'
+{ echo; echo "== Y) $YV 로 다시 연 뒤"; widgets; } >> "$OUT/widget-update-y.txt"
+cat "$OUT/widget-update-y.txt"
+quit_app
+launchctl unsetenv DAYROAD_UPDATE_URL
+kill "$YFEEDPID" 2>/dev/null
+
 echo "▶ 기록 모으기"
 for f in launcher.log requests.log engine.log engine.prev.log engine.out engine.prev.out settings.json data.json widget/widget.json; do
   [ -f "$SUP/$f" ] && cp "$SUP/$f" "$OUT/$(basename "$f")"

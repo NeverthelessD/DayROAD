@@ -137,6 +137,25 @@ func (u *Updater) disarmBackup() {
 	}
 }
 
+const widgetID = "com.nevertheless-d.dayroad.widget"
+const lsregisterPath = "/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister"
+
+// registerApp: 새로 놓은 앱과 그 안의 위젯을 곧바로 맥에 알려요 (다시 시작을 기다리지 않고).
+func registerApp(p string) {
+	if runtime.GOOS != "darwin" {
+		return
+	}
+	if fileExists(lsregisterPath) {
+		exec.Command(lsregisterPath, "-f", p).Run()
+	}
+	if m, _ := filepath.Glob(filepath.Join(p, "Contents", "PlugIns", "*.appex")); len(m) > 0 {
+		for _, x := range m {
+			pluginkit("-a", x)
+		}
+		pluginkit("-e", "use", "-i", widgetID)
+	}
+}
+
 // unregisterApp asks LaunchServices to forget an app bundle (Spotlight · '다음으로 열기' 목록에서 빠져요). 실패해도 괜찮아요.
 func unregisterApp(p string) {
 	if runtime.GOOS != "darwin" {
@@ -428,16 +447,41 @@ func (u *Updater) install(rel *Release) error {
 	return nil
 }
 
-// swap moves the running app to the backup folder and puts newApp in its place.
+// swap puts newApp in place of the running app and keeps the running app in the backup folder.
+// 1.3.1 부터: 두 앱의 자리를 한 번에 바꿔서(swapPaths) 응용 프로그램 폴더의 앱이 한순간도 비지 않게 하고,
+// 바꾸자마자 새 앱의 위젯을 맥에 등록한 뒤에 보관 앱의 위젯을 꺼요.
+// 예전에는 '옮기고 → 넣고 → 다시 시작할 때 등록'이라, 다시 시작하기 전까지 맥이 아는 DayROAD 위젯이 0개였고
+// 그 사이 맥이 바탕화면의 DayROAD 위젯을 치워 버렸어요 (사용자 맥에서 업데이트 뒤 위젯이 사라진 원인).
 func (u *Updater) swap(appPath, newApp string) error {
 	backup := u.backupApp()
 	os.MkdirAll(filepath.Dir(backup), 0o755)
 	os.RemoveAll(backup)
+	if err := swapPaths(newApp, appPath); err == nil {
+		// 이제 appPath = 새 앱, newApp 자리 = 지금 실행 중인 이전 앱
+		if runtime.GOOS == "darwin" {
+			exec.Command("/usr/bin/xattr", "-cr", appPath).Run()
+			exec.Command("/usr/bin/touch", appPath).Run()
+		}
+		registerApp(appPath)
+		if err := moveDir(newApp, backup); err != nil {
+			log.Printf("이전 버전을 보관 폴더로 옮기지 못했어요: %v", err)
+			disarmPlugins(newApp)
+			unregisterApp(newApp)
+			return nil
+		}
+		disarmPlugins(backup)
+		unregisterApp(backup)
+		log.Printf("새 버전으로 바꿨어요 (한 번에 자리 바꾸기) · 위젯 등록")
+		return nil
+	} else {
+		log.Printf("한 번에 자리 바꾸기를 못 해서 예전 방식으로 옮겨요: %v", err)
+	}
 	if err := moveDir(appPath, backup); err != nil {
 		if os.IsPermission(err) || errors.Is(err, os.ErrPermission) {
 			if err := adminSwap(appPath, newApp, backup); err != nil {
 				return err
 			}
+			registerApp(appPath)
 			disarmPlugins(backup)
 			unregisterApp(backup)
 			return nil
@@ -448,12 +492,13 @@ func (u *Updater) swap(appPath, newApp string) error {
 		moveDir(backup, appPath) // 되돌리기
 		return fmt.Errorf("새 버전을 설치하지 못했어요: %v", err)
 	}
-	disarmPlugins(backup)
-	unregisterApp(backup)
 	if runtime.GOOS == "darwin" {
 		exec.Command("/usr/bin/xattr", "-cr", appPath).Run()
 		exec.Command("/usr/bin/touch", appPath).Run()
 	}
+	registerApp(appPath)
+	disarmPlugins(backup)
+	unregisterApp(backup)
 	return nil
 }
 
@@ -526,6 +571,7 @@ func (u *Updater) Rollback() error {
 		moveDir(tmp, appPath)
 		return fmt.Errorf("이전 버전을 되돌리지 못했어요: %v", err)
 	}
+	registerApp(appPath)
 	moveDir(tmp, u.backupApp())
 	disarmPlugins(u.backupApp())
 	unregisterApp(u.backupApp())

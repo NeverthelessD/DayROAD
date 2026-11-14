@@ -32,7 +32,7 @@ printf '{"version":"%s","commit":"%s","build":"%s","smoke":"%s"}\n' "$VERSION" "
 cat "$OUT/status.json"; tail -40 "$OUT/build.log"; [ -f "$OUT/smoke.log" ] && tail -40 "$OUT/smoke.log"
 
 # 올리기 전에 큰 것(시험용으로 푼 앱 · 업데이트 파일 · 엔진 실행 파일)은 빼요
-rm -rf "$OUT/feed" "$OUT/sup-before-x/bin" "$OUT/sup-before-x/backup.noindex" "$OUT/sup-before-x/update" 2>/dev/null
+rm -rf "$OUT/feed" "$OUT/feed-y" "$OUT/sup-before-x/bin" "$OUT/sup-before-x/backup.noindex" "$OUT/sup-before-x/update" 2>/dev/null
 find "$OUT" -type f -size +40M -print -delete > "$OUT/removed-big-files.txt" 2>/dev/null
 du -sh "$OUT" > "$OUT/size.txt" 2>/dev/null
 # 서버 접근 열쇠가 섞인 줄은 통째로 빼요 (올리기가 막히지 않게). 시스템 기록은 원본을 올리지 않아요.
