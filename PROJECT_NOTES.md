@@ -63,14 +63,23 @@
       한 주의 시작이 바뀌면 '이번 주 안에' 할 일의 weekOf 도 새 첫날로 맞춤(rollover). go test + smoke I7 · I8.
       합치기에서 updated 가 같을 때: JSON 비교 → taskTieKey/catsTieKey(아이폰 Store.swift 와 같은 글자, 바이트 비교)로 바꿈 — 맥 · 아이폰이 서로 계속 다시 쓰지 않게.
       맥 빌드 서버 51개 통과(65531f9) · 내보냄.
-- [ ] 15. 아이폰 DayROAD (ValoROAD 아이폰과 같은 방식: SwiftUI, 무료 애플 ID 로 사용자 맥 Xcode 설치, 7일마다 다시 설치).
+- [ ] 15. 아이폰 DayROAD (1.0.0 전달, 사용자 설치 확인 남음) (ValoROAD 아이폰과 같은 방식: SwiftUI, 무료 애플 ID 로 사용자 맥 Xcode 설치, 7일마다 다시 설치).
       자료는 위 iCloud Drive 파일을 '파일' 앱에서 한 번 골라 계속 씀(무료 계정은 iCloud(CloudKit) 기능을 못 써서). 맞추기 규칙은 icloud.go 맨 위와 똑같이.
       먼저 아이폰 디자인 시안 → 확정.
       - 2026-11-19 시안 v1: Design 캔버스 'DayROAD 아이폰 시안' (390 폭, 맥과 같은 종이 플래너 색 · 고운바탕 날짜).
         ① 오늘(라이트) ② 오늘(다크) ③ 할 일 자세히(아래에서 올라오는 창: 날짜 · 언제까지 · 알림 · 반복 5가지 · 중요 · 진행 % · 기록 남기기/고치기 · 끝냈어요 · 내일로 · 지우기)
         ④ 이번 주(한 주/한 달, '이번 주 안에' 칸 + 날마다 칸) ⑤ 모아 보기(마감 · 반복 · 언젠가 · 끝낸 일 카드 + 분류) ⑥ 설정(남은 사용 기간 7칸 · iCloud 맞춤 상태 · 알림 · 화면)
         ⑦ 처음 켤 때 '파일'에서 iCloud Drive › DayROAD 폴더 고르기. 아래 탭: 오늘 · 이번 주 · 모아 보기 · 설정. 위젯은 무료 계정에서 되는지 만들면서 확인.
-        → 사용자 확인 기다리는 중
+        → 2026-11-19 사용자 "이대로 진행" (made by 는 설정 맨 아래만, 한 주의 시작 기본 일요일)
+      - 2026-11-19 아이폰 1.0.0 (ios/): SwiftUI. Store.swift = engine/store.go · icloud.go · widget.go 를 옮긴 것(규칙을 고치면 둘 다).
+        Cloud.swift: '파일'에서 고른 폴더 북마크 + NSFileCoordinator 로 iCloud Drive › DayROAD › data.json 읽고 쓰기, 앞에 있는 동안 6초마다 · 바꿀 때마다,
+        처음 연결은 iCloud 자료를 그대로 받음, 받은 것과 같으면 안 씀, 충돌 사본 합치고 지움. Parse.swift = parse.js. 위젯은 맥 위젯 코드 그대로(앱 그룹 폴더).
+        대상 3개: DayROAD(+DayROADWidget) · DayROAD-NoWidget(앱 그룹 서명이 막히면). project.yml(XcodeGen) → 빌드 서버가 DayROAD.xcodeproj 를 만들어
+        ci-results-ios 에 올림 → ios/DayROAD.xcodeproj 로 넣어 둠. 시험 모드(-demo): 앱 안 Documents/DemoCloud 를 iCloud 자리로.
+        빌드 서버(build-ios.yml · scripts/ci-ios.sh) 02b4da1: 시뮬레이터 · 실제 아이폰용(서명 없이) · 위젯 없는 판 빌드, 화면 10장, 규칙 시험 16개,
+        맞추기 시험(맥이 적은 것 · 지운 것 들어옴 / 아이폰에서 끝낸 것 iCloud 에 씀 / 같으면 안 씀) 모두 통과.
+        설치 zip: scripts/ios-package.sh → download/DayROAD-iPhone.zip (+ docs/DayROAD_아이폰_설치.png, python3 scripts/ios-guide.py).
+        남은 확인: 사용자 아이폰에서 설치(팀 두 곳) · 앱 그룹(위젯)이 무료 애플 ID 로 되는지 · 실제 iCloud 폴더 고르기 · 맥과 맞추기.
 
 ### 다음에 할 수 있는 일
 - [ ] 사용자 맥에서 실제로 써 보기: 위젯 갤러리에 보이는지, 캘린더 · 미리 알림 허락, 알림
