@@ -1,0 +1,4 @@
+2026/11/19 10:50:27 DayROAD 1.5.0 listening on 47951 (pid 8676, 지킴이 true)
+2026/11/19 10:50:36 pluginkit [-r /Users/runner/Library/Application Support/DayROAD/backup.noindex/DayROAD.app/Contents/PlugIns/DayROADWidget.appex]: exit status 1 remove: no plugin at /Users/runner/Library/Application Support/DayROAD/backup.noindex/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+2026/11/19 10:50:36 새 버전으로 바꿨어요 (한 번에 자리 바꾸기) · 위젯 등록
+2026/11/19 10:50:41 shutdown: 업데이트 후 다시 시작

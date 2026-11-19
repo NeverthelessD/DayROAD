@@ -1,0 +1,6 @@
+commit: ca403f626c094228cf696d6a1154d678d49365e5  version: 1.5.0  started: 2026-11-19T10:46:05Z
+ProductName:		macOS
+ProductVersion:		15.8.2
+BuildVersion:		24H232
+arm64
+go version go1.24.13 darwin/arm64

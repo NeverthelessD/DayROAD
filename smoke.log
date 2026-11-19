@@ -1,0 +1,222 @@
+▶ 준비: 앱 설치
+▶ A. 켜기 · 화면
+PASS  A1 앱을 열면 엔진이 준비됨
+PASS  A2 엔진이 Dock 앱 방식으로 켜짐(shell=native)
+PASS  A3 주소가 47951
+PASS  A4 화면이 앱 창(WKWebView)에서 열림
+PASS  A5 처음 켜면 쓰는 법 할 일 3개
+PASS  A6 엔진이 DayROAD 앱의 자식 (앱 3852 → 지킴이 3870 → 엔진 3873)
+▶ T. 할 일 (실제 맥에서)
+PASS  T1 할 일 만들기 · 끝내기 · 진행 기록 (12개 + 반복 다음 차례)
+PASS  T2 반복하는 일을 끝내면 다음 차례가 내일로
+PASS  T3 데이터 파일 저장
+▶ I. iCloud Drive 저장
+INFO  I0 iCloud 상태: {'dir': '/Users/runner/Library/Mobile Documents/com~apple~CloudDocs/DayROAD', 'last': 1795085292146, 'moved': 1795085286222, 'msg': '', 'state': 'ok'} (빈 폴더를 만들었나: 1)
+PASS  I1 iCloud Drive 에 저장 켜짐(ok)
+PASS  I2 지금까지의 할 일이 iCloud 로 옮겨짐 (13개)
+PASS  I3 옮기기 전 자료를 따로 백업
+PASS  I4 맥 안의 자료도 그대로
+PASS  I5 다른 기기가 iCloud 에 적은 할 일이 15초 안에 앱에 들어옴
+PASS  I6 앱에서 지운 것이 iCloud 에서도 지워짐(지운 기록 남음)
+PASS  I7 다른 기기에서 바꾼 한 주의 시작(일요일)이 맥 설정에도 들어옴
+PASS  I8 맥에서 다시 바꾸면 iCloud 파일에도 들어감
+▶ P. 아이폰용 파일 최신으로 받아 두기 (진짜 releases/latest-ios.json)
+INFO  P0 최신 아이폰 버전 1.0.2 · 상태 updated · 
+PASS  P1 아이폰용 파일을 새 버전으로 바꿔 둠
+PASS  P2 폴더 안 버전이 최신(1.0.2)
+PASS  P3 고른 팀(DEVELOPMENT_TEAM)을 새 프로젝트 파일에 옮겨 적음
+PASS  P4 Xcode 개인 설정도 옮김
+PASS  P5 새 소스 파일이 들어감
+PASS  P6 예전 폴더는 보관
+PASS  P7 이미 최신이면 그대로
+▶ W. 위젯
+PASS  W1 위젯 파일(widget.json)에 오늘 할 일
+PASS  W2 위젯 확장이 앱 안에 있고 보호 상자 권한이 있음
+PASS  W3 맥이 위젯을 알아봄 (pluginkit)
+PASS  W4 위젯에서 누른 체크박스가 앱에 반영됨
+PASS  W5 위젯 그림 (라이트 · 다크)
+▶ S. 앱 화면 스크린샷
+▶ U. dayroad:// 주소로 열기 (위젯 · 알림을 눌렀을 때)
+PASS  U1 주소를 앱이 받음
+PASS  U2 앱은 하나만
+▶ M. 창 맨 위를 잡고 끌어서 옮기기
+PASS  M1 창 맨 위를 끌면 창이 움직임 (moved 72 4)
+▶ B. Dock 아이콘 다시 누르기(reopen)
+PASS  B1 다시 열기 뒤에도 앱·엔진 그대로
+▶ C. 엔진이 고장으로 꺼지면 지킴이가 다시 켬
+PASS  C1 엔진 다시 켜짐
+PASS  C2 앱은 그대로
+PASS  C3 할 일은 그대로
+▶ D. 앱 종료(⌘Q) → 엔진까지 모두 꺼짐
+PASS  D1 앱·엔진 모두 꺼짐
+▶ E. 화면의 '종료'(= /api/quit) → 앱도 꺼짐
+PASS  E1 앱·엔진 모두 꺼짐
+▶ F. 앱이 강제로 꺼지면 엔진도 스스로 꺼짐
+PASS  F1 남은 엔진 없음
+▶ G. 업데이트 뒤 다시 열기 (/api/update/restart)
+PASS  G1 새로 열린 앱이 엔진을 켬
+PASS  G2 앱이 새로 열림 (7495 → 7530)
+PASS  G3 앱 하나만 떠 있음
+▶ X. 진짜 업데이트(사용자에게 나간 버전 → 이번 빌드) 뒤 위젯 · 재시동 흉내
+PASS  X1 사용자에게 나간 버전(v1.4.1)이 켜짐
+PASS  X2 v1.4.1 앱이 스스로 v1.5.0 를 받아 설치함 (ready)
+INFO  X3 업데이트 직후 보관 폴더 위젯이 맥에 남아 있음: 0개 (1 이상이면 의심했던 문제)
+PASS  X4 다시 열린 앱이 v1.5.0
+PASS  X5 보관한 이전 버전 안의 위젯은 꺼짐
+PASS  X6 맥이 아는 DayROAD 위젯은 응용 프로그램 폴더의 것 하나뿐
+PASS  X7 앱이 켤 때 위젯을 다시 등록함
+PASS  X7b 받은 파일 폴더에 남은 같은 위젯을 맥에서 지움 (파일은 그대로)
+▶ X. 재시동 흉내: 위젯 관리자(pkd · chronod)를 껐다 켜고, 앱 없이 위젯이 남아 있는지
+PASS  X8 재시동 흉내 뒤에도 위젯은 응용 프로그램 폴더의 것 하나만
+PASS  X9 새 버전의 정체성이 앱 이름 기준
+---- widget-update.txt
+== 1) v1.4.1 설치 · 실행 뒤
++    com.nevertheless-d.dayroad.widget(1.4.1)	5CC56F69-FF06-439F-AA32-064C2354D45A	2026-11-19 10:49:55 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)
+drwx------@   4 runner  staff   128 Nov 19 10:47 com.nevertheless-d.dayroad.widget
+
+== 2) 업데이트 직후 (예전 업데이트 방식 그대로, 다시 시작 전)
++    com.nevertheless-d.dayroad.widget(1.5.0)	F4C743F9-B762-450F-8FC9-069D25342FFC	2026-11-19 10:50:00 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)
+total 16
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 _CodeSignature
+drwxr-xr-x  8 runner  staff   256 Nov 19 10:50 .
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 ..
+-rw-r--r--  1 runner  staff  2928 Nov 19 05:32 Info.plist
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 MacOS
+-rw-r--r--  1 runner  staff     8 Nov 19 05:32 PkgInfo
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 PlugIns.off
+drwxr-xr-x  6 runner  staff   192 Nov 19 05:32 Resources
+
+== 3) v1.5.0 로 다시 연 뒤
++    com.nevertheless-d.dayroad.widget(1.5.0)	B32241BA-49ED-4694-81C1-964CBCE90C4A	2026-11-19 10:50:02 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)
+total 16
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 _CodeSignature
+drwxr-xr-x  8 runner  staff   256 Nov 19 10:50 .
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 ..
+-rw-r--r--  1 runner  staff  2928 Nov 19 05:32 Info.plist
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 MacOS
+-rw-r--r--  1 runner  staff     8 Nov 19 05:32 PkgInfo
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 PlugIns.off
+drwxr-xr-x  6 runner  staff   192 Nov 19 05:32 Resources
+
+== 4) 앱 끄고 pkd · chronod 다시 시작한 뒤
++    com.nevertheless-d.dayroad.widget(1.5.0)	B32241BA-49ED-4694-81C1-964CBCE90C4A	2026-11-19 10:50:02 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)
+---- 오류처럼 보이는 시스템 기록
+2026-11-19 10:49:55.220 I  runningboardd[155:5ded] [com.apple.runningboard:message] PERF: Received request from [app<application.com.nevertheless-d.dayroad.3573259.3573264(501)>:7818] (euid 501, auid 501) (persona (null)): acquireAssertionWithDescriptor:error:
+2026-11-19 10:49:59.548 Df runningboardd[155:6c52] [com.apple.runningboard:assertion] Assertion did invalidate due to timeout: 155-155-569 (target:[app<application.com.nevertheless-d.dayroad.3573259.3573264(501)>:7818])
+2026-11-19 10:49:59.752 Df runningboardd[155:68f4] [com.apple.runningboard:assertion] Assertion did invalidate due to timeout: 155-122-574 (target:[app<application.com.nevertheless-d.dayroad.3573259.3573264(501)>:7818])
+2026-11-19 10:50:02.186 Df runningboardd[155:68f4] [com.apple.runningboard:ttl] Invalidating assertion 155-305-584 (target:app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>) from originator [osservice<com.apple.coreservices.uiagent(501)>:305]
+2026-11-19 10:50:02.274 Df runningboardd[155:57f3] [com.apple.runningboard:ttl] Invalidating assertion 155-122-587 (target:[app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928]) from originator [osservice<com.apple.coreservices.launchservicesd>:122]
+2026-11-19 10:50:02.291 Df runningboardd[155:6c52] [com.apple.runningboard:ttl] Invalidating assertion 155-147-573 (target:[app<application.com.nevertheless-d.dayroad.3573259.3573264(501)>:7818]) from originator [osservice<com.apple.WindowServer(88)>:147]
+2026-11-19 10:50:02.305 Df runningboardd[155:6d2a] [com.apple.runningboard:ttl] Invalidating assertion 155-122-572 (target:[app<application.com.nevertheless-d.dayroad.3573259.3573264(501)>:7818]) from originator [osservice<com.apple.coreservices.launchservicesd>:122]
+2026-11-19 10:50:02.305 Df runningboardd[155:6d2a] [com.apple.runningboard:ttl] Invalidating assertion 155-147-577 (target:[app<application.com.nevertheless-d.dayroad.3573259.3573264(501)>:7818]) from originator [osservice<com.apple.WindowServer(88)>:147]
+2026-11-19 10:50:02.314 Df runningboardd[155:6dfc] [com.apple.runningboard:ttl] Invalidating assertion 155-147-576 (target:[app<application.com.nevertheless-d.dayroad.3573259.3573264(501)>:7818]) from originator [osservice<com.apple.WindowServer(88)>:147]
+2026-11-19 10:50:02.351 Df runningboardd[155:6dfc] [com.apple.runningboard:process] XPC connection invalidated: [app<application.com.nevertheless-d.dayroad.3573259.3573264(501)>:7818]
+2026-11-19 10:50:02.850 I  runningboardd[155:68f4] [com.apple.runningboard:message] PERF: Received request from [app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928] (euid 501, auid 501) (persona (null)): acquireAssertionWithDescriptor:error:
+2026-11-19 10:50:02.854 E  runningboardd[155:68f4] [com.apple.runningboard:process] [xpcservice<com.apple.WebKit.Networking([app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928])(501)>{vt hash: 0}[uuid:EC8B95F9-EE9F-4DB2-8DEA-3CC3AA17FCBB]:7934:7934] Memorystatus failed with unexpected error: Invalid argument (22)
+2026-11-19 10:50:02.857 I  runningboardd[155:68f4] [com.apple.runningboard:message] PERF: Received request from [app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928] (euid 501, auid 501) (persona (null)): acquireAssertionWithDescriptor:error:
+2026-11-19 10:50:02.991 I  runningboardd[155:6d2a] [com.apple.runningboard:message] PERF: Received request from [app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928] (euid 501, auid 501) (persona (null)): acquireAssertionWithDescriptor:error:
+2026-11-19 10:50:02.993 E  runningboardd[155:6d2a] [com.apple.runningboard:process] [xpcservice<com.apple.WebKit.WebContent([app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928])(501)>{vt hash: 0}[uuid:6BD03DB3-DA19-4B2E-97C7-79A2B1AF9E67]:7929:7929] Memorystatus failed with unexpected error: Invalid argument (22)
+2026-11-19 10:50:02.995 I  runningboardd[155:7236] [com.apple.runningboard:message] PERF: Received request from [app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928] (euid 501, auid 501) (persona (null)): acquireAssertionWithDescriptor:error:
+2026-11-19 10:50:07.968 Df runningboardd[155:6d2a] [com.apple.runningboard:assertion] Assertion did invalidate due to timeout: 155-155-586 (target:[app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928])
+2026-11-19 10:50:07.968 Df runningboardd[155:6d2a] [com.apple.runningboard:assertion] Assertion did invalidate due to timeout: 155-122-591 (target:[app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928])
+2026-11-19 10:50:10.170 I  runningboardd[155:7236] [com.apple.runningboard:message] PERF: Received request from [app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928] (euid 501, auid 501) (persona (null)): acquireAssertionWithDescriptor:error:
+2026-11-19 10:50:10.172 I  runningboardd[155:6d2a] [com.apple.runningboard:message] PERF: Received request from [app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928] (euid 501, auid 501) (persona (null)): limitationsForInstance:error:
+2026-11-19 10:50:10.514 Df runningboardd[155:7236] [com.apple.runningboard:ttl] Invalidating assertion 155-147-593 (target:[app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928]) from originator [osservice<com.apple.WindowServer(88)>:147]
+2026-11-19 10:50:10.514 Df runningboardd[155:7236] [com.apple.runningboard:ttl] Invalidating assertion 155-147-590 (target:[app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928]) from originator [osservice<com.apple.WindowServer(88)>:147]
+2026-11-19 10:50:10.540 Df runningboardd[155:57f3] [com.apple.runningboard:ttl] Invalidating assertion 155-122-589 (target:[app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928]) from originator [osservice<com.apple.coreservices.launchservicesd>:122]
+2026-11-19 10:50:10.540 Df runningboardd[155:57f3] [com.apple.runningboard:ttl] Invalidating assertion 155-147-594 (target:[app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928]) from originator [osservice<com.apple.WindowServer(88)>:147]
+2026-11-19 10:50:10.556 Df runningboardd[155:57f3] [com.apple.runningboard:process] XPC connection invalidated: [app<application.com.nevertheless-d.dayroad.3573465.3573470.5E874EAA-216D-42A9-AAFA-1FF4B04548D1(501)>:7928]
+----
+INFO  X10 시스템 기록 중 오류처럼 보이는 줄: 25줄 (widget-update-syslog-errors.txt)
+scripts/smoke-mac.sh: line 294:  7815 Terminated: 15          python3 -m http.server 8765 --bind 127.0.0.1 --directory "$FEED" > "$OUT/feed-server.log" 2>&1
+▶ Y. 새 버전이 하는 업데이트: 앱 자리를 한 번에 바꾸고, 바꾸는 동안에도 맥이 위젯을 잃지 않는지
+PASS  Y1 v1.5.0 앱이 스스로 9.9.9 로 업데이트함 (ready)
+PASS  Y2 업데이트 직후(다시 시작 전)에도 응용 프로그램 폴더의 위젯이 맥에 등록돼 있음
+PASS  Y3 업데이트하는 동안 위젯이 맥 목록에서 빠진 순간이 없음 (0/19 번 빠짐)
+PASS  Y4 한 번에 자리 바꾸기로 업데이트함
+PASS  Y5 보관한 이전 버전 위젯은 꺼짐 · 맥 목록에 없음
+PASS  Y6 다시 연 앱이 9.9.9
+PASS  Y7 앱이 바탕화면 위젯 수를 기록함
+  11-19 10:50:03 [앱 7928] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 맥이 아는 위젯 1개
+  11-19 10:50:09 [앱 7928] 바탕화면 DayROAD 위젯(켬): 0개 · 지난번 0개
+  11-19 10:50:28 [앱 8668] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 맥이 아는 위젯 1개
+  11-19 10:50:33 [앱 8668] 바탕화면 DayROAD 위젯(켬): 0개 · 지난번 0개
+  11-19 10:50:42 [앱 9500] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 맥이 아는 위젯 1개
+  11-19 10:50:48 [앱 9500] 바탕화면 DayROAD 위젯(켬): 0개 · 지난번 0개
+== Y) 업데이트 직후, 다시 시작 전
++    com.nevertheless-d.dayroad.widget(1.5.0)	892E8110-332C-424C-999F-56855728EE98	2026-11-19 10:50:36 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)
+
+== Y) 9.9.9 로 다시 연 뒤
++    com.nevertheless-d.dayroad.widget(1.5.0)	E5E1F708-9916-4BA0-AEE4-499E85D50651	2026-11-19 10:50:45 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)
+▶ 기록 모으기
+scripts/smoke-mac.sh: line 349:  8657 Terminated: 15          python3 -m http.server 8766 --bind 127.0.0.1 --directory "$YFEED" > "$OUT/feed-y-server.log" 2>&1
+
+== 결과 ==
+PASS  A1 앱을 열면 엔진이 준비됨
+PASS  A2 엔진이 Dock 앱 방식으로 켜짐(shell=native)
+PASS  A3 주소가 47951
+PASS  A4 화면이 앱 창(WKWebView)에서 열림
+PASS  A5 처음 켜면 쓰는 법 할 일 3개
+PASS  A6 엔진이 DayROAD 앱의 자식 (앱 3852 → 지킴이 3870 → 엔진 3873)
+PASS  T1 할 일 만들기 · 끝내기 · 진행 기록 (12개 + 반복 다음 차례)
+PASS  T2 반복하는 일을 끝내면 다음 차례가 내일로
+PASS  T3 데이터 파일 저장
+INFO  I0 iCloud 상태: {'dir': '/Users/runner/Library/Mobile Documents/com~apple~CloudDocs/DayROAD', 'last': 1795085292146, 'moved': 1795085286222, 'msg': '', 'state': 'ok'} (빈 폴더를 만들었나: 1)
+PASS  I1 iCloud Drive 에 저장 켜짐(ok)
+PASS  I2 지금까지의 할 일이 iCloud 로 옮겨짐 (13개)
+PASS  I3 옮기기 전 자료를 따로 백업
+PASS  I4 맥 안의 자료도 그대로
+PASS  I5 다른 기기가 iCloud 에 적은 할 일이 15초 안에 앱에 들어옴
+PASS  I6 앱에서 지운 것이 iCloud 에서도 지워짐(지운 기록 남음)
+PASS  I7 다른 기기에서 바꾼 한 주의 시작(일요일)이 맥 설정에도 들어옴
+PASS  I8 맥에서 다시 바꾸면 iCloud 파일에도 들어감
+INFO  P0 최신 아이폰 버전 1.0.2 · 상태 updated · 
+PASS  P1 아이폰용 파일을 새 버전으로 바꿔 둠
+PASS  P2 폴더 안 버전이 최신(1.0.2)
+PASS  P3 고른 팀(DEVELOPMENT_TEAM)을 새 프로젝트 파일에 옮겨 적음
+PASS  P4 Xcode 개인 설정도 옮김
+PASS  P5 새 소스 파일이 들어감
+PASS  P6 예전 폴더는 보관
+PASS  P7 이미 최신이면 그대로
+PASS  W1 위젯 파일(widget.json)에 오늘 할 일
+PASS  W2 위젯 확장이 앱 안에 있고 보호 상자 권한이 있음
+PASS  W3 맥이 위젯을 알아봄 (pluginkit)
+PASS  W4 위젯에서 누른 체크박스가 앱에 반영됨
+PASS  W5 위젯 그림 (라이트 · 다크)
+PASS  U1 주소를 앱이 받음
+PASS  U2 앱은 하나만
+PASS  M1 창 맨 위를 끌면 창이 움직임 (moved 72 4)
+PASS  B1 다시 열기 뒤에도 앱·엔진 그대로
+PASS  C1 엔진 다시 켜짐
+PASS  C2 앱은 그대로
+PASS  C3 할 일은 그대로
+PASS  D1 앱·엔진 모두 꺼짐
+PASS  E1 앱·엔진 모두 꺼짐
+PASS  F1 남은 엔진 없음
+PASS  G1 새로 열린 앱이 엔진을 켬
+PASS  G2 앱이 새로 열림 (7495 → 7530)
+PASS  G3 앱 하나만 떠 있음
+PASS  X1 사용자에게 나간 버전(v1.4.1)이 켜짐
+PASS  X2 v1.4.1 앱이 스스로 v1.5.0 를 받아 설치함 (ready)
+INFO  X3 업데이트 직후 보관 폴더 위젯이 맥에 남아 있음: 0개 (1 이상이면 의심했던 문제)
+PASS  X4 다시 열린 앱이 v1.5.0
+PASS  X5 보관한 이전 버전 안의 위젯은 꺼짐
+PASS  X6 맥이 아는 DayROAD 위젯은 응용 프로그램 폴더의 것 하나뿐
+PASS  X7 앱이 켤 때 위젯을 다시 등록함
+PASS  X7b 받은 파일 폴더에 남은 같은 위젯을 맥에서 지움 (파일은 그대로)
+PASS  X8 재시동 흉내 뒤에도 위젯은 응용 프로그램 폴더의 것 하나만
+PASS  X9 새 버전의 정체성이 앱 이름 기준
+INFO  X10 시스템 기록 중 오류처럼 보이는 줄: 25줄 (widget-update-syslog-errors.txt)
+PASS  Y1 v1.5.0 앱이 스스로 9.9.9 로 업데이트함 (ready)
+PASS  Y2 업데이트 직후(다시 시작 전)에도 응용 프로그램 폴더의 위젯이 맥에 등록돼 있음
+PASS  Y3 업데이트하는 동안 위젯이 맥 목록에서 빠진 순간이 없음 (0/19 번 빠짐)
+PASS  Y4 한 번에 자리 바꾸기로 업데이트함
+PASS  Y5 보관한 이전 버전 위젯은 꺼짐 · 맥 목록에 없음
+PASS  Y6 다시 연 앱이 9.9.9
+PASS  Y7 앱이 바탕화면 위젯 수를 기록함

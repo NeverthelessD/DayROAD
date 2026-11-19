@@ -1,0 +1,147 @@
+11-19 10:48:02 [앱 3852] 시작 v1.5.0 · macOS 버전 15.8.2(빌드 24H232) · /Applications/DayROAD.app
+11-19 10:48:03 [앱 3852] 엔진 준비 (v1.5.0)
+11-19 10:48:03 [앱 3852] 엔진 켬 (지킴이 pid 3870)
+11-19 10:48:04 [지킴이 3870] 시작 · 엔진 1.5.0 · darwin/arm64 · Dock 앱(DayROAD.app)이 켬
+11-19 10:48:04 [지킴이 3870] 엔진 켬 (pid 3873, 포트 자동)
+11-19 10:48:04 [앱 3852] 엔진 준비됨 (포트 47951)
+11-19 10:48:05 [앱 3852] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 다른 곳의 같은 위젯 1개를 맥에서 지움
+    - /Users/runner/work/DayROAD/DayROAD/build/sym/Release/DayROAD.app/Contents/PlugIns/DayROADWidget.appex · 맥이 아는 위젯 1개
+    /Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+11-19 10:48:10 [앱 3852] 바탕화면 DayROAD 위젯(켬): 0개
+11-19 10:48:42 [앱 3852] 종료: 엔진을 끄는 중
+11-19 10:48:42 [지킴이 3870] 엔진이 정상적으로 끝났어요 (38s 동안 실행)
+11-19 10:48:42 [앱 3852] 종료 완료
+11-19 10:48:43 [앱 5143] 시작 v1.5.0 · macOS 버전 15.8.2(빌드 24H232) · /Applications/DayROAD.app
+11-19 10:48:43 [앱 5143] 엔진 켬 (지킴이 pid 5148)
+11-19 10:48:43 [지킴이 5148] 시작 · 엔진 1.5.0 · darwin/arm64 · Dock 앱(DayROAD.app)이 켬
+11-19 10:48:43 [지킴이 5148] 엔진 켬 (pid 5149, 포트 자동)
+11-19 10:48:43 [앱 5143] 엔진 준비됨 (포트 47951)
+11-19 10:48:44 [앱 5143] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 맥이 아는 위젯 1개
+    /Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+11-19 10:48:49 [앱 5143] 바탕화면 DayROAD 위젯(켬): 0개 · 지난번 0개
+11-19 10:48:50 [앱 5143] 종료: 엔진을 끄는 중
+11-19 10:48:50 [지킴이 5148] 엔진이 정상적으로 끝났어요 (7s 동안 실행)
+11-19 10:48:50 [앱 5143] 종료 완료
+11-19 10:48:50 [앱 5364] 시작 v1.5.0 · macOS 버전 15.8.2(빌드 24H232) · /Applications/DayROAD.app
+11-19 10:48:51 [앱 5364] 엔진 켬 (지킴이 pid 5369)
+11-19 10:48:51 [지킴이 5369] 시작 · 엔진 1.5.0 · darwin/arm64 · Dock 앱(DayROAD.app)이 켬
+11-19 10:48:51 [지킴이 5369] 엔진 켬 (pid 5370, 포트 자동)
+11-19 10:48:51 [앱 5364] 엔진 준비됨 (포트 47951)
+11-19 10:48:51 [앱 5364] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 맥이 아는 위젯 1개
+    /Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+11-19 10:48:57 [앱 5364] 바탕화면 DayROAD 위젯(켬): 0개 · 지난번 0개
+11-19 10:48:57 [앱 5364] 종료: 엔진을 끄는 중
+11-19 10:48:58 [지킴이 5369] 엔진이 정상적으로 끝났어요 (7s 동안 실행)
+11-19 10:48:58 [앱 5364] 종료 완료
+11-19 10:48:58 [앱 5596] 시작 v1.5.0 · macOS 버전 15.8.2(빌드 24H232) · /Applications/DayROAD.app
+11-19 10:48:58 [앱 5596] 엔진 켬 (지킴이 pid 5600)
+11-19 10:48:58 [지킴이 5600] 시작 · 엔진 1.5.0 · darwin/arm64 · Dock 앱(DayROAD.app)이 켬
+11-19 10:48:58 [지킴이 5600] 엔진 켬 (pid 5601, 포트 자동)
+11-19 10:48:58 [앱 5596] 엔진 준비됨 (포트 47951)
+11-19 10:48:59 [앱 5596] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 맥이 아는 위젯 1개
+    /Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+11-19 10:49:05 [앱 5596] 바탕화면 DayROAD 위젯(켬): 0개 · 지난번 0개
+11-19 10:49:05 [앱 5596] 종료: 엔진을 끄는 중
+11-19 10:49:05 [지킴이 5600] 엔진이 정상적으로 끝났어요 (7s 동안 실행)
+11-19 10:49:05 [앱 5596] 종료 완료
+11-19 10:49:06 [앱 5657] 시작 v1.5.0 · macOS 버전 15.8.2(빌드 24H232) · /Applications/DayROAD.app
+11-19 10:49:06 [앱 5657] 엔진 켬 (지킴이 pid 5663)
+11-19 10:49:06 [지킴이 5663] 시작 · 엔진 1.5.0 · darwin/arm64 · Dock 앱(DayROAD.app)이 켬
+11-19 10:49:06 [지킴이 5663] 엔진 켬 (pid 5664, 포트 자동)
+11-19 10:49:06 [앱 5657] 엔진 준비됨 (포트 47951)
+11-19 10:49:07 [앱 5657] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 맥이 아는 위젯 1개
+    /Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+11-19 10:49:12 [앱 5657] 바탕화면 DayROAD 위젯(켬): 0개 · 지난번 0개
+11-19 10:49:13 [앱 5657] 종료: 엔진을 끄는 중
+11-19 10:49:13 [지킴이 5663] 엔진이 정상적으로 끝났어요 (7s 동안 실행)
+11-19 10:49:13 [앱 5657] 종료 완료
+11-19 10:49:14 [앱 6221] 시작 v1.5.0 · macOS 버전 15.8.2(빌드 24H232) · /Applications/DayROAD.app
+11-19 10:49:14 [앱 6221] 엔진 켬 (지킴이 pid 6234)
+11-19 10:49:14 [지킴이 6234] 시작 · 엔진 1.5.0 · darwin/arm64 · Dock 앱(DayROAD.app)이 켬
+11-19 10:49:14 [지킴이 6234] 엔진 켬 (pid 6235, 포트 자동)
+11-19 10:49:14 [앱 6221] 엔진 준비됨 (포트 47951)
+11-19 10:49:15 [앱 6221] 주소로 열기: dayroad://week
+11-19 10:49:15 [앱 6221] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 맥이 아는 위젯 1개
+    /Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+11-19 10:49:20 [앱 6221] 바탕화면 DayROAD 위젯(켬): 0개 · 지난번 0개
+11-19 10:49:39 [지킴이 6234] ⚠️ 엔진이 갑자기 꺼졌어요: 종료 코드 2, 25s 동안 실행
+----- 엔진 마지막 출력 -----
+2026/11/19 10:49:14 DayROAD 1.5.0 listening on 47951 (pid 6235, 지킴이 true)
+SIGSEGV: segmentation violation
+PC=0x19fde53cc m=0 sigcode=2 addr=0x0
+
+goroutine 0 gp=0x1036ee240 m=0 mp=0x1036eecc0 [idle]:
+runtime.pthread_cond_wait(0x1036ef230, 0x1036ef1f0)
+	runtime/sys_darwin.go:547 +0x20 fp=0x16d051700 sp=0x16d0516d0 pc=0x102e05e30
+runtime.semasleep(0xffffffffffffffff)
+	runtime/os_darwin.go:72 +0x84 fp=0x16d051760 sp=0x16d051700 pc=0x102de1214
+runtime.notesleep(0x1036eee18)
+	runtime/lock_sema.go:62 +0xb8 fp=0x16d0517a0 sp=0x16d051760 pc=0x102dbd1a8
+runtime.mPark(...)
+	runtime/proc.go:1919
+runtime.stopm()
+	runtime/proc.go:2950 +0x84 fp=0x16d0517d0 sp=0x16d0517a0 pc=0x102dec004
+runtime.findRunnable()
+	runtime/proc.go:3699 +0x1030 fp=0x16d051940 sp=0x16d0517d0 pc=0x102dede30
+runtime.schedule()
+	runtime/proc.go:4072 +0x94 fp=0x16d051980 sp=0x16d051940 pc=0x102def2b4
+runtime.park_m(0x14000082e00)
+	runtime/proc.go:4201 +0x2b0 fp=0x16d0519e0 sp=0x16d051980 pc=0x102def790
+runtime.mcall()
+	runtime/asm_arm64.s:193 +0x54 fp=0x16d0519f0 sp=0x16d0519e0 pc=0x102e1f5a4
+
+goroutine 1 gp=0x140000021c0 m=nil [IO wait]:
+runtime.gopark(0x0?, 0x0?, 0x0?, 0x0?, 0x0?)
+	runtime/proc.go:435 +0xc8 fp=0x1400002b7d0 sp=0x1400002b7b0 pc=0x102e19b88
+runtime.netpollblock(0x1400002b868?, 0x2e724e0?, 0x1?)
+	runtime/netpoll.go:575 +0x158 fp=0x1400002b810 sp=0x1400002b7d0 pc=0x102de03f8
+internal/poll.runtime_pollWait(0x14a309ad0, 0x72)
+… (382줄 생략) …
+r26     0x1d00
+r27     0x1036da000
+r28     0x1036ee240
+r29     0x16d051660
+lr      0x19fe2409c
+sp      0x16d0515d0
+pc      0x19fde53cc
+fault   0x0
+----------------------------
+11-19 10:49:39 [지킴이 6234] 엔진 켬 (pid 7151, 포트 47951)
+11-19 10:49:43 [앱 6221] 종료: 엔진을 끄는 중
+11-19 10:49:43 [지킴이 6234] 엔진이 정상적으로 끝났어요 (4s 동안 실행)
+11-19 10:49:43 [앱 6221] 종료 완료
+11-19 10:49:44 [앱 7417] 시작 v1.5.0 · macOS 버전 15.8.2(빌드 24H232) · /Applications/DayROAD.app
+11-19 10:49:44 [앱 7417] 엔진 켬 (지킴이 pid 7423)
+11-19 10:49:44 [지킴이 7423] 시작 · 엔진 1.5.0 · darwin/arm64 · Dock 앱(DayROAD.app)이 켬
+11-19 10:49:44 [지킴이 7423] 엔진 켬 (pid 7424, 포트 자동)
+11-19 10:49:44 [앱 7417] 엔진 준비됨 (포트 47951)
+11-19 10:49:45 [앱 7417] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 맥이 아는 위젯 1개
+    /Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+11-19 10:49:45 [지킴이 7423] 엔진이 정상적으로 끝났어요 (1s 동안 실행)
+11-19 10:49:45 [앱 7417] 엔진이 끝나서 앱도 닫아요 (코드 0)
+11-19 10:49:46 [앱 7459] 시작 v1.5.0 · macOS 버전 15.8.2(빌드 24H232) · /Applications/DayROAD.app
+11-19 10:49:46 [앱 7459] 엔진 켬 (지킴이 pid 7463)
+11-19 10:49:46 [지킴이 7463] 시작 · 엔진 1.5.0 · darwin/arm64 · Dock 앱(DayROAD.app)이 켬
+11-19 10:49:46 [지킴이 7463] 엔진 켬 (pid 7464, 포트 자동)
+11-19 10:49:46 [앱 7459] 엔진 준비됨 (포트 47951)
+11-19 10:49:48 [지킴이 7463] DayROAD 앱이 사라짐 → 엔진을 끄고 지킴이도 끝냅니다
+11-19 10:49:48 [지킴이 7463] 엔진을 껐어요 (신호 terminated 로 꺼짐)
+11-19 10:49:49 [앱 7495] 시작 v1.5.0 · macOS 버전 15.8.2(빌드 24H232) · /Applications/DayROAD.app
+11-19 10:49:49 [앱 7495] 엔진 켬 (지킴이 pid 7505)
+11-19 10:49:49 [지킴이 7505] 시작 · 엔진 1.5.0 · darwin/arm64 · Dock 앱(DayROAD.app)이 켬
+11-19 10:49:49 [지킴이 7505] 엔진 켬 (pid 7506, 포트 자동)
+11-19 10:49:49 [앱 7495] 엔진 준비됨 (포트 47951)
+11-19 10:49:49 [앱 7495] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 맥이 아는 위젯 1개
+    /Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+11-19 10:49:50 [지킴이 7505] 엔진이 정상적으로 끝났어요 (1s 동안 실행)
+11-19 10:49:50 [앱 7495] 새 버전으로 다시 열어요
+11-19 10:49:50 [앱 7530] 시작 v1.5.0 · macOS 버전 15.8.2(빌드 24H232) · /Applications/DayROAD.app
+11-19 10:49:50 [앱 7530] 엔진 켬 (지킴이 pid 7532)
+11-19 10:49:50 [지킴이 7532] 시작 · 엔진 1.5.0 · darwin/arm64 · Dock 앱(DayROAD.app)이 켬
+11-19 10:49:50 [지킴이 7532] 엔진 켬 (pid 7533, 포트 자동)
+11-19 10:49:50 [앱 7530] 엔진 준비됨 (포트 47951)
+11-19 10:49:51 [앱 7530] 위젯 등록: LaunchServices 0 · 추가 0 · 사용 0 · 맥이 아는 위젯 1개
+    /Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+11-19 10:49:53 [앱 7530] 종료: 엔진을 끄는 중
+11-19 10:49:53 [지킴이 7532] 엔진이 정상적으로 끝났어요 (3s 동안 실행)
+11-19 10:49:53 [앱 7530] 종료 완료

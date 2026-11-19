@@ -1,0 +1,7 @@
+== Y) 업데이트 직후, 다시 시작 전
++    com.nevertheless-d.dayroad.widget(1.5.0)	892E8110-332C-424C-999F-56855728EE98	2026-11-19 10:50:36 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)
+
+== Y) 9.9.9 로 다시 연 뒤
++    com.nevertheless-d.dayroad.widget(1.5.0)	E5E1F708-9916-4BA0-AEE4-499E85D50651	2026-11-19 10:50:45 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)

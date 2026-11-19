@@ -1,0 +1,34 @@
+== 1) v1.4.1 설치 · 실행 뒤
++    com.nevertheless-d.dayroad.widget(1.4.1)	5CC56F69-FF06-439F-AA32-064C2354D45A	2026-11-19 10:49:55 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)
+drwx------@   4 runner  staff   128 Nov 19 10:47 com.nevertheless-d.dayroad.widget
+
+== 2) 업데이트 직후 (예전 업데이트 방식 그대로, 다시 시작 전)
++    com.nevertheless-d.dayroad.widget(1.5.0)	F4C743F9-B762-450F-8FC9-069D25342FFC	2026-11-19 10:50:00 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)
+total 16
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 _CodeSignature
+drwxr-xr-x  8 runner  staff   256 Nov 19 10:50 .
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 ..
+-rw-r--r--  1 runner  staff  2928 Nov 19 05:32 Info.plist
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 MacOS
+-rw-r--r--  1 runner  staff     8 Nov 19 05:32 PkgInfo
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 PlugIns.off
+drwxr-xr-x  6 runner  staff   192 Nov 19 05:32 Resources
+
+== 3) v1.5.0 로 다시 연 뒤
++    com.nevertheless-d.dayroad.widget(1.5.0)	B32241BA-49ED-4694-81C1-964CBCE90C4A	2026-11-19 10:50:02 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)
+total 16
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 _CodeSignature
+drwxr-xr-x  8 runner  staff   256 Nov 19 10:50 .
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 ..
+-rw-r--r--  1 runner  staff  2928 Nov 19 05:32 Info.plist
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 MacOS
+-rw-r--r--  1 runner  staff     8 Nov 19 05:32 PkgInfo
+drwxr-xr-x  3 runner  staff    96 Nov 19 05:32 PlugIns.off
+drwxr-xr-x  6 runner  staff   192 Nov 19 05:32 Resources
+
+== 4) 앱 끄고 pkd · chronod 다시 시작한 뒤
++    com.nevertheless-d.dayroad.widget(1.5.0)	B32241BA-49ED-4694-81C1-964CBCE90C4A	2026-11-19 10:50:02 +0000	/Applications/DayROAD.app/Contents/PlugIns/DayROADWidget.appex
+ (1 plug-in)

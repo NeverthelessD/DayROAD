@@ -1,0 +1,2 @@
+bdd8cd108aa9d6cb14e3dd5bffbc1ff567e90a1490f5ad937acb4d9c4c1ad45c  /Users/runner/work/DayROAD/DayROAD/ci-out/DayROAD-1.5.0.zip
+bfad364956ee630d260574047d919635b2f0ba33a2255663cb96826bf713ac30  /Users/runner/work/DayROAD/DayROAD/ci-out/DayROAD-first-install.zip
