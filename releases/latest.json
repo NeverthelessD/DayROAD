@@ -1,12 +1,11 @@
 {
-  "version": "1.4.1",
+  "version": "1.5.0",
   "date": "2026-11-19",
-  "zip": "DayROAD-1.4.1.zip",
-  "sha256": "741af021c0edcdb23a6a647ca14661acbe18d93d16bbf8640809f3735c45d300",
-  "size": 6359121,
+  "zip": "DayROAD-1.5.0.zip",
+  "sha256": "bdd8cd108aa9d6cb14e3dd5bffbc1ff567e90a1490f5ad937acb4d9c4c1ad45c",
+  "size": 6375996,
   "notes": [
-    "한 주의 시작을 아이폰 DayROAD 와 같이 써요 (한쪽에서 바꾸면 다른 쪽도 바뀌어요)",
-    "새로 깔면 한 주의 시작이 일요일이에요",
-    "iCloud 로 맞출 때 기기끼리 같은 답을 고르도록 다듬었어요"
+    "아이폰 DayROAD 새 버전이 나오면 아이폰용 파일(DayROAD-iPhone 폴더)을 알아서 바꿔 둬요 — 7일마다 Xcode ▶ 를 누를 때 함께 들어가요",
+    "설정 › 아이폰 DayROAD 에서 상태를 보고 폴더를 고를 수 있어요"
   ]
 }
