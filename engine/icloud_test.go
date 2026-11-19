@@ -225,3 +225,36 @@ func TestCloudWeekStart(t *testing.T) {
 		t.Fatal("주 첫날 계산")
 	}
 }
+
+// updated 가 같은데 내용이 다르면(맥만 캘린더 연결 번호를 가진 경우) 두 기기가 같은 쪽을 골라서 더 쓰지 않아요
+func TestCloudTieNoPingPong(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("DAYROAD_ICLOUD", root)
+	a := newTestStore(t, "2026-11-19")
+	tk, _ := a.Save(raw(map[string]any{"title": "같은 시각"}))
+	a.CloudSync()
+	b := newTestStore(t, "2026-11-19")
+	b.CloudSync()
+	ev := "EV1"
+	a.Links([]struct {
+		ID         string  `json:"id"`
+		EventID    *string `json:"eventId"`
+		ReminderID *string `json:"reminderId"`
+	}{{ID: tk.ID, EventID: &ev}})
+	for i := 0; i < 3; i++ {
+		a.CloudSync()
+		b.CloudSync()
+	}
+	if a.task(tk.ID).EventID != b.task(tk.ID).EventID {
+		t.Fatal("두 기기가 다른 쪽을 골랐어요")
+	}
+	p := filepath.Join(root, "DayROAD", "data.json")
+	st1, _ := os.Stat(p)
+	time.Sleep(20 * time.Millisecond)
+	a.CloudSync()
+	b.CloudSync()
+	st2, _ := os.Stat(p)
+	if !st1.ModTime().Equal(st2.ModTime()) {
+		t.Fatal("서로 계속 다시 써요")
+	}
+}

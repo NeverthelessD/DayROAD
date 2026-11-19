@@ -9,9 +9,10 @@ package main
 //   옮기기 전 자료는 backups/before-icloud-<날짜>.json 에 따로 남겨요.
 //   새로 깐 맥(자료 없음)에서 켰는데 iCloud 에 파일이 있으면, 처음 안내용 할 일은 버리고 iCloud 자료를 그대로 받아요.
 // 맞추는 규칙(merge) — 아이폰 앱도 같은 규칙을 써야 해요:
-//   - 할 일: id 마다 updated 가 큰 쪽. 같으면 JSON 글자를 비교해 큰 쪽(어느 기기에서 해도 같은 답이 나오게).
+//   - 할 일: id 마다 updated 가 큰 쪽. 같으면 tieKey(정해진 칸들을 이은 글자)가 큰 쪽 — 아이폰(Store.swift)도 똑같이 계산해서
+//     어느 기기에서 해도 같은 답이 나와요(서로 계속 다시 쓰지 않게).
 //   - 지운 할 일: deleted[id] = 지운 시각. 그 시각 이전에 마지막으로 고친 할 일은 지워요. 60일 지나면 잊어요.
-//   - 분류 목록: catsUpdated 가 큰 쪽을 통째로 (같으면 JSON 비교).
+//   - 분류 목록: catsUpdated 가 큰 쪽을 통째로 (같으면 catsTieKey 비교).
 //   - lastDay: 큰 쪽.
 // iCloud 가 충돌 사본(data 2.json 등)을 만들면 함께 합친 뒤 지워요.
 // 받는 쪽이 이미 같은 내용이면 다시 쓰지 않아요(두 기기가 서로 계속 다시 쓰지 않게).
@@ -27,6 +28,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -312,7 +315,7 @@ func (s *Store) merge(o storeData) {
 		}
 	}
 	if o.Cats != nil && (o.CatsUpdated > s.d.CatsUpdated ||
-		(o.CatsUpdated == s.d.CatsUpdated && bytes.Compare(canon(o.Cats), canon(s.d.Cats)) > 0)) {
+		(o.CatsUpdated == s.d.CatsUpdated && catsTieKey(o.Cats) > catsTieKey(s.d.Cats))) {
 		s.d.Cats, s.d.CatsUpdated = o.Cats, o.CatsUpdated
 	}
 	for _, rt := range o.Tasks {
@@ -328,7 +331,7 @@ func (s *Store) merge(o storeData) {
 			s.d.Tasks = append(s.d.Tasks, &cp)
 			continue
 		}
-		if rt.Updated > lt.Updated || (rt.Updated == lt.Updated && bytes.Compare(canon(rt), canon(lt)) > 0) {
+		if rt.Updated > lt.Updated || (rt.Updated == lt.Updated && taskTieKey(rt) > taskTieKey(lt)) {
 			*lt = *rt
 		}
 	}
@@ -347,6 +350,27 @@ func (s *Store) merge(o storeData) {
 	if o.LastDay > s.d.LastDay {
 		s.d.LastDay = o.LastDay
 	}
+}
+
+// taskTieKey · catsTieKey: updated 가 같은데 내용이 다를 때 고르는 기준 (아이폰 Store.swift 와 같아야 해요)
+// updated 를 바꾸지 않고 달라질 수 있는 칸(넘기기 · 캘린더/미리 알림 연결 · 분류 지움)과 이름 등을 이어요. 글자는 바이트 순서로 비교.
+func taskTieKey(t *Task) string {
+	done := "0"
+	if t.Done {
+		done = "1"
+	}
+	return strings.Join([]string{t.EventID, t.ReminderID, t.Cat, t.CarriedFrom, t.Date, t.WeekOf, strconv.Itoa(t.Progress), done, t.DoneAt, t.Due, t.NextID, t.Title}, "\x01")
+}
+
+func catsTieKey(cs []*Category) string {
+	l := make([]string, 0, len(cs))
+	for _, c := range cs {
+		if c != nil {
+			l = append(l, c.ID+"\x02"+c.Name+"\x02"+c.Color+"\x02"+strconv.Itoa(c.Order))
+		}
+	}
+	sort.Strings(l)
+	return strings.Join(l, "\x01")
 }
 
 func (s *Store) pruneTombstones() {
