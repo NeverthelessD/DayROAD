@@ -36,6 +36,10 @@ day() { date -v"$1"d +%F; }
 echo "▶ 준비: 앱 설치"
 rm -rf "$APPDIR" "$SUP"; ditto "$ROOT/dist/DayROAD.app" "$APPDIR"
 mkdir -p "$SUP"
+# 빌드 서버에는 iCloud 계정이 없어서, iCloud Drive 자리에 빈 폴더를 만들어 둬요 (I 시험)
+ICL="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
+ICLNEW=0; [ -d "$ICL" ] || { mkdir -p "$ICL" && ICLNEW=1; }
+rm -rf "$ICL/DayROAD"
 settings light '{}'
 
 echo "▶ A. 켜기 · 화면"
@@ -72,6 +76,29 @@ S=$(curl -fs -H "x-token: $(tok)" "$(API)/api/state")
 check "T1 할 일 만들기 · 끝내기 · 진행 기록 (12개 + 반복 다음 차례)" test "$(echo "$S" | jget "len(d['tasks'])")" = "13"
 check "T2 반복하는 일을 끝내면 다음 차례가 내일로" test "$(echo "$S" | jget "[t['date'] for t in d['tasks'] if t['title']=='영어 단어 20개 외우기' and not t['done']][0]")" = "$(day +1)"
 check "T3 데이터 파일 저장" test -s "$SUP/data.json"
+
+echo "▶ I. iCloud Drive 저장"
+cstate() { curl -fs -H "x-token: $(tok)" "$(API)/api/state" | jget "d['cloud']['state']"; }
+for _ in $(seq 1 20); do [ "$(cstate)" = "ok" ] && break; sleep 0.5; done
+echo "INFO  I0 iCloud 상태: $(curl -fs -H "x-token: $(tok)" "$(API)/api/state" | jget "d['cloud']") (빈 폴더를 만들었나: $ICLNEW)" | tee -a "$RES"
+check "I1 iCloud Drive 에 저장 켜짐(ok)" test "$(cstate)" = "ok"
+ICF="$ICL/DayROAD/data.json"
+check "I2 지금까지의 할 일이 iCloud 로 옮겨짐 (13개)" test "$(jget "len(d['tasks'])" < "$ICF")" = "13"
+check "I3 옮기기 전 자료를 따로 백업" bash -c "ls '$SUP/backups/' | grep -q '^before-icloud-'"
+check "I4 맥 안의 자료도 그대로" test "$(jget "len(d['tasks'])" < "$SUP/data.json")" = "13"
+# 다른 기기(아이폰)가 iCloud 파일에 할 일을 하나 더한 것처럼 바꿔 봐요
+python3 - "$ICF" <<'PY'
+import json, sys, time, os
+p = sys.argv[1]; d = json.load(open(p)); now = int(time.time() * 1000) + 5
+d['tasks'].append({"id": "phone1", "title": "아이폰에서 적은 일", "bucket": "day", "date": time.strftime('%Y-%m-%d'), "created": now, "updated": now, "log": []})
+open(p + '.w', 'w').write(json.dumps(d, ensure_ascii=False)); os.replace(p + '.w', p)
+PY
+GOT=""; for _ in $(seq 1 30); do GOT=$(curl -fs -H "x-token: $(tok)" "$(API)/api/state" | jget "[t['title'] for t in d['tasks'] if t['id']=='phone1']"); [ "$GOT" = "['아이폰에서 적은 일']" ] && break; sleep 0.5; done
+check "I5 다른 기기가 iCloud 에 적은 할 일이 15초 안에 앱에 들어옴" test "$GOT" = "['아이폰에서 적은 일']"
+# 앱에서 지우면 iCloud 파일에서도 사라져요
+post /api/task/delete '{"id":"phone1"}' >/dev/null
+sleep 1
+check "I6 앱에서 지운 것이 iCloud 에서도 지워짐(지운 기록 남음)" bash -c "python3 -c \"import json;d=json.load(open('$ICF'));assert not [t for t in d['tasks'] if t['id']=='phone1'] and 'phone1' in d.get('deleted',{})\""
 
 echo "▶ W. 위젯"
 check "W1 위젯 파일(widget.json)에 오늘 할 일" bash -c "python3 -c \"import json;d=json.load(open('$SUP/widget/widget.json'));assert d['date']=='$TODAY' and d['total']==7, d['total']\""
@@ -175,7 +202,7 @@ widgets() { pluginkit -m -D -v -i "$WID" 2>&1; }
 T0=$(date '+%Y-%m-%d %H:%M:%S')
 [ -n "$(app_pid)" ] && quit_app
 ditto "$SUP" "$OUT/sup-before-x"   # 앞의 시험 기록은 따로 남겨요
-rm -rf "$APPDIR" "$SUP"; mkdir -p "$SUP"; settings light '{}'
+rm -rf "$APPDIR" "$SUP" "$ICL/DayROAD"; mkdir -p "$SUP"; settings light '{}'
 OLDDIR="$HOME/Downloads/dayroad-old"; rm -rf "$OLDDIR"; mkdir -p "$OLDDIR"   # 사용자처럼 '받은 파일' 폴더에 압축을 풀어 둬요
 ditto -x -k "$ROOT/download/DayROAD.zip" "$OLDDIR"
 ditto "$OLDDIR/DayROAD/DayROAD.app" "$APPDIR"

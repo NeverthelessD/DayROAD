@@ -22,6 +22,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -70,6 +71,9 @@ type storeData struct {
 	Tasks   []*Task     `json:"tasks"`
 	Cats    []*Category `json:"cats"`
 	LastDay string      `json:"lastDay"`
+	// iCloud 로 여러 기기가 맞출 때 쓰는 것 (icloud.go)
+	Deleted     map[string]int64 `json:"deleted,omitempty"` // 지운 할 일 id → 지운 시각(ms)
+	CatsUpdated int64            `json:"catsUpdated"`       // 분류 목록을 마지막으로 바꾼 시각(ms)
 }
 
 type Store struct {
@@ -78,6 +82,11 @@ type Store struct {
 	d       storeData
 	rev     int64
 	lastExp string
+
+	cloud   cloudState
+	probing atomic.Bool
+	fresh   bool            // data.json 이 없어서 처음 안내 할 일로 시작했어요
+	seedIDs map[string]bool // 처음 안내 할 일의 id
 }
 
 // 분류 색 (화면 css 와 위젯이 같은 값을 써요)
@@ -102,6 +111,7 @@ func (s *Store) path() string { return filepath.Join(s.dir, "data.json") }
 
 func (s *Store) load() {
 	b, err := os.ReadFile(s.path())
+	s.fresh = errors.Is(err, os.ErrNotExist)
 	if err == nil {
 		if err := json.Unmarshal(b, &s.d); err != nil {
 			// 망가진 파일은 지우지 않고 옆에 남겨 두고, 가장 최근 백업으로 시작해요
@@ -149,6 +159,12 @@ func (s *Store) seed() {
 		return &Task{ID: randID(6), Title: title, Bucket: "day", Date: today, Cat: cat, Log: log,
 			Order: float64(now + int64(i)), Created: now, Updated: now}
 	}
+	defer func() {
+		s.seedIDs = map[string]bool{}
+		for _, t := range s.d.Tasks {
+			s.seedIDs[t.ID] = true
+		}
+	}()
 	s.d.Tasks = []*Task{
 		mk(0, "할 일 이름을 눌러 자세히 보기", "personal", []LogEntry{{Date: today, Text: "오른쪽 칸에서 마감일 · 알림 · 반복을 정하고, 어디까지 했는지 적어 둘 수 있어요."}}),
 		mk(1, "네모 칸을 눌러 끝내기", "personal", nil),
@@ -424,6 +440,10 @@ func (s *Store) remove(id string) *Task {
 	for i, t := range s.d.Tasks {
 		if t.ID == id {
 			s.d.Tasks = append(s.d.Tasks[:i], s.d.Tasks[i+1:]...)
+			if s.d.Deleted == nil {
+				s.d.Deleted = map[string]int64{}
+			}
+			s.d.Deleted[id] = max(time.Now().UnixMilli(), t.Updated)
 			return t
 		}
 	}
@@ -435,6 +455,7 @@ func (s *Store) commit() {
 	s.rev++
 	s.save()
 	s.exportWidget()
+	s.cloudPushLocked()
 }
 
 func (s *Store) save() {
@@ -470,6 +491,7 @@ func (s *Store) Flush() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.save()
+	s.cloudPushLocked()
 }
 
 func (s *Store) Rev() int64 {
@@ -501,6 +523,9 @@ func (s *Store) loop() {
 	for i := 0; ; i++ {
 		time.Sleep(2 * time.Second)
 		s.applyWidgetActions()
+		if i%3 == 0 {
+			s.CloudSync()
+		}
 		if i%15 == 0 {
 			s.Tick()
 		}
@@ -537,7 +562,7 @@ func (s *Store) stateLocked() map[string]any {
 	for k, v := range palette {
 		pal[k] = map[string]string{"light": v[0], "dark": v[1]}
 	}
-	return map[string]any{"ok": true, "rev": s.rev, "today": Today(), "tasks": tasks, "cats": cats, "palette": pal}
+	return map[string]any{"ok": true, "rev": s.rev, "today": Today(), "tasks": tasks, "cats": cats, "palette": pal, "cloud": s.cloudStatusLocked()}
 }
 
 func (s *Store) State() map[string]any {
@@ -805,6 +830,7 @@ func (s *Store) SaveCat(c Category) (*Category, error) {
 	}
 	if cur := s.cat(c.ID); cur != nil {
 		cur.Name, cur.Color = c.Name, c.Color
+		s.d.CatsUpdated = time.Now().UnixMilli()
 		s.commit()
 		return cur, nil
 	}
@@ -816,6 +842,7 @@ func (s *Store) SaveCat(c Category) (*Category, error) {
 		}
 	}
 	s.d.Cats = append(s.d.Cats, &c)
+	s.d.CatsUpdated = time.Now().UnixMilli()
 	s.commit()
 	return &c, nil
 }
@@ -826,6 +853,7 @@ func (s *Store) DeleteCat(id string) error {
 	for i, c := range s.d.Cats {
 		if c.ID == id {
 			s.d.Cats = append(s.d.Cats[:i], s.d.Cats[i+1:]...)
+			s.d.CatsUpdated = time.Now().UnixMilli()
 			for _, t := range s.d.Tasks {
 				if t.Cat == id {
 					t.Cat = ""
@@ -846,6 +874,7 @@ func (s *Store) OrderCats(ids []string) {
 			c.Order = i
 		}
 	}
+	s.d.CatsUpdated = time.Now().UnixMilli()
 	s.commit()
 }
 
@@ -1013,6 +1042,10 @@ func (a *App) storeRoutes(api func(string, http.HandlerFunc)) {
 			fail(w, err)
 			return
 		}
+		reply(w, nil)
+	})
+	api("/api/cloud/sync", func(w http.ResponseWriter, r *http.Request) {
+		st.CloudSync()
 		reply(w, nil)
 	})
 	api("/api/cat/order", func(w http.ResponseWriter, r *http.Request) {

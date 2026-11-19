@@ -72,6 +72,12 @@ function applyState(r) {
   S.tasks = r.tasks;
   S.cats = r.cats || [];
   S.palette = r.palette || S.palette;
+  const pc = S.cloud || {};
+  S.cloud = r.cloud || null;
+  if (S.cloud && (pc.state !== S.cloud.state || pc.moved !== S.cloud.moved)) {
+    if (S.cloud.moved && !pc.moved) toast('지금까지의 할 일을 iCloud Drive 에 옮겼어요');
+    if (DR.drawSettings) setTimeout(DR.drawSettings, 0);
+  }
   S.rev = r.rev;
   S.today = r.today;
   if (!S.viewDate || dayChanged) S.viewDate = S.today;

@@ -165,6 +165,7 @@ func (a *App) handleDiag(w http.ResponseWriter, r *http.Request) {
 	p("앱 위치    %s", env("APP"))
 	p("설정       화면=%s · 주 시작=%s · 넘기기=%v · 미리 알림 보내기=%v · 자동업데이트=%v", s.Appearance, s.WeekStart, s.CarryOver, s.RemindersSync, s.AutoUpdate)
 	p("할 일      %s", a.store.Summary())
+	p("iCloud     %s", a.store.CloudSummary())
 	u := a.upd.State()
 	p("업데이트   %v · 최신 %v · %v", u["status"], latestVer(u["latest"]), u["error"])
 

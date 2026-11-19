@@ -119,6 +119,8 @@
           <div class="r"><span class="lbl"><b>한 주의 시작</b></span>${seg(s.weekStart, 'weekStart', [['mon', '월요일'], ['sun', '일요일']], '한 주의 시작')}</div>
           <div class="r"><span class="lbl"><b>화면 모드</b></span>${seg(s.appearance, 'appearance', [['system', '맥 설정 따름'], ['light', '라이트'], ['dark', '다크']], '화면 모드')}</div>
         </div>
+        <div class="boxh">iCloud 저장</div>
+        ${cloudBox(s)}
         <div class="boxh">할 일 · 알림</div>
         <div class="box">
           <div class="r"><span class="lbl"><b>못 끝낸 일 오늘로 가져오기</b><span>자정이 지나면 어제 남은 일이 오늘 목록으로 와요</span></span>${sw(s.carryOver, 'carryOver', '못 끝낸 일 가져오기')}</div>
@@ -136,6 +138,31 @@
           <span style="font-size: 12px; color: var(--muted)">made by. Nevertheless_D</span>
         </div>
       </div>`;
+  }
+
+  // ---------------------------------------------------------------- iCloud 저장
+
+  function cloudBox(s) {
+    const c = S.cloud || { state: 'starting' };
+    const hm = (ms) => { const d = new Date(ms); return `${d.getMonth() + 1}월 ${d.getDate()}일 ${DR.fmtTime(String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'))}`; };
+    let st = '';
+    if (s.icloud) {
+      const info = {
+        ok: [true, '‘iCloud Drive › DayROAD’에 저장되고 있어요', c.last ? `마지막으로 맞춘 때 ${hm(c.last)} · 맥 안에도 그대로 남아 있어요` : '맥 안에도 그대로 남아 있어요', ''],
+        asking: [false, '맥이 iCloud Drive 를 써도 되는지 묻고 있어요', '화면에 뜬 창에서 ‘허용’을 눌러 주세요. 창이 안 보이면 맥 설정에서 켤 수 있어요', '<button type="button" class="btn sm" data-act="open-privacy" data-pane="files">맥 설정 열기</button>'],
+        starting: [true, 'iCloud Drive 를 확인하는 중이에요', '잠시만 기다려 주세요', ''],
+        waiting: [true, 'iCloud 에서 할 일 파일을 받는 중이에요', c.msg || '다 받으면 알아서 합쳐요', ''],
+        nodrive: [false, '이 맥에서 iCloud Drive 가 꺼져 있어요', '맥 ‘시스템 설정 › Apple 계정 › iCloud’에서 iCloud Drive 를 켜 주세요. 그동안 할 일은 맥 안에만 저장돼요', '<button type="button" class="btn sm" data-act="open-privacy" data-pane="icloud">맥 설정 열기</button>'],
+        denied: [false, 'iCloud Drive 를 쓸 허락이 없어요', '맥 ‘시스템 설정 › 개인정보 보호 및 보안 › 파일 및 폴더’에서 DayROAD 의 iCloud Drive 를 켜 주세요', '<button type="button" class="btn sm" data-act="open-privacy" data-pane="files">맥 설정 열기</button>'],
+        error: [false, 'iCloud Drive 에 저장하지 못했어요', c.msg || '잠시 뒤 다시 해 볼게요', ''],
+      }[c.state] || [true, c.state, c.msg || '', ''];
+      const [good, t, sub, btn] = info;
+      st = `<div class="status${good ? "" : " warn"}"><span class="ok">${good ? TICK : BANG}</span><span class="tx"><b>${esc(t)}</b><span>${esc(sub)}</span></span>${btn || (c.state === 'ok' || c.state === 'error' || c.state === 'waiting' ? '<button type="button" class="btn sm" data-sact="cloudsync">지금 맞추기</button>' : '')}</div>`;
+    }
+    return `
+        <div class="box">
+          <div class="r"><span class="lbl"><b>할 일을 iCloud Drive 에도 저장하기</b><span>아이폰 DayROAD · 다른 맥과 같은 할 일을 보게 돼요</span></span>${sw(s.icloud, 'icloud', 'iCloud 저장')}</div>
+        </div>${st}`;
   }
 
   async function saveSetting(patch) {
@@ -180,6 +207,9 @@
       drawSettings(); DR.renderSide();
     }
     if (a === 'install') DR.installUpdate();
+    if (a === 'cloudsync') {
+      try { DR.applyState(await api('/api/cloud/sync', {})); DR.render(); drawSettings(); DR.toast('iCloud 와 맞췄어요'); } catch (err) { DR.toastErr(err); }
+    }
     if (a === 'restart') DR.restartApp();
     if (a === 'diag') { e.preventDefault(); if (DR.hasNative()) DR.native('openDiag').catch(() => {}); else window.open('/diag', '_blank'); }
     if (a === 'rollback') {

@@ -363,6 +363,8 @@ final class Native: NSObject, UNUserNotificationCenterDelegate {
             "calendars": "x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars",
             "reminders": "x-apple.systempreferences:com.apple.preference.security?Privacy_Reminders",
             "notifications": "x-apple.systempreferences:com.apple.Notifications-Settings.extension",
+            "files": "x-apple.systempreferences:com.apple.preference.security?Privacy_FilesAndFolders",
+            "icloud": "x-apple.systempreferences:com.apple.systempreferences.AppleIDSettings",
         ]
         if let s = urls[pane], let u = URL(string: s) { NSWorkspace.shared.open(u) }
     }

@@ -54,6 +54,7 @@ type Settings struct {
 	EventCalendar string         `json:"eventCalendar"`
 	RemindersSync bool           `json:"remindersSync"`
 	RemindersList string         `json:"remindersList"`
+	ICloud        bool           `json:"icloud"` // 할 일을 iCloud Drive 에도 저장 (icloud.go)
 	UI            map[string]any `json:"ui"`
 }
 
@@ -198,6 +199,7 @@ func defaultSettings() Settings {
 		Morning:      MorningSetting{On: false, Time: "08:30"},
 		DueRemind:    DueSetting{On: true, Days: 1, Time: "09:00"},
 		CalendarShow: true,
+		ICloud:       true,
 		UI:           map[string]any{},
 	}
 }
@@ -301,6 +303,9 @@ func (a *App) handleSettings(w http.ResponseWriter, r *http.Request) {
 		a.saveSettings()
 		a.mu.Unlock()
 		a.store.Tick() // 주 시작 요일 · 넘기기 설정이 바뀌었을 수 있어요
+		if _, ok := in["icloud"]; ok {
+			a.store.CloudSync()
+		}
 	}
 	writeJSON(w, a.settingsJSON())
 }

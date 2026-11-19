@@ -50,10 +50,24 @@
       맥 목록에 이 앱 위젯이 없으면 다시 등록. smoke Y: v새버전 → 9.9.9 로 스스로 업데이트하며 0.2초마다 등록 여부 확인(빠진 순간 0번).
       주의: 1.3.0 → 1.3.1 업데이트는 1.3.0 의 옛 방식으로 하니까 이번 한 번은 위젯이 또 빠질 수 있음(사용자에게 안내함).
 
+- [ ] 14. v1.4.0 (사용자 요청 2026-11-19): 할 일을 iCloud Drive 에도 저장 + 지금 자료 옮기기 — 아이폰 DayROAD 를 위한 첫 단계.
+      engine/icloud.go: 'iCloud Drive › DayROAD › data.json' 에 저장, 맥 안의 data.json 은 일하는 사본으로 그대로(하루 백업도).
+      처음 켤 때 iCloud 에 파일이 없으면 지금 자료를 복사(옮기기 전 backups/before-icloud-<날짜>.json), 새로 깐 맥이면 iCloud 자료를 받음.
+      6초마다 맞추기(할 일 id 별 updated 큰 쪽 · 지운 기록 deleted · 분류 catsUpdated · 충돌 사본 'data 2.json' 합치고 지움).
+      맞추기 전에는 iCloud 에 쓰지 않음, 망가진/내려받는 중 파일은 덮어쓰지 않음, 맥이 허락을 묻는 동안 앱이 멈추지 않게 3초 넘으면 건너뜀.
+      설정 › iCloud 저장(켜기/끄기 · 상태 · 지금 맞추기 · 맥 설정 열기), /diag 'iCloud' 줄, 옮기면 한 번 알림. go test 4개 + smoke I1~I6.
+      → 맥 빌드 서버 확인 · 내보내기 남음
+- [ ] 15. 아이폰 DayROAD (ValoROAD 아이폰과 같은 방식: SwiftUI, 무료 애플 ID 로 사용자 맥 Xcode 설치, 7일마다 다시 설치).
+      자료는 위 iCloud Drive 파일을 '파일' 앱에서 한 번 골라 계속 씀(무료 계정은 iCloud(CloudKit) 기능을 못 써서). 맞추기 규칙은 icloud.go 맨 위와 똑같이.
+      먼저 아이폰 디자인 시안 → 확정.
+
 ### 다음에 할 수 있는 일
 - [ ] 사용자 맥에서 실제로 써 보기: 위젯 갤러리에 보이는지, 캘린더 · 미리 알림 허락, 알림
 
 ### 작업 기록
+- 2026-11-19 v1.4.0 — 사용자: 아이폰용 DayROAD 를 만들고 싶음(아이폰, 무료 애플 ID 7일 방식을 ValoROAD 로 잘 쓰는 중).
+  무료 계정은 iCloud(CloudKit) · 앱 그룹 등이 막혀서, 맥과 같은 할 일을 보려면 iCloud Drive 의 파일을 같이 쓰기로 함.
+  사용자: "맥용을 먼저 iCloud 에 저장되게 하고 기존 자료가 옮겨지게" → 14번.
 - 2026-11-14 v1.3.1 — 사용자: 위젯 또 사라짐(진단 정보: 11-13 21:12 v1.3.0 으로 업데이트 뒤 재시동 없이 계속 켜져 있었음,
   앱 위치 /Applications, 다른 곳 위젯 없음). 즉 재시동이 아니라 '업데이트'가 원인. 처음 신고(재시동 뒤)도 맥 OS 업데이트 재시동과
   v1.2.0 설치가 겹친 때였음. 고친 내용은 13번.
@@ -108,6 +122,7 @@ app/Info.plist · Widget-Info.plist · Widget.entitlements(샌드박스 + Suppor
 project.yml              XcodeGen: DayROAD(앱) + DayROADWidget(app-extension, 앱 안 PlugIns 에 들어감). 서명 "-"(ad-hoc)
 engine/main.go           설정(settings.json) · 라우트 · 127.0.0.1:47951 + 토큰
 engine/store.go          할 일 · 분류 · 넘기기(rollover) · 반복(nextOccurrence, 끝내면 다음 차례 생성/되돌리면 지움) · 진행 기록 · 가져오기 · /api/*
+engine/icloud.go         iCloud Drive 저장 · 처음 옮기기 · 여러 기기 맞추기(merge 규칙은 파일 맨 위) · 설정 icloud(기본 켜짐) · /api/cloud/sync
 engine/widget.go         Support/widget/widget.json 쓰기 (오늘 · 이번 주 · 앞으로 8일 · 넘기기 설정) · actions.jsonl 2초마다 반영
 engine/supervise.go · update.go · diag.go   PaperROAD 와 같음 (이름만 DayROAD)
 engine/web/              index.html · css/app.css · js/core.js(요청 · 상태 · 날짜 · 떠 있는 창) · parse.js(빠른 추가 글 읽기)
@@ -123,6 +138,11 @@ scripts/ci-mac.sh · release.sh · publish-download.sh · feed.py · guide.py   
 - 엔진에서 새 상태를 받을 때마다 바뀐 할 일만: 캘린더(calendar=true 인 날짜 할 일 → 일정, 끄면 지움) · 미리 알림(남은 일은 보내고, 끝냄도 맞춤)
 - 미리 알림 가져오기: 켤 때 · 창이 앞에 올 때 · 2분마다. 아이폰에서 끝낸 것 → /api/sync/done, 새로 적은 것 → /api/import
 - 알림: 앞으로 8일의 할 일 알림 · 아침 알림 · 마감 미리 알림을 계산해서 통째로 다시 예약
+
+### iCloud 저장 (v1.4.0~)
+- 자리: ~/Library/Mobile Documents/com~apple~CloudDocs/DayROAD/data.json (시험: DAYROAD_ICLOUD=<가짜 iCloud Drive 폴더>)
+- data.json 에 새 칸: deleted(지운 할 일 id → 시각, 60일 보관) · catsUpdated. 아이폰 앱도 이 칸과 규칙을 지켜야 해요.
+- 주의: 넘기기(rollover) · 링크(eventId/reminderId) 는 updated 를 바꾸지 않아요 — 같은 updated 면 JSON 비교로 정해서 기기끼리 같은 답이 나와요.
 
 ### 리눅스에서 시험하는 법
 ```
