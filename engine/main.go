@@ -54,7 +54,9 @@ type Settings struct {
 	EventCalendar string         `json:"eventCalendar"`
 	RemindersSync bool           `json:"remindersSync"`
 	RemindersList string         `json:"remindersList"`
-	ICloud        bool           `json:"icloud"` // 할 일을 iCloud Drive 에도 저장 (icloud.go)
+	ICloud        bool           `json:"icloud"`    // 할 일을 iCloud Drive 에도 저장 (icloud.go)
+	IOSUpdate     bool           `json:"iosUpdate"` // 아이폰용 파일(DayROAD-iPhone 폴더)도 최신으로 받아 두기 (iphone.go)
+	IOSFolder     string         `json:"iosFolder"` // 그 폴더 (비면 문서 › DayROAD-iPhone)
 	UI            map[string]any `json:"ui"`
 }
 
@@ -68,6 +70,7 @@ type App struct {
 
 	store *Store
 	upd   *Updater
+	ios   *IOSFiles
 }
 
 var app *App
@@ -105,6 +108,7 @@ func main() {
 	app.loadSettings()
 	app.store = NewStore(support)
 	app.upd = NewUpdater(support)
+	app.ios = NewIOSFiles(support)
 	app.store.Tick() // 날짜가 바뀌었으면 못 끝낸 일 넘기기 · 반복 정리 → 위젯 파일 쓰기
 
 	go heartbeat(support)
@@ -127,6 +131,7 @@ func main() {
 	}
 	go app.watchParent()
 	go func() { defer recoverLog("autoLoop"); app.upd.autoLoop() }()
+	go func() { defer recoverLog("iosLoop"); app.ios.loop() }()
 	go func() { defer recoverLog("store loop"); app.store.loop() }()
 	srv := &http.Server{Handler: hostGuard(recordRequests(app.routes())), ErrorLog: log.Default()}
 	log.Fatal(srv.Serve(ln))
@@ -200,6 +205,7 @@ func defaultSettings() Settings {
 		DueRemind:    DueSetting{On: true, Days: 1, Time: "09:00"},
 		CalendarShow: true,
 		ICloud:       true,
+		IOSUpdate:    true,
 		UI:           map[string]any{},
 	}
 }
@@ -321,6 +327,11 @@ func (a *App) handleSettings(w http.ResponseWriter, r *http.Request) {
 		if _, ok := in["icloud"]; ok {
 			a.store.CloudSync()
 		}
+		_, k1 := in["iosUpdate"]
+		_, k2 := in["iosFolder"]
+		if k1 || k2 {
+			go func() { defer recoverLog("iosRun"); a.ios.Run() }()
+		}
 	}
 	writeJSON(w, a.settingsJSON())
 }
@@ -401,13 +412,18 @@ func (a *App) routes() http.Handler {
 		writeJSON(w, map[string]any{"ok": true})
 	})
 	api("/api/poll", func(w http.ResponseWriter, r *http.Request) {
-		writeJSON(w, map[string]any{"build": build, "update": a.upd.State(), "shell": env("SHELL"), "rev": a.store.Rev(), "today": a.store.Today()})
+		writeJSON(w, map[string]any{"build": build, "update": a.upd.State(), "iphone": a.ios.State(), "shell": env("SHELL"), "rev": a.store.Rev(), "today": a.store.Today()})
 	})
 	api("/api/settings", a.handleSettings)
 
 	// 할 일 · 분류
 	a.storeRoutes(api)
 
+	api("/api/iphone/check", func(w http.ResponseWriter, r *http.Request) {
+		go func() { defer recoverLog("iosRun"); a.ios.Run() }()
+		time.Sleep(300 * time.Millisecond)
+		writeJSON(w, a.ios.State())
+	})
 	api("/api/update/check", func(w http.ResponseWriter, r *http.Request) {
 		a.upd.Check(true)
 		writeJSON(w, a.upd.State())

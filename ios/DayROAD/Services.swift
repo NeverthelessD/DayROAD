@@ -165,3 +165,49 @@ final class Cal: ObservableObject {
         events = out
     }
 }
+
+// MARK: - 새 버전 알림 (아이폰은 스스로 업데이트할 수 없어요)
+// releases/latest-ios.json 을 보고 새 버전이 있으면 설정에 알려요. 맥 DayROAD 가 DayROAD-iPhone 폴더를 새것으로 바꿔 두니
+// 다음에 맥 Xcode 에서 ▶ 를 누르면 들어와요 (맥 engine/iphone.go).
+
+@MainActor
+final class AppUpdate: ObservableObject {
+    static let shared = AppUpdate()
+    static let feed = "https://raw.githubusercontent.com/NeverthelessD/DayROAD/main/releases/latest-ios.json"
+    @Published var latest: String?
+    @Published var notes: [String] = []
+    private var lastCheck = Date.distantPast
+
+    func check(force: Bool = false) async {
+        if Demo.on {
+            if Demo.flag("-newVersion") { latest = "9.9.9"; notes = ["시험: 새 버전 알림"] }
+            return
+        }
+        guard force || Date().timeIntervalSince(lastCheck) > 6 * 3600 else { return }
+        lastCheck = Date()
+        guard let u = URL(string: Self.feed + "?ts=\(Int(Date().timeIntervalSince1970))") else { return }
+        var req = URLRequest(url: u)
+        req.cachePolicy = .reloadIgnoringLocalCacheData
+        req.timeoutInterval = 20
+        struct Feed: Decodable { var version: String; var notes: [String]? }
+        guard let (data, resp) = try? await URLSession.shared.data(for: req), (resp as? HTTPURLResponse)?.statusCode == 200,
+              let f = try? JSONDecoder().decode(Feed.self, from: data) else { return }
+        if Self.newer(f.version, than: appVersion) {
+            if latest != f.version { Log.write("새 버전 \(f.version) 이 나와 있어요 (지금 \(appVersion))") }
+            latest = f.version
+            notes = f.notes ?? []
+        } else {
+            latest = nil
+            notes = []
+        }
+    }
+
+    static func newer(_ a: String, than b: String) -> Bool {
+        let x = a.split(separator: ".").map { Int($0) ?? 0 }, y = b.split(separator: ".").map { Int($0) ?? 0 }
+        for i in 0..<max(x.count, y.count) {
+            let p = i < x.count ? x[i] : 0, q = i < y.count ? y[i] : 0
+            if p != q { return p > q }
+        }
+        return false
+    }
+}

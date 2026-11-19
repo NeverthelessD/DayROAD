@@ -63,6 +63,13 @@
       한 주의 시작이 바뀌면 '이번 주 안에' 할 일의 weekOf 도 새 첫날로 맞춤(rollover). go test + smoke I7 · I8.
       합치기에서 updated 가 같을 때: JSON 비교 → taskTieKey/catsTieKey(아이폰 Store.swift 와 같은 글자, 바이트 비교)로 바꿈 — 맥 · 아이폰이 서로 계속 다시 쓰지 않게.
       맥 빌드 서버 51개 통과(65531f9) · 내보냄.
+- [ ] 16. 맥 v1.5.0 + 아이폰 1.0.2 (사용자 2026-11-19 "아이폰 업데이트도 자동으로" — 아이폰은 스스로 못 바꿈):
+      engine/iphone.go: 맥 DayROAD 가 켠 뒤 40초 · 6시간마다 releases/latest-ios.json 을 보고, 새 버전이면 DayROAD-iPhone 폴더(기본 문서 ›, 설정에서 고르기)를
+      통째로 새것으로 바꿔 둠 — 예전 project.pbxproj 의 DEVELOPMENT_TEAM · 바꾼 Bundle Identifier 를 새 파일에 옮겨 적고 xcuserdata 도 옮김,
+      예전 폴더는 Support/ios-backup.noindex 에 2개. 폴더 확인이 3초 넘게 멈추면(맥이 문서 폴더 허락을 묻는 중) 건너뜀. 설정 › 아이폰 DayROAD (켜기 · 상태 · 지금 확인 · 폴더 고르기=Native pickFolder).
+      → 7일마다 ▶ 한 번이면 최신 버전이 들어감. 아이폰 앱도 latest-ios.json 을 보고 설정에 '새 버전이 나왔어요' 표시(AppUpdate).
+      아이폰 내보내기: scripts/ios-package.sh "바뀐 점" → download/DayROAD-iPhone.zip · 업데이트 zip · releases/DayROAD-iPhone-<V>.zip · releases/latest-ios.json.
+      버전은 ios/VERSION · project.yml · Config/*-Info.plist 셋 다. go test(TestIOSReplace) + smoke P1~P7(진짜 latest-ios.json).
 - [ ] 15. 아이폰 DayROAD (1.0.0 전달, 사용자 설치 확인 남음) (ValoROAD 아이폰과 같은 방식: SwiftUI, 무료 애플 ID 로 사용자 맥 Xcode 설치, 7일마다 다시 설치).
       자료는 위 iCloud Drive 파일을 '파일' 앱에서 한 번 골라 계속 씀(무료 계정은 iCloud(CloudKit) 기능을 못 써서). 맞추기 규칙은 icloud.go 맨 위와 똑같이.
       먼저 아이폰 디자인 시안 → 확정.

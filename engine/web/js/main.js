@@ -417,6 +417,9 @@
       const r = await api('/api/poll', undefined, { noRetry: true });
       const before = S.update && S.update.status;
       S.update = r.update;
+      const pi = S.iphone && S.iphone.state;
+      S.iphone = r.iphone;
+      if (pi && pi !== 'updated' && r.iphone && r.iphone.state === 'updated') DR.toast(`아이폰용 파일을 ${r.iphone.local} 로 바꿔 뒀어요 · 다음에 Xcode ▶ 를 누르면 들어가요`);
       if (r.rev !== S.rev || r.today !== S.today) await DR.reload();
       else if (before !== S.update.status) { DR.renderSide(); if (S.view === 'today') DR.renderMain(); }
       DR.drawSettings();

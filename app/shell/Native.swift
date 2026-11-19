@@ -40,6 +40,7 @@ final class Native: NSObject, UNUserNotificationCenterDelegate {
         case "notifySchedule": notifySchedule(b, reply)
         case "requestNotify": requestNotify(reply)
         case "openPrivacy": openPrivacy(b["pane"] as? String ?? ""); reply(["ok": true], nil)
+        case "pickFolder": pickFolder(b["title"] as? String ?? "폴더 고르기", reply)
         default: reply(nil, "알 수 없는 요청이에요")
         }
     }
@@ -368,4 +369,21 @@ final class Native: NSObject, UNUserNotificationCenterDelegate {
         ]
         if let s = urls[pane], let u = URL(string: s) { NSWorkspace.shared.open(u) }
     }
+
+    /// 폴더 고르기 창 (아이폰용 파일 폴더 — engine/iphone.go)
+    func pickFolder(_ title: String, _ reply: @escaping Reply) {
+        DispatchQueue.main.async {
+            let p = NSOpenPanel()
+            p.title = title
+            p.message = title
+            p.canChooseDirectories = true
+            p.canChooseFiles = false
+            p.allowsMultipleSelection = false
+            p.directoryURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+            p.begin { r in
+                reply(["path": r == .OK ? (p.url?.path ?? "") : ""], nil)
+            }
+        }
+    }
+
 }

@@ -121,6 +121,8 @@
         </div>
         <div class="boxh">iCloud 저장</div>
         ${cloudBox(s)}
+        <div class="boxh">아이폰 DayROAD</div>
+        ${iosBox(s)}
         <div class="boxh">할 일 · 알림</div>
         <div class="box">
           <div class="r"><span class="lbl"><b>못 끝낸 일 오늘로 가져오기</b><span>자정이 지나면 어제 남은 일이 오늘 목록으로 와요</span></span>${sw(s.carryOver, 'carryOver', '못 끝낸 일 가져오기')}</div>
@@ -138,6 +140,33 @@
           <span style="font-size: 12px; color: var(--muted)">made by. Nevertheless_D</span>
         </div>
       </div>`;
+  }
+
+  // ---------------------------------------------------------------- 아이폰용 파일 (engine/iphone.go)
+
+  function iosBox(s) {
+    const x = S.iphone || { state: 'checking' };
+    const home = (x.dir || '').replace(/^\/Users\/[^/]+/, '~');
+    const where = home.replace(/^~\/Documents\//, '문서 › ').replace(/^~\/Desktop\//, '데스크탑 › ').replace(/^~\/Downloads\//, '다운로드 › ');
+    let st = '';
+    if (s.iosUpdate) {
+      const pick = DR.hasNative() ? '<button type="button" class="btn sm" data-sact="iospick">폴더 고르기</button>' : '';
+      const info = {
+        ok: [true, `아이폰용 파일이 최신이에요 (${x.local || '?'})`, `${where} · 새 버전이 나오면 알아서 바꿔 둬요`, '<button type="button" class="btn sm" data-sact="ioscheck">지금 확인</button>'],
+        updated: [true, `아이폰용 파일을 ${x.local} 로 바꿔 뒀어요`, `다음에 Xcode 에서 ▶ 를 누르면 아이폰에 들어가요 · ${where}`, ''],
+        checking: [true, '아이폰용 파일을 확인하는 중이에요', '잠시만 기다려 주세요', ''],
+        notfound: [false, 'DayROAD-iPhone 폴더를 찾지 못했어요', `${where || '문서 › DayROAD-iPhone'} 에 없어요. 다른 곳에 두셨다면 그 폴더를 골라 주세요`, pick],
+        asking: [false, '맥이 폴더를 써도 되는지 묻고 있어요', '화면에 뜬 창에서 ‘허용’을 눌러 주세요. 창이 안 보이면 맥 설정 › 개인정보 보호 및 보안 › 파일 및 폴더에서 DayROAD 를 켜 주세요', '<button type="button" class="btn sm" data-act="open-privacy" data-pane="files">맥 설정 열기</button>'],
+        error: [false, '아이폰용 파일을 확인하지 못했어요', x.msg || '잠시 뒤 다시 해 볼게요', '<button type="button" class="btn sm" data-sact="ioscheck">다시</button>'],
+        off: [true, '', '', ''],
+      }[x.state] || [true, x.state, x.msg || '', ''];
+      const [good, t, sub, btn] = info;
+      if (t) st = `<div class="status${good ? '' : ' warn'}"><span class="ok">${good ? TICK : BANG}</span><span class="tx"><b>${esc(t)}</b><span>${esc(sub)}</span></span>${btn}</div>`;
+    }
+    return `
+        <div class="box">
+          <div class="r"><span class="lbl"><b>아이폰용 파일도 최신으로 받아 두기</b><span>7일마다 Xcode ▶ 를 누를 때 새 버전이 함께 들어가요 (고른 팀은 그대로)</span></span>${sw(s.iosUpdate, 'iosUpdate', '아이폰용 파일 최신으로')}</div>
+        </div>${st}`;
   }
 
   // ---------------------------------------------------------------- iCloud 저장
@@ -207,6 +236,18 @@
       drawSettings(); DR.renderSide();
     }
     if (a === 'install') DR.installUpdate();
+    if (a === 'ioscheck') {
+      S.iphone = { ...(S.iphone || {}), state: 'checking' }; drawSettings();
+      try { S.iphone = await api('/api/iphone/check', {}); } catch (err) { DR.toastErr(err); }
+      setTimeout(DR.poll, 4000);
+      drawSettings();
+    }
+    if (a === 'iospick') {
+      try {
+        const r = await DR.native('pickFolder', { title: 'DayROAD-iPhone 폴더 고르기' });
+        if (r && r.path) await saveSetting({ iosFolder: r.path });
+      } catch (err) { DR.toastErr(err); }
+    }
     if (a === 'cloudsync') {
       try { DR.applyState(await api('/api/cloud/sync', {})); DR.render(); drawSettings(); DR.toast('iCloud 와 맞췄어요'); } catch (err) { DR.toastErr(err); }
     }

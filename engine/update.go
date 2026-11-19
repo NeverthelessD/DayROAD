@@ -287,8 +287,9 @@ func (u *Updater) Check(force bool) {
 	}
 }
 
-func fetchLatest() (*Release, error) {
-	url := updateURL()
+func fetchLatest() (*Release, error) { return fetchFrom(updateURL()) }
+
+func fetchFrom(url string) (*Release, error) {
 	sep := "?"
 	if strings.Contains(url, "?") {
 		sep = "&"

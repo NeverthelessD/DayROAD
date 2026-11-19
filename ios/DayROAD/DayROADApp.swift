@@ -51,6 +51,7 @@ struct DayROADApp: App {
                 Task { await Cloud.shared.sync("앞으로") }
                 Cal.shared.load()
                 Notify.shared.scheduleSoon()
+                Task { await AppUpdate.shared.check() }
                 if let t = Router.pendingTask { Router.shared.detail = t; Router.pendingTask = nil }
             case .background:
                 Cloud.shared.stopTimer()

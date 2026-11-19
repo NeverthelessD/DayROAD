@@ -9,6 +9,7 @@ struct SettingsView: View {
     @EnvironmentObject var settings: AppSettings
     @EnvironmentObject var notify: Notify
     @EnvironmentObject var cal: Cal
+    @ObservedObject private var upd = AppUpdate.shared
     @State private var pass = AppPass.read()
     @State private var pickTime: String?      // morning | due
     @State private var showDiag = false
@@ -60,6 +61,18 @@ struct SettingsView: View {
                     }
                     .foregroundStyle(T.ink).padding(.horizontal, 14).frame(minHeight: 50)
                     line
+                    if let v = upd.latest {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("새 버전 \(v) 이 나왔어요").font(F.sans(15, .bold)).foregroundStyle(T.accentText)
+                            Text("맥 DayROAD 가 아이폰용 파일을 받아 둬요. 다음에 아이폰을 맥에 연결하고 Xcode 에서 ▶ 를 누르면 들어와요.")
+                                .font(F.sans(13)).foregroundStyle(T.ink).fixedSize(horizontal: false, vertical: true)
+                            ForEach(upd.notes, id: \.self) { n in Text("· " + n).font(F.sans(12.5)).foregroundStyle(T.muted) }
+                        }
+                        .padding(14)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(T.accentSoft)
+                        line
+                    }
                     Button { showDiag = true } label: {
                         HStack {
                             Text("진단 정보 보기").font(F.sans(15))
@@ -75,7 +88,7 @@ struct SettingsView: View {
             .padding(.horizontal, 16).padding(.bottom, 40)
         }
         .background(T.paper)
-        .onAppear { pass = AppPass.read(); Task { await notify.refreshStatus() } }
+        .onAppear { pass = AppPass.read(); Task { await notify.refreshStatus(); await upd.check() } }
         .sheet(item: Binding(get: { pickTime.map { DetailID(id: $0) } }, set: { pickTime = $0?.id })) { k in
             PickSheet(title: k.id == "morning" ? "아침 알림" : "마감 알림", isTime: true,
                       value: k.id == "morning" ? settings.morningTime : settings.dueTime, canClear: false) { v in

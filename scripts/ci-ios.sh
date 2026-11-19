@@ -103,7 +103,7 @@ print(best[2]+" / "+best[3] if best else "", file=sys.stderr)
     shot 05-month 10 light -tab month
     shot 06-lists 10 light -tab lists
     shot 07-settings 10 light -tab settings
-    shot 08-settings-dark 10 dark -tab settings
+    shot 08-settings-dark 10 dark -tab settings -newVersion
 
     # 맞추기 1: 맥이 iCloud 파일에 할 일을 더한 것처럼 → 앱에 들어오는지
     xcrun simctl terminate "$UDID" "$BUNDLE" > /dev/null 2>&1

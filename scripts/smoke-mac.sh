@@ -111,6 +111,26 @@ check "I7 다른 기기에서 바꾼 한 주의 시작(일요일)이 맥 설정�
 post /api/settings '{"weekStart":"mon"}' >/dev/null; sleep 1
 check "I8 맥에서 다시 바꾸면 iCloud 파일에도 들어감" test "$(jget "d.get('weekStart')" < "$ICF")" = "mon"
 
+echo "▶ P. 아이폰용 파일 최신으로 받아 두기 (진짜 releases/latest-ios.json)"
+IOSR=/tmp/dr-ios-smoke; IOSD="$IOSR/DayROAD-iPhone"; rm -rf "$IOSR"; mkdir -p "$IOSD/DayROAD.xcodeproj/xcuserdata/me.xcuserdatad"
+printf 'buildSettings = { DEVELOPMENT_TEAM = AB12CD34EF; PRODUCT_BUNDLE_IDENTIFIER = com.neverthelessd.dayroad.iphone; };\n' > "$IOSD/DayROAD.xcodeproj/project.pbxproj"
+echo x > "$IOSD/DayROAD.xcodeproj/xcuserdata/me.xcuserdatad/x.plist"
+echo 0.0.1 > "$IOSD/VERSION"
+IOSV=$(curl -fsSL "https://raw.githubusercontent.com/NeverthelessD/DayROAD/main/releases/latest-ios.json?ts=$(date +%s)" | jget "d['version']")
+post /api/settings "{\"iosFolder\":\"$IOSD\"}" >/dev/null
+post /api/iphone/check '{}' >/dev/null
+IST=""; for _ in $(seq 1 90); do IST=$(curl -fs -H "x-token: $(tok)" "$(API)/api/poll" | jget "d['iphone']['state']"); [ "$IST" = "updated" ] || [ "$IST" = "error" ] && break; sleep 1; done
+echo "INFO  P0 최신 아이폰 버전 $IOSV · 상태 $IST · $(curl -fs -H "x-token: $(tok)" "$(API)/api/poll" | jget "d['iphone']['msg']")" | tee -a "$RES"
+check "P1 아이폰용 파일을 새 버전으로 바꿔 둠" test "$IST" = "updated"
+check "P2 폴더 안 버전이 최신($IOSV)" test "$(tr -d ' \n' < "$IOSD/VERSION" 2>/dev/null)" = "$IOSV"
+check "P3 고른 팀(DEVELOPMENT_TEAM)을 새 프로젝트 파일에 옮겨 적음" grep -q "DEVELOPMENT_TEAM = AB12CD34EF;" "$IOSD/DayROAD.xcodeproj/project.pbxproj"
+check "P4 Xcode 개인 설정도 옮김" test -f "$IOSD/DayROAD.xcodeproj/xcuserdata/me.xcuserdatad/x.plist"
+check "P5 새 소스 파일이 들어감" test -f "$IOSD/DayROAD/DayROADApp.swift"
+check "P6 예전 폴더는 보관" bash -c "ls '$SUP/ios-backup.noindex' | grep -q '^DayROAD-iPhone-0.0.1-'"
+post /api/iphone/check '{}' >/dev/null; sleep 3
+check "P7 이미 최신이면 그대로" test "$(curl -fs -H "x-token: $(tok)" "$(API)/api/poll" | jget "d['iphone']['state']")" != "error"
+post /api/settings '{"iosFolder":""}' >/dev/null
+
 echo "▶ W. 위젯"
 check "W1 위젯 파일(widget.json)에 오늘 할 일" bash -c "python3 -c \"import json;d=json.load(open('$SUP/widget/widget.json'));assert d['date']=='$TODAY' and d['total']==7, d['total']\""
 APPEX="$APPDIR/Contents/PlugIns/DayROADWidget.appex"
