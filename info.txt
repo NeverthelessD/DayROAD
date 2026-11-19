@@ -1,0 +1,9 @@
+commit: ca403f626c094228cf696d6a1154d678d49365e5  ios version: 1.0.2  started: 2026-11-19T10:51:46Z
+ProductName:		macOS
+ProductVersion:		15.8.2
+BuildVersion:		24H232
+arm64
+Xcode 26.3
+Build version 17C529
+app: /Users/runner/work/DayROAD/DayROAD/build/dd/Build/Products/Debug-iphonesimulator/DayROAD.app
+iPhone 17 Pro / com.apple.CoreSimulator.SimRuntime.iOS-26-2

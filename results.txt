@@ -1,0 +1,39 @@
+PASS  위젯 화면 파일이 맥과 같음
+PASS  버전 1.0.2
+PASS  XcodeGen 프로젝트
+PASS  시뮬레이터용 빌드
+PASS  실제 아이폰용 빌드 (앱 + 위젯)
+PASS  실제 아이폰용 빌드 (위젯 없는 판)
+PASS  위젯이 앱 안에 들어 있음
+PASS  화면 01-today-light
+  규칙 PASS  빠른 추가: 금요일까지 → 마감
+  규칙 PASS  빠른 추가: 내일 오후 3시
+  규칙 PASS  빠른 추가: 매주 월 9시
+  규칙 PASS  빠른 추가: 분류는 사역 · 중요
+  규칙 PASS  빠른 추가: 없는 분류는 새로
+  규칙 PASS  빠른 추가: 그냥 '분류' 낱말은 그대로
+  규칙 PASS  빠른 추가: 다음 주 안에
+  규칙 PASS  빠른 추가: 12월 25일 오전 11시
+  규칙 PASS  날짜: 매달 31일 → 다음 달 말일
+  규칙 PASS  날짜: 평일 다음 차례 (금 → 월)
+  규칙 PASS  날짜: 주 첫날 (일요일 시작)
+  규칙 PASS  날짜: 주 첫날 (월요일 시작)
+  규칙 PASS  맥 파일 읽기
+  규칙 PASS  맥이 읽을 수 있게 쓰기 (repeat · 큰 숫자)
+  규칙 PASS  같을 때 고르는 기준(맥과 같은 글자)
+  규칙 PASS  바이트 순서 비교
+PASS  규칙 시험 16개
+PASS  위젯 그림
+PASS  화면 02-today-dark
+PASS  화면 03-detail
+PASS  화면 04-week
+PASS  화면 05-month
+PASS  화면 06-lists
+PASS  화면 07-settings
+PASS  화면 08-settings-dark
+PASS  맥이 iCloud 에 적은 할 일 · 지운 할 일이 20초 안에 아이폰에 반영
+PASS  아이폰에서 끝낸 것이 iCloud 파일에 들어감 (맥 것도 그대로)
+PASS  바뀐 게 없으면 iCloud 파일을 다시 쓰지 않음
+PASS  iCloud 파일이 맥이 읽는 모양(repeat 칸 등)
+INFO  시뮬레이터(서명 없음)에서는 앱 그룹 폴더가 없어 위젯 자료 확인을 건너뜀
+PASS  화면 10-connect

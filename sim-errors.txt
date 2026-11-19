@@ -1,0 +1,23 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-19 10:59:22.789 E  DayROAD[9493:7deb] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-19 10:59:22.875 E  DayROAD[9493:7dc9] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-19 10:59:22.876 E  DayROAD[9493:7dc9] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-19 10:59:22.886 F  DayROAD[9493:7dc9] (libGSFont.dylib) GSFont: file already registered - "file:///Users/runner/Library/Developer/CoreSimulator/Devices/2FEACF5E-886C-4FB8-A137-C571FBA5CF5C/data/Containers/Bundle/Application/75CDB007-0D27-4F0A-9EBE-D4E722B4B8CB/DayROAD.app/GowunBatang-Bold.ttf"
+2026-11-19 10:59:23.058 E  DayROAD[9493:7de7] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-19 10:59:23.058 E  DayROAD[9493:7de7] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-19 10:59:23.690 E  DayROAD[9493:7de7] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-19 10:59:23.690 E  DayROAD[9493:7de7] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-19 10:59:23.730 F  DayROAD[9493:7de7] [com.apple.renderbox:error] building pipeline plane_color-ca16feba4 took 0.673379 seconds
+2026-11-19 10:59:25.034 E  DayROAD[9493:7dd4] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+2026-11-19 11:00:03.035 E  DayROAD[11178:8e2a] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-19 11:00:22.415 E  DayROAD[11606:93fb] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-19 11:00:39.237 E  DayROAD[12162:99cd] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-19 11:00:54.432 E  DayROAD[12814:a03d] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-19 11:00:54.433 E  DayROAD[12814:a037] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-19 11:00:54.995 E  DayROAD[12814:a03e] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+2026-11-19 11:01:09.546 E  DayROAD[13496:a6d2] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-19 11:01:24.778 E  DayROAD[14329:ae89] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-19 11:01:42.777 E  DayROAD[15456:ba06] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-19 11:01:57.762 E  DayROAD[16265:c189] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-19 11:02:15.885 E  DayROAD[16969:c8e0] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
+2026-11-19 11:03:05.315 E  DayROAD[18451:d8c6] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: client is not entitled
