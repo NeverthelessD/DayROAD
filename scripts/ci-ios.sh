@@ -123,7 +123,8 @@ d['deleted']['demo10'] = now   # 맥에서 '대청소'를 지운 것처럼
 open(p + '.w', 'w').write(json.dumps(d, ensure_ascii=False)); os.replace(p + '.w', p)
 PY
     LOCAL="$DATA/Library/Application Support/DayROAD/data.json"
-    GOT=no; for _ in $(seq 1 40); do grep -q '"mac1"' "$LOCAL" 2>/dev/null && ! grep -q '"demo10"' "$LOCAL" 2>/dev/null && { GOT=yes; break; }; sleep 0.5; done
+    GOT=no; for _ in $(seq 1 40); do
+      python3 -c "import json,sys;d=json.load(open(sys.argv[1]));ids=[t['id'] for t in d['tasks']];assert 'mac1' in ids and 'demo10' not in ids" "$LOCAL" 2>/dev/null && { GOT=yes; break; }; sleep 0.5; done
     [ "$GOT" = yes ] && pass "맥이 iCloud 에 적은 할 일 · 지운 할 일이 20초 안에 아이폰에 반영" || fail "맥이 바꾼 것이 아이폰에 반영되지 않음"
     sleep 2; xcrun simctl io "$UDID" screenshot "$OUT/shots/09-sync-from-mac.png" > /dev/null 2>&1
 
@@ -142,12 +143,12 @@ PY
     GC="$(xcrun simctl get_app_container "$UDID" "$BUNDLE" "$GROUP" 2>/dev/null)"
     if [ -n "$GC" ] && [ -s "$GC/widget/widget.json" ]; then pass "위젯 자료(widget.json)를 앱 그룹 폴더에 씀"; cp "$GC/widget/widget.json" "$OUT/widget.json"; else info "시뮬레이터(서명 없음)에서는 앱 그룹 폴더가 없어 위젯 자료 확인을 건너뜀"; fi
 
+    cp "$DATA/Library/Application Support/DayROAD/log.txt" "$OUT/app-log.txt" 2>/dev/null
     # 처음 켤 때 화면 (폴더 연결 전)
     xcrun simctl uninstall "$UDID" "$BUNDLE" > /dev/null 2>&1
     xcrun simctl install "$UDID" "$APP" >> "$OUT/info.txt" 2>&1
     shot 10-connect 10 light -connect
 
-    cp "$DATA/Library/Application Support/DayROAD/log.txt" "$OUT/app-log.txt" 2>/dev/null
     xcrun simctl spawn "$UDID" log show --last 8m --style compact --predicate 'process == "DayROAD" AND messageType >= 16' 2>/dev/null | tail -200 > "$OUT/sim-errors.txt"
     N=$(ls "$OUT/shots" | wc -l | tr -d ' ')
     [ "$N" -ge 11 ] && SHOTS=ok

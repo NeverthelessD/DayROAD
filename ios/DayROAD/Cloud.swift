@@ -27,6 +27,7 @@ final class Cloud: ObservableObject {
     private var synced = false        // 이번 실행에서 한 번이라도 맞췄는지 (그 전에는 쓰지 않아요)
     private var adoptNext = false     // 다음 맞추기에서 iCloud 자료를 그대로 받기
     private var lastHash = ""
+    private var lastLocal = Data()    // 마지막으로 맞췄을 때 아이폰 자료 (그 뒤 아이폰에서 바꿨는지 보려고)
     private var busy = false
     private var again = false
     private var timer: Timer?
@@ -175,7 +176,7 @@ final class Cloud: ObservableObject {
             return
         case .data(let b, let conflicts):
             let h = Self.hash(b)
-            if synced && h == lastHash && conflicts.isEmpty {
+            if synced && h == lastHash && conflicts.isEmpty && Coding.canon(store.d) == lastLocal {
                 set(.ok, "")
                 last = Date()
                 return
@@ -204,6 +205,7 @@ final class Cloud: ObservableObject {
                 await write(Coding.pretty(store.d), root: root, dir: dir, scoped: scoped, remove: used)
             } else {
                 lastHash = h
+                lastLocal = Coding.canon(store.d)
                 set(.ok, "")
                 last = Date()
             }
@@ -218,6 +220,7 @@ final class Cloud: ObservableObject {
             return
         }
         lastHash = Self.hash(b)
+        lastLocal = Coding.canon(Store.shared.d)
         synced = true
         set(.ok, "")
         last = Date()
