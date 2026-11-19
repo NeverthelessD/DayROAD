@@ -353,7 +353,7 @@ final class Store: ObservableObject {
 
     func merge(_ o: StoreData) {
         for (id, at) in o.deleted where at > (d.deleted[id] ?? 0) { d.deleted[id] = at }
-        if o.catsUpdated > d.catsUpdated || (o.catsUpdated == d.catsUpdated && Self.greater(Coding.canon(o.cats), Coding.canon(d.cats))) {
+        if o.catsUpdated > d.catsUpdated || (o.catsUpdated == d.catsUpdated && Self.greater(Self.catsTieKey(o.cats), Self.catsTieKey(d.cats))) {
             if !o.cats.isEmpty || o.catsUpdated > d.catsUpdated {
                 d.cats = o.cats; d.catsUpdated = o.catsUpdated
             }
@@ -361,7 +361,7 @@ final class Store: ObservableObject {
         for rt in o.tasks where !rt.id.isEmpty {
             if let i = index(rt.id) {
                 let lt = d.tasks[i]
-                if rt.updated > lt.updated || (rt.updated == lt.updated && Self.greater(Coding.canon(rt), Coding.canon(lt))) {
+                if rt.updated > lt.updated || (rt.updated == lt.updated && Self.greater(Self.tieKey(rt), Self.tieKey(lt))) {
                     d.tasks[i] = rt
                 }
             } else if (d.deleted[rt.id] ?? -1) < rt.updated {
@@ -378,11 +378,20 @@ final class Store: ObservableObject {
         if o.lastDay > d.lastDay { d.lastDay = o.lastDay }
     }
 
-    /// 바이트 비교 (Go bytes.Compare > 0 과 같게)
-    static func greater(_ a: Data, _ b: Data) -> Bool {
-        for (x, y) in zip(a, b) where x != y { return x > y }
-        return a.count > b.count
+    /// updated 가 같을 때 고르는 기준 — 맥 icloud.go taskTieKey · catsTieKey 와 똑같이 (UTF-8 바이트 순서로 비교)
+    static func tieKey(_ t: DTask) -> String {
+        [t.eventId, t.reminderId, t.cat, t.carriedFrom, t.date, t.weekOf, String(t.progress), t.done ? "1" : "0", t.doneAt, t.due, t.nextId, t.title]
+            .joined(separator: "\u{01}")
     }
+
+    static func catsTieKey(_ cs: [DCategory]) -> String {
+        cs.map { "\($0.id)\u{02}\($0.name)\u{02}\($0.color)\u{02}\($0.order)" }
+            .sorted { lessBytes($0, $1) }
+            .joined(separator: "\u{01}")
+    }
+
+    static func lessBytes(_ a: String, _ b: String) -> Bool { Array(a.utf8).lexicographicallyPrecedes(Array(b.utf8)) }
+    static func greater(_ a: String, _ b: String) -> Bool { lessBytes(b, a) }
 
     private func pruneTombstones() {
         let limit = Fmt.nowMs() - 60 * 86_400_000

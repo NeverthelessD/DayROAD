@@ -3,3 +3,5 @@ build/
 ci-out/
 DayROAD.xcodeproj/
 .DS_Store
+ios/DayROAD.xcodeproj/xcuserdata/
+ci-out-ios/
