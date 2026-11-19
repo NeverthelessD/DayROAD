@@ -57,6 +57,6 @@ PY
 fi
 
 # download/ 에는 최신판만: 정해진 이름 말고는 모두 지워요
-find download -mindepth 1 -maxdepth 1 ! -name "$NAME.zip" ! -name "$NAME-Windows.zip" ! -name "$NAME-iPhone.zip" -exec rm -rf {} +
+find download -mindepth 1 -maxdepth 1 ! -name "$NAME.zip" ! -name "$NAME-Windows.zip" ! -name "$NAME-iPhone.zip" ! -name "$NAME-iPhone-업데이트.zip" -exec rm -rf {} +
 [ -f "download/$NAME.zip" ] || { echo "✖ download/$NAME.zip 이 없어요 — 맥 처음 설치용 zip 을 넘겨 주세요" >&2; exit 1; }
 echo "✔ download/: $(ls download | tr '\n' ' ')— 커밋 · 푸시하면 '앱 받기' 링크가 새 버전을 줘요"

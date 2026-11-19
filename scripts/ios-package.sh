@@ -16,3 +16,22 @@ rm -f download/DayROAD-iPhone.zip
 (cd "$TMP" && zip -qr -X "$ROOT/download/DayROAD-iPhone.zip" DayROAD-iPhone)
 rm -rf "$TMP"
 ls -la download/DayROAD-iPhone.zip
+
+# 업데이트용 (이미 설치한 사람): DayROAD.xcodeproj 는 빼고 나머지 폴더만 → 받은 폴더에 덮어쓰고 ▶
+TMP="$(mktemp -d)"; U="$TMP/DayROAD-iPhone-$V-업데이트"; mkdir -p "$U"
+cp -R ios/DayROAD ios/Widget ios/Shared ios/Config "$U/"
+echo "$V" > "$U/VERSION"
+cat > "$U/바꿔 넣는 법.txt" <<TXT
+DayROAD 아이폰 $V 업데이트
+
+1. 문서 폴더의 DayROAD-iPhone 폴더를 열어요.
+2. 이 폴더 안의 DayROAD · Widget · Shared · Config 폴더와 VERSION 파일을 DayROAD-iPhone 폴더로 끌어다 놓고 '대치'를 눌러요.
+   (DayROAD.xcodeproj 는 그대로 둬요 — 고른 팀이 저장돼 있어요)
+3. Xcode 에서 DayROAD.xcodeproj 를 열고 ▶ 를 눌러요. 할 일은 iCloud 에 있어서 그대로예요.
+
+made by. Nevertheless_D
+TXT
+rm -f "download/DayROAD-iPhone-업데이트.zip"
+(cd "$TMP" && zip -qr -X "$ROOT/download/DayROAD-iPhone-업데이트.zip" "DayROAD-iPhone-$V-업데이트")
+rm -rf "$TMP"
+ls -la "download/DayROAD-iPhone-업데이트.zip"
