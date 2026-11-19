@@ -79,6 +79,10 @@
         빌드 서버(build-ios.yml · scripts/ci-ios.sh) 02b4da1: 시뮬레이터 · 실제 아이폰용(서명 없이) · 위젯 없는 판 빌드, 화면 10장, 규칙 시험 16개,
         맞추기 시험(맥이 적은 것 · 지운 것 들어옴 / 아이폰에서 끝낸 것 iCloud 에 씀 / 같으면 안 씀) 모두 통과.
         설치 zip: scripts/ios-package.sh → download/DayROAD-iPhone.zip (+ docs/DayROAD_아이폰_설치.png, python3 scripts/ios-guide.py).
+      - 2026-11-19 아이폰 1.0.1: 사용자 아이폰에 설치 성공(키체인 암호 → 맥 로그인 암호 · 항상 허용 안내). 자세히 칸의 분류 고르기 메뉴에 색 점이 안 보임
+        (아이폰 Menu 는 아이콘 색을 지움) → Picker(inline) + 색 점을 UIImage(.alwaysOriginal)로 그림(Theme.swift Dot).
+        버전은 Config/*-Info.plist 에 숫자로 직접(업데이트 때 사용자가 xcodeproj 를 안 바꿔도 버전이 맞게) — ios/VERSION · project.yml 과 같아야 함(빌드 서버 확인).
+        업데이트 전달: download/DayROAD-iPhone-업데이트.zip (DayROAD · Widget · Shared · Config 만, xcodeproj 빼고 덮어쓰기).
         남은 확인: 사용자 아이폰에서 설치(팀 두 곳) · 앱 그룹(위젯)이 무료 애플 ID 로 되는지 · 실제 iCloud 폴더 고르기 · 맥과 맞추기.
 
 ### 다음에 할 수 있는 일
