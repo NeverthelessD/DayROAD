@@ -6,6 +6,7 @@ import SwiftUI
 struct DetailSheet: View {
     @EnvironmentObject var store: Store
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var scheme
     let id: String
 
     @State private var title = ""
@@ -79,14 +80,14 @@ struct DetailSheet: View {
     @ViewBuilder func header(_ t: DTask) -> some View {
         HStack(spacing: 8) {
             Menu {
-                Button { edit(t) { $0.cat = "" } } label: {
-                    if t.cat.isEmpty { Label("분류 없음", systemImage: "checkmark") } else { Text("분류 없음") }
-                }
-                ForEach(store.cats) { c in
-                    Button { edit(t) { $0.cat = c.id } } label: {
-                        if t.cat == c.id { Label(c.name, systemImage: "checkmark") } else { Text(c.name) }
+                // 아이폰 메뉴는 아이콘 색을 지워서, 분류 색 점을 그림(원래 색 그대로)으로 넣어요
+                Picker("분류", selection: Binding(get: { t.cat }, set: { v in edit(t) { $0.cat = v } })) {
+                    Text("분류 없음").tag("")
+                    ForEach(store.cats) { c in
+                        Label { Text(c.name) } icon: { Image(uiImage: Dot.image(c.color, dark: scheme == .dark)) }.tag(c.id)
                     }
                 }
+                .pickerStyle(.inline)
             } label: {
                 HStack(spacing: 6) {
                     if let c = store.cat(t.cat) {

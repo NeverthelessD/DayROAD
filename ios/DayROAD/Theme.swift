@@ -89,6 +89,19 @@ extension Color {
     init(hex6: String) { self.init(uiColor: UIColor(hex: hex6)) }
 }
 
+/// 분류 색 점 그림 — 메뉴 안에서도 색이 보이게 (원래 색 그대로 그리기)
+enum Dot {
+    static func image(_ key: String, dark: Bool) -> UIImage {
+        let p = Palette.colors[key] ?? ("#56606E", "#A9B2BE")
+        let c = UIColor(hex: dark ? p.1 : p.0)
+        let r = UIGraphicsImageRenderer(size: CGSize(width: 16, height: 16))
+        return r.image { ctx in
+            c.setFill()
+            ctx.cgContext.fillEllipse(in: CGRect(x: 2, y: 2, width: 12, height: 12))
+        }.withRenderingMode(.alwaysOriginal)
+    }
+}
+
 /// 둥근 상자 (설정 · 자세히 칸)
 struct Card<Content: View>: View {
     var padding: CGFloat = 0

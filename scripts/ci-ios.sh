@@ -22,7 +22,7 @@ info() { echo "INFO  $*" | tee -a "$OUT/results.txt"; }
 
 # 맥 위젯 화면 파일과 아이폰 복사본이 같은지 (2번째 줄 설명만 달라요)
 if diff <(sed '2d' ios/Shared/WidgetViews.swift) app/shared/WidgetViews.swift > /dev/null; then pass "위젯 화면 파일이 맥과 같음"; else fail "위젯 화면 파일이 맥과 다름 (ios/Shared/WidgetViews.swift 를 다시 복사)"; fi
-grep -q "MARKETING_VERSION: \"$VERSION\"" ios/project.yml && pass "버전 $VERSION" || fail "ios/project.yml 의 MARKETING_VERSION 이 ios/VERSION 과 달라요"
+grep -q "MARKETING_VERSION: \"$VERSION\"" ios/project.yml && [ "$(grep -c "<string>$VERSION</string>" ios/Config/App-Info.plist ios/Config/Widget-Info.plist | grep -c ':1')" = 2 ] && pass "버전 $VERSION" || fail "버전이 ios/VERSION · project.yml · Config/*-Info.plist 에서 달라요"
 
 command -v xcodegen >/dev/null || brew install xcodegen > "$OUT/brew.log" 2>&1
 (cd ios && xcodegen generate --spec project.yml) > "$OUT/xcodegen.log" 2>&1 && pass "XcodeGen 프로젝트" || fail "XcodeGen 프로젝트"
