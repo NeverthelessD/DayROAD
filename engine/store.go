@@ -74,6 +74,9 @@ type storeData struct {
 	// iCloud 로 여러 기기가 맞출 때 쓰는 것 (icloud.go)
 	Deleted     map[string]int64 `json:"deleted,omitempty"` // 지운 할 일 id → 지운 시각(ms)
 	CatsUpdated int64            `json:"catsUpdated"`       // 분류 목록을 마지막으로 바꾼 시각(ms)
+	// 한 주의 시작(sun | mon)은 기기끼리 같아야 '이번 주 안에' 할 일이 같은 주로 보여요 (v1.4.1)
+	WeekStart   string `json:"weekStart,omitempty"`
+	WeekStartAt int64  `json:"weekStartAt,omitempty"` // 마지막으로 바꾼 시각(ms)
 }
 
 type Store struct {
@@ -130,6 +133,9 @@ func (s *Store) load() {
 		s.seed()
 	}
 	s.d.V = 1
+	if s.d.WeekStart != "sun" && s.d.WeekStart != "mon" {
+		s.d.WeekStart, s.d.WeekStartAt = app0WeekStart(), 0
+	}
 	for _, t := range s.d.Tasks {
 		s.normalize(t)
 	}
@@ -348,6 +354,11 @@ func (s *Store) rollover(today string) bool {
 				changed = true
 			}
 		case "week":
+			// 한 주의 시작이 바뀌었으면 그 주의 첫날도 맞춰요 (월 11/16 → 일 11/15)
+			if a := weekStartOf(t.WeekOf, ws); a != t.WeekOf {
+				t.WeekOf = a
+				changed = true
+			}
 			if addDays(t.WeekOf, 6) >= today {
 				continue
 			}
@@ -562,7 +573,7 @@ func (s *Store) stateLocked() map[string]any {
 	for k, v := range palette {
 		pal[k] = map[string]string{"light": v[0], "dark": v[1]}
 	}
-	return map[string]any{"ok": true, "rev": s.rev, "today": Today(), "tasks": tasks, "cats": cats, "palette": pal, "cloud": s.cloudStatusLocked()}
+	return map[string]any{"ok": true, "rev": s.rev, "today": Today(), "tasks": tasks, "cats": cats, "palette": pal, "cloud": s.cloudStatusLocked(), "weekStart": s.d.WeekStart}
 }
 
 func (s *Store) State() map[string]any {
@@ -642,6 +653,18 @@ func (s *Store) Save(in map[string]json.RawMessage) (*Task, error) {
 	*t = nt
 	s.commit()
 	return t, nil
+}
+
+// SetWeekStart: 맥 설정에서 한 주의 시작을 바꾸면 iCloud 로 다른 기기에도 알려요
+func (s *Store) SetWeekStart(ws string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if ws != "sun" && ws != "mon" || ws == s.d.WeekStart {
+		return
+	}
+	s.d.WeekStart, s.d.WeekStartAt = ws, time.Now().UnixMilli()
+	s.rollover(Today())
+	s.commit()
 }
 
 func (s *Store) Toggle(id string, done *bool) (*Task, error) {

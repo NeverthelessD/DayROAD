@@ -195,7 +195,7 @@ func (a *App) settingsPath() string { return filepath.Join(a.support, "settings.
 
 func defaultSettings() Settings {
 	return Settings{
-		Appearance: "system", AutoUpdate: true, WeekStart: "mon", CarryOver: true,
+		Appearance: "system", AutoUpdate: true, WeekStart: "sun", CarryOver: true,
 		Morning:      MorningSetting{On: false, Time: "08:30"},
 		DueRemind:    DueSetting{On: true, Days: 1, Time: "09:00"},
 		CalendarShow: true,
@@ -244,6 +244,18 @@ func (a *App) loadSettings() {
 func (a *App) saveSettings() {
 	b, _ := json.MarshalIndent(a.settings, "", "  ")
 	writeFileAtomic(a.settingsPath(), b, 0o644)
+}
+
+// setWeekStartFromCloud: 다른 기기에서 바꾼 한 주의 시작을 이 맥 설정에도 (store 자물쇠를 잡은 채로 불려요)
+func (a *App) setWeekStartFromCloud(ws string) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+	if a.settings.WeekStart == ws {
+		return
+	}
+	a.settings.WeekStart = ws
+	a.saveSettings()
+	log.Printf("iCloud: 다른 기기에서 한 주의 시작을 %s 로 바꿨어요", ws)
 }
 
 func (a *App) Settings() Settings {
@@ -302,6 +314,9 @@ func (a *App) handleSettings(w http.ResponseWriter, r *http.Request) {
 		}
 		a.saveSettings()
 		a.mu.Unlock()
+		if _, ok := in["weekStart"]; ok {
+			a.store.SetWeekStart(a.Settings().WeekStart)
+		}
 		a.store.Tick() // 주 시작 요일 · 넘기기 설정이 바뀌었을 수 있어요
 		if _, ok := in["icloud"]; ok {
 			a.store.CloudSync()

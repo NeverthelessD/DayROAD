@@ -53,7 +53,7 @@ const S = (DR.S = {
   monthOf: '',        // 한 달 화면에서 보고 있는 달의 1일
   sel: null,          // 고른 할 일
   tasks: [], cats: [], palette: {}, today: '', rev: 0,
-  settings: { appearance: 'system', weekStart: 'mon', carryOver: true, morning: {}, dueRemind: {}, hiddenCals: [] },
+  settings: { appearance: 'system', weekStart: 'sun', carryOver: true, morning: {}, dueRemind: {}, hiddenCals: [] },
   update: null,
   native: { on: false, events: '', reminders: '', notify: '' },
   calendars: [],      // 맥 캘린더 목록
@@ -80,8 +80,12 @@ function applyState(r) {
   }
   S.rev = r.rev;
   S.today = r.today;
+  // 다른 기기(아이폰)에서 한 주의 시작을 바꾸면 여기도 따라가요
+  const wsChanged = r.weekStart && S.settings && r.weekStart !== S.settings.weekStart;
+  if (wsChanged) S.settings.weekStart = r.weekStart;
   if (!S.viewDate || dayChanged) S.viewDate = S.today;
   if (!S.weekOf || dayChanged) S.weekOf = weekStart(S.today);
+  else if (wsChanged) S.weekOf = weekStart(S.weekOf);
   if (!S.monthOf || dayChanged) S.monthOf = S.today.slice(0, 8) + '01';
   if (S.sel && !DR.task(S.sel)) S.sel = null;
   if (S.view === 'cat' && !DR.cat(S.catId)) S.view = 'today';

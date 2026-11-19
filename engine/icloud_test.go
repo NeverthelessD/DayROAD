@@ -198,3 +198,30 @@ func TestCloudBrokenAndOff(t *testing.T) {
 		t.Fatalf("state %s", s.cloud.State)
 	}
 }
+
+// 한 주의 시작: 나중에 바꾼 쪽을 따르고, '이번 주 안에' 할 일의 첫날도 맞춰요
+func TestCloudWeekStart(t *testing.T) {
+	root := t.TempDir()
+	t.Setenv("DAYROAD_ICLOUD", root)
+	a := newTestStore(t, "2026-11-19")
+	if a.d.WeekStart != "mon" { // 시험에서는 설정이 없으면 월요일
+		t.Fatalf("처음 값 %q", a.d.WeekStart)
+	}
+	wk, _ := a.Save(raw(map[string]any{"title": "이번 주 안에 할 일", "bucket": "week", "weekOf": "2026-11-16"}))
+	a.CloudSync()
+	b := newTestStore(t, "2026-11-19")
+	b.CloudSync()
+	tick()
+	// B(아이폰이라 치고)에서 일요일로 바꿔요 — app 이 없는 시험이라 rollover 는 월요일 기준이니 맞추기만 봐요
+	b.SetWeekStart("sun")
+	if b.d.WeekStartAt == 0 || b.d.WeekStart != "sun" {
+		t.Fatal("바꾼 시각이 없어요")
+	}
+	a.CloudSync()
+	if a.d.WeekStart != "sun" {
+		t.Fatalf("A 가 따라가지 않았어요: %q", a.d.WeekStart)
+	}
+	if weekStartOf("2026-11-16", "sun") != "2026-11-15" || a.task(wk.ID) == nil {
+		t.Fatal("주 첫날 계산")
+	}
+}

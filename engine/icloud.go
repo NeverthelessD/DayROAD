@@ -226,6 +226,10 @@ func (s *Store) cloudSyncLocked() {
 		s.merge(o)
 	}
 	s.pruneTombstones()
+	if app != nil && s.d.WeekStart != app.Settings().WeekStart {
+		app.setWeekStartFromCloud(s.d.WeekStart)
+		s.rollover(Today())
+	}
 	for _, t := range s.d.Tasks {
 		s.normalize(t)
 	}
@@ -336,6 +340,10 @@ func (s *Store) merge(o storeData) {
 		kept = append(kept, t)
 	}
 	s.d.Tasks = kept
+	if (o.WeekStart == "sun" || o.WeekStart == "mon") && (o.WeekStartAt > s.d.WeekStartAt ||
+		(o.WeekStartAt == s.d.WeekStartAt && o.WeekStart > s.d.WeekStart)) {
+		s.d.WeekStart, s.d.WeekStartAt = o.WeekStart, o.WeekStartAt
+	}
 	if o.LastDay > s.d.LastDay {
 		s.d.LastDay = o.LastDay
 	}

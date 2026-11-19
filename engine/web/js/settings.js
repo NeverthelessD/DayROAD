@@ -116,7 +116,7 @@
         <div class="status${okUpd ? '' : ' warn'}"><span class="ok">${okUpd ? TICK : BANG}</span><span class="tx"><b>${esc(updateText(u))}</b><span>${u.status === 'ready' ? '다시 시작하면 새 버전으로 바뀌어요' : '새 버전이 나오면 앱이 알아서 받아요'}</span></span>${upBtn}</div>
         <div class="box">
           <div class="r"><span class="lbl"><b>자동으로 업데이트 받기</b></span>${sw(s.autoUpdate, 'autoUpdate', '자동 업데이트')}</div>
-          <div class="r"><span class="lbl"><b>한 주의 시작</b></span>${seg(s.weekStart, 'weekStart', [['mon', '월요일'], ['sun', '일요일']], '한 주의 시작')}</div>
+          <div class="r"><span class="lbl"><b>한 주의 시작</b></span>${seg(s.weekStart, 'weekStart', [['sun', '일요일'], ['mon', '월요일']], '한 주의 시작')}</div>
           <div class="r"><span class="lbl"><b>화면 모드</b></span>${seg(s.appearance, 'appearance', [['system', '맥 설정 따름'], ['light', '라이트'], ['dark', '다크']], '화면 모드')}</div>
         </div>
         <div class="boxh">iCloud 저장</div>

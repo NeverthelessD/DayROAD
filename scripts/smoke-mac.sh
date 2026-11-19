@@ -99,6 +99,17 @@ check "I5 다른 기기가 iCloud 에 적은 할 일이 15초 안에 앱에 들�
 post /api/task/delete '{"id":"phone1"}' >/dev/null
 sleep 1
 check "I6 앱에서 지운 것이 iCloud 에서도 지워짐(지운 기록 남음)" bash -c "python3 -c \"import json;d=json.load(open('$ICF'));assert not [t for t in d['tasks'] if t['id']=='phone1'] and 'phone1' in d.get('deleted',{})\""
+# 아이폰에서 한 주의 시작을 일요일로 바꾼 것처럼
+python3 - "$ICF" <<'PY'
+import json, sys, time, os
+p = sys.argv[1]; d = json.load(open(p))
+d['weekStart'] = 'sun'; d['weekStartAt'] = int(time.time() * 1000) + 5
+open(p + '.w', 'w').write(json.dumps(d, ensure_ascii=False)); os.replace(p + '.w', p)
+PY
+WS=""; for _ in $(seq 1 30); do WS=$(curl -fs -H "x-token: $(tok)" "$(API)/api/settings" | jget "d['weekStart']"); [ "$WS" = "sun" ] && break; sleep 0.5; done
+check "I7 다른 기기에서 바꾼 한 주의 시작(일요일)이 맥 설정에도 들어옴" test "$WS" = "sun"
+post /api/settings '{"weekStart":"mon"}' >/dev/null; sleep 1
+check "I8 맥에서 다시 바꾸면 iCloud 파일에도 들어감" test "$(jget "d.get('weekStart')" < "$ICF")" = "mon"
 
 echo "▶ W. 위젯"
 check "W1 위젯 파일(widget.json)에 오늘 할 일" bash -c "python3 -c \"import json;d=json.load(open('$SUP/widget/widget.json'));assert d['date']=='$TODAY' and d['total']==7, d['total']\""
